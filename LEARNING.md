@@ -100,3 +100,24 @@ advance. An LLM improvising control flow over a known structure would add
 nondeterminism without adding capability. This repo is a workflow by choice, not
 by limitation. The one place real LLM discretion is warranted is a bounded
 enrichment decision (Unit 2), and that is deliberately the only place it enters.
+
+### Unit 2 - Tool calling
+
+Added the repo's first agentic capability: an LLM that decides whether to call a
+tool.
+
+- **Tool** (`app/tools.py`): `vendor_lookup(vendor_name)`, a deterministic fake
+  returning address, tax ID, and payment history. Decorated with `@tool` so it
+  binds to the model via `.bind_tools()`. No network; reproducible for course work.
+- **Node** (`app/nodes.py`): `enrich_extraction`. Binds `vendor_lookup` to the
+  LLM and lets the model decide whether a vendor lookup applies. Invoices with a
+  named vendor get enriched; resumes and most other docs do not. Writes to a new
+  `enrichment` state field, then routes to `store_results`.
+- **Routing**: only the validate-pass path goes through `enrich_extraction`.
+  Human-reviewed documents route straight to `store_results` unchanged; a human's
+  corrections are authoritative and the model does not touch them.
+
+This is the one node where real LLM discretion enters, exactly as Unit 1's
+spectrum predicted. The model controls whether the tool fires; it never controls
+which nodes run. Control flow stays fixed in `app/graph.py`. Two commits: the tool
+in isolation, then the state field, node, and wiring together.
