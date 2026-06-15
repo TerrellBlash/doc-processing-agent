@@ -57,6 +57,9 @@ class DocAgentState(TypedDict):
     human_approved: bool | None
     human_corrections: dict | None  # any edits the human made
 
+    # === ENRICHMENT (written by enrich_extraction node) ===
+    enrichment: dict | None  # vendor data added via tool call, if any
+
     # === FINAL OUTPUT ===
     final_output: dict | None       # the cleaned, approved result
     processing_status: Literal[

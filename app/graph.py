@@ -27,6 +27,7 @@ from app.nodes import (
     validate_extraction,
     human_review,
     store_results,
+    enrich_extraction,
 )
 
 
@@ -64,6 +65,7 @@ def build_graph():
     workflow.add_node("validate_extraction", validate_extraction)
     workflow.add_node("human_review", human_review)
     workflow.add_node("store_results", store_results)
+    workflow.add_node("enrich_extraction", enrich_extraction)
 
     # --- ADD EDGES ---
     # Only the "always go here next" connections.

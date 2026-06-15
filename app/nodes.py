@@ -255,7 +255,7 @@ def _parse_extraction(
 # ============================================================
 def validate_extraction(
     state: DocAgentState,
-) -> Command[Literal["store_results", "human_review"]]:
+) -> Command[Literal["enrich_extraction", "human_review"]]:
     """
     Check if the extraction is good enough to store automatically,
     or if a human needs to review it.
@@ -313,7 +313,7 @@ def validate_extraction(
                 "validation_issues": [],
                 "processing_status": "validated",
             },
-            goto="store_results",
+            goto="enrich_extraction",
         )
     else:
         logger.info(f"Validation failed ({len(issues)} issues) — sending to human review")
@@ -436,3 +436,53 @@ def store_results(state: DocAgentState) -> dict:
         "final_output": final_output,
         "processing_status": final_output["processing_status"],
     }
+
+
+# ============================================================
+# NODE 6: ENRICH EXTRACTION
+# "The researcher" — optionally looks up vendor details via a tool
+# ============================================================
+def enrich_extraction(
+    state: DocAgentState,
+) -> Command[Literal["store_results"]]:
+    """
+    The one agentic node. Binds the vendor_lookup tool to the LLM and
+    lets the MODEL decide whether a lookup applies to this document.
+
+    Invoices with a named vendor: the model calls the tool.
+    Resumes and most other docs: the model declines, enrichment stays None.
+
+    Either way, this node routes to store_results. It never changes
+    which nodes run; its only discretion is whether to call the tool.
+    """
+    from app.tools import vendor_lookup
+
+    extraction = state.get("extraction") or {}
+    fields = extraction.get("fields", {})
+
+    llm_with_tools = llm.bind_tools([vendor_lookup])
+
+    prompt = (
+        "You are enriching extracted document data. If the document names a "
+        "vendor or supplier and a vendor lookup would add useful detail, call "
+        "the vendor_lookup tool with the vendor name. If there is no vendor "
+        "(for example a resume), do not call any tool.\n\n"
+        f"Extracted fields:\n{json.dumps(fields, indent=2)}"
+    )
+
+    response = llm_with_tools.invoke(prompt)
+
+    enrichment = None
+    tool_calls = getattr(response, "tool_calls", None) or []
+    if tool_calls:
+        call = tool_calls[0]
+        vendor_name = call["args"].get("vendor_name", "")
+        enrichment = vendor_lookup.invoke({"vendor_name": vendor_name})
+        logger.info(f"enrich_extraction: looked up vendor '{vendor_name}'")
+    else:
+        logger.info("enrich_extraction: no vendor lookup needed")
+
+    return Command(
+        update={"enrichment": enrichment},
+        goto="store_results",
+    )
