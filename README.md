@@ -2,7 +2,7 @@
 
 > LangGraph-powered pipeline that classifies, extracts, validates, and routes documents with human-in-the-loop review. Deployed to Azure Container Apps.
 
-Built as a portfolio project for the IBM AI Engineering Professional Certificate.
+
 
 ## What This Does
 
