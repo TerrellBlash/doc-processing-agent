@@ -336,6 +336,7 @@ def human_review(
             if not isinstance(v, list)  # show simple fields only
         },
         "issues": state.get("validation_issues", []),
+        "document_pages": state.get("document_pages"),
         "action_needed": "Please review and approve/correct the extraction",
     })
     # === RESUMES HERE when human responds ===
@@ -396,6 +397,7 @@ def store_results(state: DocAgentState) -> dict:
         "classification_confidence": classification.get("confidence", 0),
         "extracted_data": extraction.get("fields", {}),
         "extraction_confidence": extraction.get("confidence", 0),
+        "document_pages": state.get("document_pages"),
         "human_reviewed": state.get("human_approved") is not None,
         "human_approved": state.get("human_approved"),
         "processing_status": (

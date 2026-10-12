@@ -6,24 +6,27 @@
 
 ## What This Does
 
-Feed it any document (invoice, resume, or contract) and the agent:
+Feed it any document (invoice, resume, or contract), as text, a PDF, or a photo, and the agent:
 
-1. **Ingests** — validates the document is processable
-2. **Classifies** — LLM determines document type + confidence score
-3. **Extracts** — specialist node fills a per-type schema with structured output; fields the document lacks come back null
-4. **Validates** — confidence gate checks extraction quality
-5. **Routes** — high confidence → auto-store, low confidence → human review
-6. **Stores** — packages clean JSON output ready for any database
+1. **Reads** — a PDF's own text layer when it has one; scanned pages and PNG/JPEG photos go to the vision model, and each page records which source produced its text
+2. **Ingests** — validates the document is processable
+3. **Classifies** — LLM determines document type + confidence score
+4. **Extracts** — specialist node fills a per-type schema with structured output; fields the document lacks come back null
+5. **Validates** — confidence gate checks extraction quality
+6. **Routes** — high confidence → auto-store, low confidence → human review
+7. **Stores** — packages clean JSON output ready for any database
 
 The human-in-the-loop pattern uses LangGraph's `interrupt()` — the pipeline literally pauses, saves all state, and waits for a human to approve or correct the extraction. Could be 5 seconds or 5 days.
 
 ## Architecture
 
 ```
-Document → Ingest → Classify ─┬─→ Extract Invoice  ─┐
-                               ├─→ Extract Resume   ─┼─→ Validate ─┬─→ Store Results
-                               └─→ Extract Contract ─┘             │
-                                                                    └─→ Human Review → Store Results
+PDF / image → Read (text layer, or vision model for scans)
+                    │
+Text ───────────────┴→ Ingest → Classify ─┬─→ Extract Invoice  ─┐
+                                           ├─→ Extract Resume   ─┼─→ Validate ─┬─→ Store Results
+                                           └─→ Extract Contract ─┘             │
+                                                                                └─→ Human Review → Store Results
 ```
 
 ## Quick Start
@@ -71,6 +74,19 @@ curl -X POST http://localhost:8000/process \
     "document_source": "email_attachment"
   }'
 ```
+
+### Process a PDF or Image
+
+```bash
+curl -X POST http://localhost:8000/process/file \
+  -F "file=@invoice.pdf" \
+  -F "document_source=email_attachment"
+```
+
+PDF, PNG and JPEG up to 20 MB and 20 pages. The type is detected from the
+file's bytes, not its name. `final_output.document_pages` shows each page's
+source (`text_layer` or `vision`), so a reviewer knows which pages a model
+transcribed.
 
 ### Submit Human Review
 
@@ -133,6 +149,7 @@ doc-processing-agent/
 │   ├── nodes.py          # All node functions (each does one job)
 │   ├── schemas.py        # Extraction schemas per document type
 │   ├── llm.py            # Model selection (DOC_AGENT_MODEL, per-run override)
+│   ├── documents.py      # PDF/image to text: text layer first, vision model for scans
 │   ├── graph.py          # Graph wiring (connects nodes with edges), build_checkpointer()
 │   └── main.py           # FastAPI server (API endpoints)
 ├── tests/
@@ -140,8 +157,12 @@ doc-processing-agent/
 │   ├── test_confidence.py            # Unit tests for extraction confidence scoring
 │   ├── test_extraction.py            # Schema-enforced extraction against a stub model
 │   ├── test_llm.py                   # Model selection and per-run override
+│   ├── test_documents.py             # PDF/image reading, page sources, limits
+│   ├── test_api_file.py              # Upload endpoint: errors and page provenance
 │   ├── test_checkpointer_restart.py  # Proves paused reviews survive a worker restart (needs Postgres)
 │   └── test_checkpointer_infra.py    # LLM-free Postgres persistence and setup tests (needs Postgres)
+├── evals/
+│   └── pdfgen.py         # Builds text-layer and scanned PDFs for tests and the eval set
 ├── Dockerfile            # Container config for Azure
 ├── docker-compose.yml    # Local Postgres for development/testing only
 ├── deploy.sh             # One-command Azure deployment
@@ -193,7 +214,6 @@ For local Postgres setup, see "Local Postgres for testing" above.
 
 For a real production deployment, consider:
 
-- **PDF parsing**: Add PyMuPDF or pdf-parse to handle actual PDF files, not just text
 - **Authentication**: Add API key auth or OAuth to the FastAPI endpoints
 - **Observability**: Connect LangSmith for tracing and debugging
 - **Streaming**: Add SSE endpoints to stream progress updates to a frontend

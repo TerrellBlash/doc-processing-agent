@@ -40,6 +40,7 @@ class DocAgentState(TypedDict):
     document_text: str          # raw text content of the document
     document_filename: str      # original filename for context
     document_source: str        # where it came from (email, upload, etc.)
+    document_pages: list[dict] | None  # uploads only: per page, text_layer or vision
 
     # === CLASSIFICATION (written by classify node) ===
     classification: DocumentClassification | None

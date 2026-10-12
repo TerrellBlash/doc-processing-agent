@@ -2,26 +2,35 @@
 FastAPI server for the document pipeline.
 
 Endpoints:
-  POST /process     Start processing a document
-  POST /review      Submit a human review decision for a paused document
-  GET  /status/{id} Check a document's current state
+  POST /process       Start processing a document sent as text
+  POST /process/file  Start processing an uploaded PDF, PNG or JPEG
+  POST /review        Submit a human review decision for a paused document
+  GET  /status/{id}   Check a document's current state
 
 Any client (webhook, dashboard, mobile app) integrates through these
-three endpoints. The Dockerfile runs this app under uvicorn.
+endpoints. The Dockerfile runs this app under uvicorn.
 """
 
 import uuid
 import logging
 from contextlib import asynccontextmanager
 
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI, File, Form, HTTPException, UploadFile
 from pydantic import BaseModel
 from langgraph.types import Command
 
+from app.documents import (
+    DocumentError,
+    UnsupportedDocumentError,
+    document_to_text,
+    vision_transcriber,
+)
 from app.graph import graph, close_checkpointer
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
+
+MAX_UPLOAD_BYTES = 20 * 1024 * 1024  # 20 MB
 
 
 # --- Request/Response Models ---
@@ -83,24 +92,55 @@ async def process_document(request: ProcessRequest):
     - Completes successfully (high confidence extraction)
     - Pauses at human_review (needs approval via /review)
     """
-    thread_id = str(uuid.uuid4())
-    config = {"configurable": {"thread_id": thread_id}}
+    return _start_processing(
+        {
+            "document_text": request.document_text,
+            "document_filename": request.document_filename,
+            "document_source": request.document_source,
+        }
+    )
 
-    initial_state = {
-        "document_text": request.document_text,
-        "document_filename": request.document_filename,
-        "document_source": request.document_source,
-    }
 
-    logger.info(f"Processing document: {request.document_filename} (thread: {thread_id})")
+@app.post("/process/file", response_model=StatusResponse)
+def process_file(
+    file: UploadFile = File(...),
+    document_source: str = Form("api_upload"),
+):
+    """
+    Start processing an uploaded PDF, PNG or JPEG.
+
+    PDF pages with a text layer are read directly; scanned pages and images
+    are transcribed by the vision model first. The state records which
+    pages came from which, for the reviewer.
+
+    This is a plain `def`, so FastAPI runs it in a worker thread and slow
+    vision calls don't block the event loop.
+    """
+    data = file.file.read(MAX_UPLOAD_BYTES + 1)
+    if len(data) > MAX_UPLOAD_BYTES:
+        raise HTTPException(
+            status_code=413,
+            detail=f"File is larger than {MAX_UPLOAD_BYTES // (1024 * 1024)} MB",
+        )
 
     try:
-        result = graph.invoke(initial_state, config)
-    except Exception as e:
-        logger.error(f"Processing failed: {e}")
-        raise HTTPException(status_code=500, detail=str(e))
+        document = document_to_text(data, vision_transcriber())
+    except UnsupportedDocumentError as e:
+        raise HTTPException(status_code=415, detail=str(e))
+    except DocumentError as e:
+        raise HTTPException(status_code=422, detail=str(e))
 
-    return _build_status_response(thread_id, result)
+    if len(document.text.strip()) < 10:
+        raise HTTPException(status_code=422, detail="No readable text found in the document")
+
+    return _start_processing(
+        {
+            "document_text": document.text,
+            "document_filename": file.filename or "upload",
+            "document_source": document_source,
+            "document_pages": document.page_summary(),
+        }
+    )
 
 
 @app.post("/review", response_model=StatusResponse)
@@ -165,7 +205,25 @@ async def health_check():
     return {"status": "healthy", "service": "doc-processing-agent"}
 
 
-# --- Helper ---
+# --- Helpers ---
+
+def _start_processing(initial_state: dict) -> StatusResponse:
+    """Run a new document through the graph on a fresh thread."""
+    thread_id = str(uuid.uuid4())
+    config = {"configurable": {"thread_id": thread_id}}
+
+    logger.info(
+        f"Processing document: {initial_state['document_filename']} (thread: {thread_id})"
+    )
+
+    try:
+        result = graph.invoke(initial_state, config)
+    except Exception as e:
+        logger.error(f"Processing failed: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+    return _build_status_response(thread_id, result)
+
 
 def _build_status_response(thread_id: str, state: dict) -> StatusResponse:
     """Build a clean status response from raw graph state."""

@@ -1,0 +1,147 @@
+"""
+TESTS — turning uploads into text
+===================================
+Offline except the last test: a recording stub stands in for the vision
+model.
+
+Why these matter: a PDF's own text layer is exact and free, while every
+vision call costs money and can misread digits. So a page with a text
+layer must never reach the vision model, a scan must, and each page has
+to say which one produced its text so a reviewer knows what to trust.
+
+Run with: pytest tests/test_documents.py -v
+"""
+
+import io
+import os
+
+import pypdfium2 as pdfium
+import pytest
+from PIL import Image
+
+from app.documents import (
+    MAX_IMAGE_SIDE,
+    MAX_PAGES,
+    DocumentError,
+    UnsupportedDocumentError,
+    document_to_text,
+    vision_transcriber,
+)
+from evals.pdfgen import LINES_PER_PAGE, scanned_pdf, text_pdf
+
+INVOICE_TEXT = "INVOICE INV-1001\nVendor: Acme Corp\nTotal due: $1,250.00"
+PNG_MAGIC = b"\x89PNG\r\n\x1a\n"
+
+
+class RecordingTranscriber:
+    def __init__(self, reply: str = "TRANSCRIBED TEXT"):
+        self.reply = reply
+        self.calls: list[tuple[bytes, str]] = []
+
+    def __call__(self, image: bytes, mime_type: str) -> str:
+        self.calls.append((image, mime_type))
+        return self.reply
+
+
+def merge_pdfs(*pdfs: bytes) -> bytes:
+    merged = pdfium.PdfDocument.new()
+    for data in pdfs:
+        merged.import_pages(pdfium.PdfDocument(data))
+    out = io.BytesIO()
+    merged.save(out)
+    return out.getvalue()
+
+
+def image_bytes(size: tuple[int, int], fmt: str) -> bytes:
+    out = io.BytesIO()
+    Image.new("L", size, 255).save(out, format=fmt)
+    return out.getvalue()
+
+
+def test_text_layer_pdf_never_reaches_the_vision_model():
+    transcriber = RecordingTranscriber()
+    document = document_to_text(text_pdf(INVOICE_TEXT), transcriber)
+    assert document.text == INVOICE_TEXT
+    assert [page.source for page in document.pages] == ["text_layer"]
+    assert transcriber.calls == []
+
+
+def test_scanned_page_is_sent_to_the_vision_model_as_png():
+    transcriber = RecordingTranscriber("INVOICE INV-1001")
+    document = document_to_text(scanned_pdf(INVOICE_TEXT, seed=1), transcriber)
+    assert [page.source for page in document.pages] == ["vision"]
+    assert len(transcriber.calls) == 1
+    image, mime_type = transcriber.calls[0]
+    assert image.startswith(PNG_MAGIC) and mime_type == "image/png"
+    assert document.text == "INVOICE INV-1001"
+
+
+def test_mixed_pdf_reads_each_page_its_own_way():
+    transcriber = RecordingTranscriber("page two from the scan")
+    document = document_to_text(
+        merge_pdfs(text_pdf(INVOICE_TEXT), scanned_pdf("Page two", seed=2)), transcriber
+    )
+    assert [(page.page_number, page.source) for page in document.pages] == [
+        (1, "text_layer"),
+        (2, "vision"),
+    ]
+    assert len(transcriber.calls) == 1
+    assert document.page_summary() == [
+        {"page": 1, "source": "text_layer", "chars": len(INVOICE_TEXT)},
+        {"page": 2, "source": "vision", "chars": len("page two from the scan")},
+    ]
+
+
+def test_multi_page_text_keeps_page_order():
+    lines = [f"Line {number}" for number in range(LINES_PER_PAGE * 2 + 5)]
+    document = document_to_text(text_pdf("\n".join(lines)), RecordingTranscriber())
+    assert [page.page_number for page in document.pages] == [1, 2, 3]
+    assert document.text.splitlines() == [line for line in lines]
+
+
+@pytest.mark.parametrize("fmt, mime_type", [("PNG", "image/png"), ("JPEG", "image/jpeg")])
+def test_image_upload_goes_straight_to_the_vision_model(fmt, mime_type):
+    transcriber = RecordingTranscriber("receipt text")
+    document = document_to_text(image_bytes((800, 600), fmt), transcriber)
+    assert [page.source for page in document.pages] == ["vision"]
+    assert transcriber.calls[0][1] == mime_type
+
+
+def test_large_photo_is_downscaled_before_the_vision_call():
+    """A 12 MP phone photo would cost far more image tokens for no gain."""
+    transcriber = RecordingTranscriber()
+    document_to_text(image_bytes((4000, 3000), "JPEG"), transcriber)
+    sent = Image.open(io.BytesIO(transcriber.calls[0][0]))
+    assert max(sent.size) == MAX_IMAGE_SIDE
+
+
+def test_unknown_file_type_is_rejected():
+    with pytest.raises(UnsupportedDocumentError):
+        document_to_text(b"just some plain text", RecordingTranscriber())
+
+
+def test_corrupt_pdf_is_rejected():
+    with pytest.raises(DocumentError):
+        document_to_text(b"%PDF-1.4 this is not really a pdf", RecordingTranscriber())
+
+
+def test_too_many_pages_is_rejected_before_any_vision_call():
+    """Page count is checked first, so an oversized scan can't run up a bill.
+    Blank pages have no text layer, so each would otherwise go to vision."""
+    blank = pdfium.PdfDocument.new()
+    for _ in range(MAX_PAGES + 1):
+        blank.new_page(612, 792)
+    out = io.BytesIO()
+    blank.save(out)
+    transcriber = RecordingTranscriber()
+    with pytest.raises(DocumentError):
+        document_to_text(out.getvalue(), transcriber)
+    assert transcriber.calls == []
+
+
+@pytest.mark.skipif(not os.environ.get("OPENAI_API_KEY"), reason="needs OPENAI_API_KEY")
+def test_vision_model_reads_a_scanned_invoice():
+    document = document_to_text(scanned_pdf(INVOICE_TEXT, seed=7), vision_transcriber())
+    assert document.pages[0].source == "vision"
+    assert "INV-1001" in document.text
+    assert "1,250.00" in document.text
