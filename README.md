@@ -31,7 +31,7 @@ Document → Ingest → Classify ─┬─→ Extract Invoice  ─┐
 ### Prerequisites
 
 - Python 3.12+
-- OpenAI API key (or swap for Gemini/Claude in `app/nodes.py`)
+- OpenAI API key
 
 ### Local Development
 
@@ -50,6 +50,15 @@ uvicorn app.main:app --reload --port 8000
 # Health check
 curl http://localhost:8000/health
 ```
+
+### Configuration
+
+| Variable | Default | Purpose |
+|---|---|---|
+| `OPENAI_API_KEY` | none | Required. |
+| `DOC_AGENT_MODEL` | `gpt-4o-mini` | OpenAI model for every step. A run can override it with `{"configurable": {"model": ...}}`. |
+| `DOC_AGENT_REASONING_EFFORT` | `none` | Reasoning effort for reasoning models (GPT-5 and later). Older models run at temperature 0 instead. |
+| `DATABASE_URL` | unset | Postgres for paused reviews. Unset falls back to in-memory checkpoints. |
 
 ### Process a Document
 

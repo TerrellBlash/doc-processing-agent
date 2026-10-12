@@ -14,17 +14,13 @@ import json
 import logging
 from typing import Literal
 
-from langchain_openai import ChatOpenAI
+from langchain_core.runnables import RunnableConfig
 from langgraph.types import Command, interrupt
 
+from app.llm import get_llm
 from app.state import DocAgentState, DocumentClassification, ExtractionResult
 
 logger = logging.getLogger(__name__)
-
-# --- LLM Setup ---
-# You can swap this for Gemini, Claude, etc.
-# Just change the import and model name.
-llm = ChatOpenAI(model="gpt-4o-mini", temperature=0)
 
 # --- Required fields per doc type ---
 # These mirror exactly what extract_invoice/extract_resume/extract_contract
@@ -95,7 +91,7 @@ def ingest_document(state: DocAgentState) -> dict:
 # and decides which specialist to send it to
 # ============================================================
 def classify_document(
-    state: DocAgentState,
+    state: DocAgentState, config: RunnableConfig
 ) -> Command[Literal["extract_invoice", "extract_resume", "extract_contract", "human_review"]]:
     """
     Uses an LLM to figure out: is this an invoice, resume, or contract?
@@ -104,7 +100,7 @@ def classify_document(
     The LLM's structured classification picks the next node; unknown
     types or confidence below 0.7 route to human review.
     """
-    structured_llm = llm.with_structured_output(DocumentClassification)
+    structured_llm = get_llm(config).with_structured_output(DocumentClassification)
 
     # Format the prompt ON DEMAND (not stored in state)
     prompt = f"""Analyze this document and classify it.
@@ -157,7 +153,7 @@ Provide your confidence (0.0 to 1.0), the language, and a one-line summary.
 # Extract (invoice): line items, totals, dates
 # ============================================================
 def extract_invoice(
-    state: DocAgentState,
+    state: DocAgentState, config: RunnableConfig
 ) -> Command[Literal["validate_extraction"]]:
     """Extract structured data from an invoice document."""
     prompt = f"""You are an expert invoice processor.
@@ -179,7 +175,7 @@ Invoice text:
 
 Return ONLY valid JSON, no other text.
 """
-    response = llm.invoke(prompt)
+    response = get_llm(config).invoke(prompt)
     return _parse_extraction(response.content, state, "validate_extraction")
 
 
@@ -188,7 +184,7 @@ Return ONLY valid JSON, no other text.
 # Extract (resume): skills, experience, education
 # ============================================================
 def extract_resume(
-    state: DocAgentState,
+    state: DocAgentState, config: RunnableConfig
 ) -> Command[Literal["validate_extraction"]]:
     """Extract structured data from a resume."""
     prompt = f"""You are an expert resume parser.
@@ -209,7 +205,7 @@ Resume text:
 
 Return ONLY valid JSON, no other text.
 """
-    response = llm.invoke(prompt)
+    response = get_llm(config).invoke(prompt)
     return _parse_extraction(response.content, state, "validate_extraction")
 
 
@@ -218,7 +214,7 @@ Return ONLY valid JSON, no other text.
 # Extract (contract): terms, parties, dates, obligations
 # ============================================================
 def extract_contract(
-    state: DocAgentState,
+    state: DocAgentState, config: RunnableConfig
 ) -> Command[Literal["validate_extraction"]]:
     """Extract structured data from a contract."""
     prompt = f"""You are an expert contract analyst.
@@ -239,7 +235,7 @@ Contract text:
 
 Return ONLY valid JSON, no other text.
 """
-    response = llm.invoke(prompt)
+    response = get_llm(config).invoke(prompt)
     return _parse_extraction(response.content, state, "validate_extraction")
 
 
@@ -337,7 +333,6 @@ def validate_extraction(
     this pipeline production-grade instead of a toy demo.
     """
     extraction = state.get("extraction")
-    classification = state.get("classification")
     issues = []
 
     if not extraction:
@@ -503,7 +498,7 @@ def store_results(state: DocAgentState) -> dict:
 # Enrich: optional LLM-decided vendor lookup tool call
 # ============================================================
 def enrich_extraction(
-    state: DocAgentState,
+    state: DocAgentState, config: RunnableConfig
 ) -> Command[Literal["store_results"]]:
     """
     The one agentic node. Binds the vendor_lookup tool to the LLM and
@@ -520,7 +515,7 @@ def enrich_extraction(
     extraction = state.get("extraction") or {}
     fields = extraction.get("fields", {})
 
-    llm_with_tools = llm.bind_tools([vendor_lookup])
+    llm_with_tools = get_llm(config).bind_tools([vendor_lookup])
 
     prompt = (
         "You are enriching extracted document data. If the document names a "
