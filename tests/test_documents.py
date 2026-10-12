@@ -14,10 +14,15 @@ Run with: pytest tests/test_documents.py -v
 
 import io
 import os
+import subprocess
+import sys
+import textwrap
 
 import pypdfium2 as pdfium
 import pytest
 from PIL import Image
+
+import app.documents as documents
 
 from app.documents import (
     MAX_IMAGE_SIDE,
@@ -137,6 +142,71 @@ def test_too_many_pages_is_rejected_before_any_vision_call():
     with pytest.raises(DocumentError):
         document_to_text(out.getvalue(), transcriber)
     assert transcriber.calls == []
+
+
+def test_concurrent_reads_do_not_crash_the_process():
+    """PDFium isn't thread-safe; unguarded, this workload aborts the
+    interpreter (SIGABRT) within seconds. Runs in a subprocess so a crash
+    fails this test instead of killing the test run."""
+    script = textwrap.dedent(
+        """
+        from concurrent.futures import ThreadPoolExecutor
+        from app.documents import document_to_text
+        from evals.pdfgen import text_pdf
+        pdfs = [text_pdf("INVOICE INV-1001 total due 1,250.00\\n" * 30)] * 400
+        with ThreadPoolExecutor(max_workers=8) as pool:
+            list(pool.map(lambda data: document_to_text(data, lambda image, mime: "text"), pdfs))
+        """
+    )
+    result = subprocess.run([sys.executable, "-c", script], capture_output=True, timeout=120)
+    assert result.returncode == 0, result.stderr.decode()[-500:]
+
+
+def test_oversized_page_renders_at_capped_size():
+    """A page can declare any size; a tiny PDF with a huge blank page must
+    not turn into a gigapixel render."""
+    pdf = pdfium.PdfDocument.new()
+    pdf.new_page(4000, 4000)  # points; 2x would be 8000 x 8000 pixels
+    out = io.BytesIO()
+    pdf.save(out)
+    transcriber = RecordingTranscriber()
+    document_to_text(out.getvalue(), transcriber)
+    sent = Image.open(io.BytesIO(transcriber.calls[0][0]))
+    assert max(sent.size) <= MAX_IMAGE_SIDE
+
+
+def test_pdf_with_a_broken_page_is_a_document_error():
+    data = text_pdf(INVOICE_TEXT).replace(b"/Kids [4 0 R]", b"/Kids [9 0 R]")
+    with pytest.raises(DocumentError):
+        document_to_text(data, RecordingTranscriber())
+
+
+def test_sideways_phone_photo_is_turned_upright():
+    image = Image.new("RGB", (400, 300), "white")
+    exif = image.getexif()
+    exif[0x0112] = 6  # stored sideways; viewers rotate it 90 degrees
+    out = io.BytesIO()
+    image.save(out, format="JPEG", exif=exif)
+    transcriber = RecordingTranscriber()
+    document_to_text(out.getvalue(), transcriber)
+    sent = Image.open(io.BytesIO(transcriber.calls[0][0]))
+    assert sent.size == (300, 400)
+
+
+def test_image_over_the_pixel_cap_is_refused_before_decoding():
+    out = io.BytesIO()
+    Image.new("1", (8000, 8000)).save(out, format="PNG")  # 64 MP, small file
+    transcriber = RecordingTranscriber()
+    with pytest.raises(DocumentError):
+        document_to_text(out.getvalue(), transcriber)
+    assert transcriber.calls == []
+
+
+def test_decompression_bomb_is_a_document_error(monkeypatch):
+    monkeypatch.setattr(documents, "MAX_IMAGE_PIXELS", 10**9)
+    monkeypatch.setattr(Image, "MAX_IMAGE_PIXELS", 1000)  # Pillow refuses beyond 2x this
+    with pytest.raises(DocumentError):
+        document_to_text(image_bytes((100, 100), "PNG"), RecordingTranscriber())
 
 
 @pytest.mark.skipif(not os.environ.get("OPENAI_API_KEY"), reason="needs OPENAI_API_KEY")

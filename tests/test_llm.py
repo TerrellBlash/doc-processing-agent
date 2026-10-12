@@ -14,15 +14,23 @@ Run with: pytest tests/test_llm.py -v
 
 import pytest
 
-from app.llm import DEFAULT_MODEL, get_llm
+from app.llm import DEFAULT_MODEL, _build, get_llm
 
 
 @pytest.fixture(autouse=True)
 def _isolated_env(monkeypatch):
-    """A dummy key so the client can be built offline; no model override."""
+    """A dummy key so the client can be built offline; no model override.
+
+    Clients are cached per model, so the cache is cleared on both sides:
+    otherwise a client holding this dummy key would be handed to later
+    tests that call the real API.
+    """
     monkeypatch.setenv("OPENAI_API_KEY", "sk-test-not-a-real-key")
     monkeypatch.delenv("DOC_AGENT_MODEL", raising=False)
     monkeypatch.delenv("DOC_AGENT_REASONING_EFFORT", raising=False)
+    _build.cache_clear()
+    yield
+    _build.cache_clear()
 
 
 def test_default_model_is_used_when_nothing_is_configured():
@@ -43,6 +51,26 @@ def test_older_model_keeps_temperature_zero():
     llm = get_llm({"configurable": {"model": "gpt-4o-mini"}})
     assert llm.temperature == 0
     assert llm.reasoning_effort is None
+
+
+@pytest.mark.parametrize("model", ["gpt-4", "gpt-3.5-turbo", "ft:gpt-4o-mini:acme::abc123"])
+def test_models_outside_reasoning_families_keep_temperature(model):
+    """Sending reasoning_effort to these returns a 400."""
+    llm = get_llm({"configurable": {"model": model}})
+    assert llm.temperature == 0
+    assert llm.reasoning_effort is None
+
+
+def test_fine_tuned_reasoning_model_follows_its_base():
+    assert get_llm({"configurable": {"model": "ft:gpt-5.4-mini:acme::abc123"}}).reasoning_effort == "none"
+
+
+def test_documents_are_not_stored_by_openai(monkeypatch):
+    """The Responses API retains requests unless told not to; uploads can be
+    invoices and resumes with personal data."""
+    monkeypatch.setenv("DOC_AGENT_REASONING_EFFORT", "low")
+    assert get_llm({"configurable": {"model": "gpt-6-luna"}}).store is False
+    assert get_llm({"configurable": {"model": "gpt-4o-mini"}}).store is False
 
 
 def test_env_var_sets_the_deployment_model(monkeypatch):

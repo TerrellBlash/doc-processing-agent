@@ -15,8 +15,9 @@ import uuid
 import logging
 from contextlib import asynccontextmanager
 
-from fastapi import FastAPI, File, Form, HTTPException, UploadFile
-from pydantic import BaseModel
+from fastapi import FastAPI, File, Form, HTTPException, Request, UploadFile
+from fastapi.responses import JSONResponse
+from pydantic import BaseModel, Field
 from langgraph.types import Command
 
 from app.documents import (
@@ -26,18 +27,23 @@ from app.documents import (
     vision_transcriber,
 )
 from app.graph import graph, close_checkpointer
+from app.nodes import UnprocessableDocumentError
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 MAX_UPLOAD_BYTES = 20 * 1024 * 1024  # 20 MB
+MULTIPART_OVERHEAD_BYTES = 64 * 1024  # form boundaries and fields around the file
+# About 30k tokens. Every extraction prompt carries the whole text, so this
+# bounds the cost of a single document.
+MAX_TEXT_CHARS = 120_000
 
 
 # --- Request/Response Models ---
 
 class ProcessRequest(BaseModel):
     """What the client sends to start processing a document."""
-    document_text: str
+    document_text: str = Field(max_length=MAX_TEXT_CHARS)
     document_filename: str = "unknown.pdf"
     document_source: str = "api_upload"
 
@@ -79,6 +85,27 @@ app = FastAPI(
     version="1.0.0",
     lifespan=lifespan,
 )
+
+
+@app.middleware("http")
+async def limit_upload_size(request: Request, call_next):
+    """
+    Refuse an oversized upload from its declared size, before the body is
+    read. The endpoint's own size check only runs after the whole body has
+    been received and spooled to disk.
+    """
+    if request.url.path == "/process/file":
+        declared = request.headers.get("content-length")
+        if declared is None:
+            return JSONResponse({"detail": "Content-Length is required"}, status_code=411)
+        if not declared.isdigit():
+            return JSONResponse({"detail": "Invalid Content-Length"}, status_code=400)
+        if int(declared) > MAX_UPLOAD_BYTES + MULTIPART_OVERHEAD_BYTES:
+            return JSONResponse(
+                {"detail": f"File is larger than {MAX_UPLOAD_BYTES // (1024 * 1024)} MB"},
+                status_code=413,
+            )
+    return await call_next(request)
 
 
 # --- Endpoints ---
@@ -132,6 +159,11 @@ def process_file(
 
     if len(document.text.strip()) < 10:
         raise HTTPException(status_code=422, detail="No readable text found in the document")
+    if len(document.text) > MAX_TEXT_CHARS:
+        raise HTTPException(
+            status_code=422,
+            detail=f"The document has more than {MAX_TEXT_CHARS:,} characters of text",
+        )
 
     return _start_processing(
         {
@@ -168,9 +200,9 @@ async def submit_review(request: ReviewRequest):
 
     try:
         result = graph.invoke(human_response, config)
-    except Exception as e:
-        logger.error(f"Review processing failed: {e}")
-        raise HTTPException(status_code=500, detail=str(e))
+    except Exception:
+        logger.exception(f"Review processing failed (thread {request.thread_id})")
+        raise HTTPException(status_code=500, detail="Review processing failed")
 
     return _build_status_response(request.thread_id, result)
 
@@ -195,8 +227,9 @@ async def get_status(thread_id: str):
         return _build_status_response(thread_id, state.values)
     except HTTPException:
         raise
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
+    except Exception:
+        logger.exception(f"Status lookup failed (thread {thread_id})")
+        raise HTTPException(status_code=500, detail="Could not read the document's status")
 
 
 @app.get("/health")
@@ -218,9 +251,13 @@ def _start_processing(initial_state: dict) -> StatusResponse:
 
     try:
         result = graph.invoke(initial_state, config)
-    except Exception as e:
-        logger.error(f"Processing failed: {e}")
-        raise HTTPException(status_code=500, detail=str(e))
+    except UnprocessableDocumentError as e:
+        raise HTTPException(status_code=422, detail=str(e))
+    except Exception:
+        # The full error goes to the log, not the client: it can carry
+        # model output, connection strings or stack details.
+        logger.exception(f"Processing failed (thread {thread_id})")
+        raise HTTPException(status_code=500, detail="Processing failed")
 
     return _build_status_response(thread_id, result)
 

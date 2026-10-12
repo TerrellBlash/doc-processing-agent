@@ -23,6 +23,10 @@ from app.state import DocAgentState, DocumentClassification, ExtractionResult
 
 logger = logging.getLogger(__name__)
 
+class UnprocessableDocumentError(ValueError):
+    """The document can't be processed as sent; the client should fix it."""
+
+
 # ============================================================
 # NODE 1: INGEST
 # Ingest: validates the input document
@@ -34,7 +38,7 @@ def ingest_document(state: DocAgentState) -> dict:
     doc_text = state.get("document_text", "")
 
     if not doc_text or len(doc_text.strip()) < 10:
-        raise ValueError(
+        raise UnprocessableDocumentError(
             "Document is empty or too short to process. "
             "Please provide actual document content."
         )

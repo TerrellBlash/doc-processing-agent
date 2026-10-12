@@ -80,3 +80,50 @@ def test_scan_with_no_readable_text_is_422(client, graph, monkeypatch):
 def test_corrupt_pdf_is_422(client, graph):
     response = upload(client, "broken.pdf", b"%PDF-1.4 not really a pdf")
     assert response.status_code == 422
+
+
+def test_declared_size_over_the_limit_is_refused_before_reading(client, graph, monkeypatch):
+    """The middleware refuses from Content-Length alone, so a huge body is
+    never spooled to disk."""
+    monkeypatch.setattr(main, "MAX_UPLOAD_BYTES", 1000)
+    monkeypatch.setattr(main, "MULTIPART_OVERHEAD_BYTES", 0)
+    response = upload(client, "big.pdf", text_pdf(INVOICE_TEXT * 40))
+    assert response.status_code == 413
+    assert graph.state is None
+
+
+def test_text_over_the_cost_limit_is_422(client, graph, monkeypatch):
+    """Every extraction prompt carries the whole text, so its length bounds
+    the cost of one document."""
+    monkeypatch.setattr(main, "MAX_TEXT_CHARS", 20)
+    response = upload(client, "invoice.pdf", text_pdf(INVOICE_TEXT))
+    assert response.status_code == 422
+    assert graph.state is None
+
+
+def test_text_endpoint_enforces_the_same_limit(client, graph):
+    response = client.post("/process", json={"document_text": "x" * (main.MAX_TEXT_CHARS + 1)})
+    assert response.status_code == 422
+    assert graph.state is None
+
+
+def test_internal_errors_are_logged_not_returned(client, monkeypatch):
+    class FailingGraph:
+        def invoke(self, state, config):
+            raise RuntimeError("connection to postgresql://user:secret@db failed")
+
+    monkeypatch.setattr(main, "graph", FailingGraph())
+    response = client.post("/process", json={"document_text": INVOICE_TEXT})
+    assert response.status_code == 500
+    assert "secret" not in response.text
+
+
+def test_empty_document_is_the_clients_error(client, monkeypatch):
+    class EmptyDocumentGraph:
+        def invoke(self, state, config):
+            raise main.UnprocessableDocumentError("Document is empty or too short to process.")
+
+    monkeypatch.setattr(main, "graph", EmptyDocumentGraph())
+    response = client.post("/process", json={"document_text": "   "})
+    assert response.status_code == 422
+    assert "too short" in response.text

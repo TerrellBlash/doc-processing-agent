@@ -16,12 +16,22 @@ from langchain_openai import ChatOpenAI
 DEFAULT_MODEL = "gpt-4o-mini"
 DEFAULT_REASONING_EFFORT = "none"
 
-# Models from before reasoning controls sample with a temperature, and 0
-# keeps extraction steady. Current reasoning models reject temperature=0
-# with a 400 error and take reasoning_effort instead. The default effort is
-# "none": extraction is reading, not multi-step reasoning, and the eval
-# measures what that costs in accuracy.
-_TEMPERATURE_MODELS = ("gpt-4o", "gpt-4.1")
+# Reasoning models reject temperature=0 with a 400 error and take
+# reasoning_effort instead. Every other model samples with a temperature,
+# and 0 keeps extraction steady. The default effort is "none": extraction is
+# reading, not multi-step reasoning, and the eval measures what that costs.
+_REASONING_PREFIXES = ("gpt-5", "gpt-6", "o1", "o3", "o4")
+
+
+def is_reasoning_model(model: str) -> bool:
+    """
+    True for models that take reasoning_effort instead of temperature.
+
+    - Parameter model: an OpenAI model name. A fine-tuned model
+        (ft:<base>:...) follows its base model.
+    - Returns: whether the model is in a reasoning family.
+    """
+    return model.removeprefix("ft:").startswith(_REASONING_PREFIXES)
 
 
 def resolve_model(config: RunnableConfig | None = None) -> str:
@@ -38,8 +48,10 @@ def resolve_model(config: RunnableConfig | None = None) -> str:
 
 @lru_cache(maxsize=8)
 def _build(model: str, reasoning_effort: str) -> ChatOpenAI:
-    if model.startswith(_TEMPERATURE_MODELS):
-        return ChatOpenAI(model=model, temperature=0)
+    # store=False: the Responses API keeps requests (documents, page images)
+    # by default, and nothing here needs OpenAI to retain them.
+    if not is_reasoning_model(model):
+        return ChatOpenAI(model=model, temperature=0, store=False)
     # Chat Completions rejects function tools combined with a reasoning
     # effort on current models, and enrich_extraction binds a tool. Any
     # effort other than "none" therefore goes through the Responses API.
@@ -47,6 +59,7 @@ def _build(model: str, reasoning_effort: str) -> ChatOpenAI:
         model=model,
         reasoning_effort=reasoning_effort,
         use_responses_api=reasoning_effort != "none",
+        store=False,
     )
 
 

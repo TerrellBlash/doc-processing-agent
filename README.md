@@ -60,7 +60,7 @@ curl http://localhost:8000/health
 |---|---|---|
 | `OPENAI_API_KEY` | none | Required. |
 | `DOC_AGENT_MODEL` | `gpt-4o-mini` | OpenAI model for every step. A run can override it with `{"configurable": {"model": ...}}`. |
-| `DOC_AGENT_REASONING_EFFORT` | `none` | Reasoning effort for reasoning models (GPT-5 and later). Older models run at temperature 0 instead. |
+| `DOC_AGENT_REASONING_EFFORT` | `none` | Reasoning effort for reasoning models (GPT-5 and later). Older models run at temperature 0 instead. Some models don't accept `none` (gpt-6.1-sol needs `low` or higher) and fail every call with a 400 until this is set. |
 | `DATABASE_URL` | unset | Postgres for paused reviews. Unset falls back to in-memory checkpoints. |
 
 ### Process a Document
@@ -83,10 +83,21 @@ curl -X POST http://localhost:8000/process/file \
   -F "document_source=email_attachment"
 ```
 
-PDF, PNG and JPEG up to 20 MB and 20 pages. The type is detected from the
-file's bytes, not its name. `final_output.document_pages` shows each page's
-source (`text_layer` or `vision`), so a reviewer knows which pages a model
-transcribed.
+PDF, PNG and JPEG. The type is detected from the file's bytes, not its name.
+`final_output.document_pages` shows each page's source (`text_layer` or
+`vision`), so a reviewer knows which pages a model transcribed.
+
+Uploads are untrusted, so each size is checked before the work it would cost:
+
+| Limit | Value | Checked |
+|---|---|---|
+| Upload size | 20 MB | From `Content-Length`, before the body is read (411 without one) |
+| Pages | 20 | Before any page is read or sent to the vision model |
+| Rendered page | 2048 px on the long side | Before a scanned page is drawn, whatever size the PDF declares |
+| Image | 50 megapixels | Before the image is decoded |
+| Text | 120,000 characters | Before the graph runs, since every extraction prompt carries the full text |
+
+Errors return a short message. Details go to the server log, not the client.
 
 ### Submit Human Review
 
@@ -204,6 +215,10 @@ until a human responds. Where it lives depends on `DATABASE_URL`:
 For local Postgres setup, see "Local Postgres for testing" above.
 
 ## Known Limitations
+
+- **PDF reading is serialized per process.** PDFium isn't thread-safe, so one
+  lock covers every PDFium call. Vision calls, the slow part, still run in
+  parallel.
 
 - **Every schema field counts toward confidence.** A document type's fields
   are all treated as required, so an NDA with no payment clause has a null
