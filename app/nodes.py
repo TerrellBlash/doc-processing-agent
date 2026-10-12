@@ -18,48 +18,10 @@ from langchain_core.runnables import RunnableConfig
 from langgraph.types import Command, interrupt
 
 from app.llm import get_llm
+from app.schemas import EXTRACTION_SCHEMAS, REQUIRED_FIELDS
 from app.state import DocAgentState, DocumentClassification, ExtractionResult
 
 logger = logging.getLogger(__name__)
-
-# --- Required fields per doc type ---
-# These mirror exactly what extract_invoice/extract_resume/extract_contract
-# ask the model for, so completeness can be measured against the same list
-# the prompts promise to extract.
-REQUIRED_FIELDS: dict[str, list[str]] = {
-    "invoice": [
-        "vendor_name",
-        "invoice_number",
-        "invoice_date",
-        "due_date",
-        "line_items",
-        "subtotal",
-        "tax",
-        "total_amount",
-        "currency",
-    ],
-    "resume": [
-        "full_name",
-        "email",
-        "phone",
-        "location",
-        "summary",
-        "skills",
-        "experience",
-        "education",
-    ],
-    "contract": [
-        "contract_type",
-        "parties",
-        "effective_date",
-        "expiration_date",
-        "key_terms",
-        "payment_terms",
-        "termination_clause",
-        "governing_law",
-    ],
-}
-
 
 # ============================================================
 # NODE 1: INGEST
@@ -149,94 +111,95 @@ Provide your confidence (0.0 to 1.0), the language, and a one-line summary.
 
 
 # ============================================================
-# NODE 3a: EXTRACT INVOICE
-# Extract (invoice): line items, totals, dates
+# NODE 3: EXTRACT (invoice, resume, contract)
+# Each node fills its document type's schema from app/schemas.py
 # ============================================================
+_EXTRACTION_ROLES = {
+    "invoice": "You are an expert invoice processor.",
+    "resume": "You are an expert resume parser.",
+    "contract": "You are an expert contract analyst.",
+}
+
+
+def _extraction_prompt(doc_type: str, document_text: str) -> str:
+    return f"""{_EXTRACTION_ROLES[doc_type]}
+Extract the fields in the response schema from this {doc_type}.
+
+Rules:
+- Use only what the document states. Do not guess or invent values.
+- If the document doesn't contain a field, return null for it, or an empty
+  list for a list field.
+- Write amounts as plain numbers, without currency symbols or thousands
+  separators.
+
+{doc_type.capitalize()} text:
+{document_text}
+"""
+
+
+def _extract(
+    doc_type: str, state: DocAgentState, config: RunnableConfig
+) -> Command[Literal["validate_extraction"]]:
+    """
+    Fill the document type's schema with structured output, then score how
+    complete the result is.
+
+    - Parameter doc_type: "invoice", "resume" or "contract".
+    - Parameter state: graph state; reads document_text.
+    - Parameter config: the run config, passed to get_llm.
+    - Returns: a Command to validate_extraction carrying the extraction. If
+        the model's output can't be parsed into the schema, confidence is
+        0.0 and missing_fields is ["all_fields"], so it can't pass the gate.
+    """
+    structured_llm = get_llm(config).with_structured_output(
+        EXTRACTION_SCHEMAS[doc_type], include_raw=True
+    )
+    result = structured_llm.invoke(_extraction_prompt(doc_type, state["document_text"]))
+    parsed = result.get("parsed")
+
+    if parsed is None:
+        logger.warning(
+            "Structured extraction failed for %s: %s", doc_type, result.get("parsing_error")
+        )
+        raw = result.get("raw")
+        fields = {"raw_response": raw.text if raw is not None else ""}
+        missing = ["all_fields"]
+        confidence = 0.0  # zero verified fields were extracted
+    else:
+        fields = parsed.model_dump()
+        confidence, missing = compute_extraction_confidence(doc_type, fields)
+
+    extraction = ExtractionResult(
+        fields=fields,
+        confidence=confidence,
+        missing_fields=missing,
+        raw_text_used=state["document_text"][:500],
+    )
+    return Command(
+        update={"extraction": extraction, "processing_status": "extracted"},
+        goto="validate_extraction",
+    )
+
+
 def extract_invoice(
     state: DocAgentState, config: RunnableConfig
 ) -> Command[Literal["validate_extraction"]]:
-    """Extract structured data from an invoice document."""
-    prompt = f"""You are an expert invoice processor.
-Extract the following fields from this invoice as JSON:
-
-Required fields:
-- vendor_name: string
-- invoice_number: string  
-- invoice_date: string (ISO format)
-- due_date: string (ISO format) 
-- line_items: list of {{ description, quantity, unit_price, total }}
-- subtotal: number
-- tax: number
-- total_amount: number
-- currency: string
-
-Invoice text:
-{state['document_text']}
-
-Return ONLY valid JSON, no other text.
-"""
-    response = get_llm(config).invoke(prompt)
-    return _parse_extraction(response.content, state, "validate_extraction")
+    """Extract vendor, dates, line items and totals from an invoice."""
+    return _extract("invoice", state, config)
 
 
-# ============================================================
-# NODE 3b: EXTRACT RESUME
-# Extract (resume): skills, experience, education
-# ============================================================
 def extract_resume(
     state: DocAgentState, config: RunnableConfig
 ) -> Command[Literal["validate_extraction"]]:
-    """Extract structured data from a resume."""
-    prompt = f"""You are an expert resume parser.
-Extract the following fields from this resume as JSON:
-
-Required fields:
-- full_name: string
-- email: string
-- phone: string
-- location: string
-- summary: string (professional summary)
-- skills: list of strings
-- experience: list of {{ company, title, start_date, end_date, description }}
-- education: list of {{ institution, degree, field, graduation_date }}
-
-Resume text:
-{state['document_text']}
-
-Return ONLY valid JSON, no other text.
-"""
-    response = get_llm(config).invoke(prompt)
-    return _parse_extraction(response.content, state, "validate_extraction")
+    """Extract contact details, skills, experience and education from a resume."""
+    return _extract("resume", state, config)
 
 
-# ============================================================
-# NODE 3c: EXTRACT CONTRACT
-# Extract (contract): terms, parties, dates, obligations
-# ============================================================
 def extract_contract(
     state: DocAgentState, config: RunnableConfig
 ) -> Command[Literal["validate_extraction"]]:
-    """Extract structured data from a contract."""
-    prompt = f"""You are an expert contract analyst.
-Extract the following fields from this contract as JSON:
-
-Required fields:
-- contract_type: string (e.g. "NDA", "Service Agreement", "Employment")
-- parties: list of {{ name, role }} 
-- effective_date: string (ISO format)
-- expiration_date: string (ISO format)
-- key_terms: list of strings (main obligations/terms)
-- payment_terms: string
-- termination_clause: string
-- governing_law: string (jurisdiction)
-
-Contract text:
-{state['document_text']}
-
-Return ONLY valid JSON, no other text.
-"""
-    response = get_llm(config).invoke(prompt)
-    return _parse_extraction(response.content, state, "validate_extraction")
+    """Extract parties, dates, terms and governing law from a contract."""
+    return _extract("contract", state, config)
 
 
 def compute_extraction_confidence(
@@ -275,47 +238,6 @@ def compute_extraction_confidence(
 
     confidence = round((len(required) - len(missing)) / len(required), 4)
     return confidence, missing
-
-
-def _parse_extraction(
-    raw_response: str, state: DocAgentState, next_node: str
-) -> Command:
-    """
-    Helper: parse LLM extraction response into structured result.
-    Handles the messy reality of LLM outputs — sometimes they add
-    markdown backticks, sometimes they hallucinate extra text.
-    """
-    # Clean up common LLM response quirks
-    cleaned = raw_response.strip()
-    if cleaned.startswith("```json"):
-        cleaned = cleaned[7:]
-    if cleaned.startswith("```"):
-        cleaned = cleaned[3:]
-    if cleaned.endswith("```"):
-        cleaned = cleaned[:-3]
-    cleaned = cleaned.strip()
-
-    try:
-        fields = json.loads(cleaned)
-        doc_type = (state.get("classification") or {}).get("doc_type")
-        confidence, missing = compute_extraction_confidence(doc_type, fields)
-    except json.JSONDecodeError:
-        logger.warning("Failed to parse LLM extraction as JSON")
-        fields = {"raw_response": raw_response}
-        missing = ["all_fields"]
-        confidence = 0.0  # zero verified fields were extracted
-
-    extraction = ExtractionResult(
-        fields=fields,
-        confidence=confidence,
-        missing_fields=missing,
-        raw_text_used=state["document_text"][:500],
-    )
-
-    return Command(
-        update={"extraction": extraction, "processing_status": "extracted"},
-        goto=next_node,
-    )
 
 
 # ============================================================

@@ -10,7 +10,7 @@ Feed it any document (invoice, resume, or contract) and the agent:
 
 1. **Ingests** — validates the document is processable
 2. **Classifies** — LLM determines document type + confidence score
-3. **Extracts** — specialist node pulls structured data based on doc type
+3. **Extracts** — specialist node fills a per-type schema with structured output; fields the document lacks come back null
 4. **Validates** — confidence gate checks extraction quality
 5. **Routes** — high confidence → auto-store, low confidence → human review
 6. **Stores** — packages clean JSON output ready for any database
@@ -131,11 +131,15 @@ doc-processing-agent/
 │   ├── __init__.py
 │   ├── state.py          # State definitions
 │   ├── nodes.py          # All node functions (each does one job)
+│   ├── schemas.py        # Extraction schemas per document type
+│   ├── llm.py            # Model selection (DOC_AGENT_MODEL, per-run override)
 │   ├── graph.py          # Graph wiring (connects nodes with edges), build_checkpointer()
 │   └── main.py           # FastAPI server (API endpoints)
 ├── tests/
 │   ├── test_pipeline.py              # Full pipeline tests with sample docs
 │   ├── test_confidence.py            # Unit tests for extraction confidence scoring
+│   ├── test_extraction.py            # Schema-enforced extraction against a stub model
+│   ├── test_llm.py                   # Model selection and per-run override
 │   ├── test_checkpointer_restart.py  # Proves paused reviews survive a worker restart (needs Postgres)
 │   └── test_checkpointer_infra.py    # LLM-free Postgres persistence and setup tests (needs Postgres)
 ├── Dockerfile            # Container config for Azure
@@ -152,6 +156,7 @@ doc-processing-agent/
 | **State design** | `state.py` — raw data, never formatted prompts |
 | **Node functions** | `nodes.py` — each function does one thing |
 | **Command routing** | `classify_document()` — LLM decides next node |
+| **Structured output** | `schemas.py` — every field required and nullable, so the model must state each one |
 | **Confidence gating** | `validate_extraction()` — auto-store vs human review |
 | **interrupt()** | `human_review()` — pause/resume across sessions |
 | **Retry policies** | `graph.py` — extraction nodes retry on failure |
@@ -176,6 +181,13 @@ until a human responds. Where it lives depends on `DATABASE_URL`:
   run it this way in a multi-worker deployment.
 
 For local Postgres setup, see "Local Postgres for testing" above.
+
+## Known Limitations
+
+- **Every schema field counts toward confidence.** A document type's fields
+  are all treated as required, so an NDA with no payment clause has a null
+  `payment_terms` and goes to human review. Per-type optional fields would
+  fix this.
 
 ## Production Upgrades
 
