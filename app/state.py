@@ -1,14 +1,12 @@
 """
-STATE DESIGN — The Shared Notebook
-===================================
-Every node in our graph reads from and writes to this state.
+Graph state shared by every node.
 
-Think of it like a clipboard being passed between specialists:
-- The receptionist writes down what document came in
-- The classifier writes what type it is
-- The extractor writes what data it found
-- The validator writes whether the extraction looks right
-- The reviewer (human) writes their approval
+Each stage writes its own slice:
+- ingest: the input document
+- classify: document type and classifier confidence
+- extract: fields, completeness-based confidence, missing fields
+- validate: whether the extraction passes the gate
+- human_review: the reviewer's decision
 
 KEY RULE: Store raw data, never formatted prompts.
 Each node formats the data how IT needs it.
@@ -17,7 +15,7 @@ Each node formats the data how IT needs it.
 from typing import TypedDict, Literal
 
 
-# --- Sub-structures (pieces of the notebook) ---
+# --- Sub-structures ---
 
 class DocumentClassification(TypedDict):
     """What the classifier figured out about the document."""
@@ -30,12 +28,12 @@ class DocumentClassification(TypedDict):
 class ExtractionResult(TypedDict):
     """The structured data pulled from the document."""
     fields: dict           # the actual extracted key-value pairs
-    confidence: float      # overall extraction confidence
+    confidence: float      # share of required fields present (0.0 to 1.0)
     missing_fields: list[str]  # fields we expected but couldn't find
     raw_text_used: str     # the chunk of text we extracted from
 
 
-# --- The Main State (the full notebook) ---
+# --- Main state ---
 
 class DocAgentState(TypedDict):
     # === INPUTS (written once at the start) ===

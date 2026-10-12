@@ -1,17 +1,13 @@
 """
-API SERVER — The Front Door
-==============================
-This is what Azure Container Apps actually runs.
-It's a FastAPI server with three endpoints:
+FastAPI server for the document pipeline.
 
-  POST /process     → Start processing a document
-  POST /review      → Submit a human review decision  
-  GET  /status/{id} → Check how a document is doing
+Endpoints:
+  POST /process     Start processing a document
+  POST /review      Submit a human review decision for a paused document
+  GET  /status/{id} Check a document's current state
 
-Your friend's Twilio setup would call these endpoints.
-A web dashboard would call these endpoints.
-Your DiceVault iOS app would call these endpoints.
-Same pattern every time.
+Any client (webhook, dashboard, mobile app) integrates through these
+three endpoints. The Dockerfile runs this app under uvicorn.
 """
 
 import uuid
@@ -22,7 +18,7 @@ from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel
 from langgraph.types import Command
 
-from app.graph import graph
+from app.graph import graph, close_checkpointer
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -62,6 +58,7 @@ async def lifespan(app: FastAPI):
     logger.info("Document Processing Agent starting up")
     yield
     logger.info("Document Processing Agent shutting down")
+    close_checkpointer(graph.checkpointer)
 
 
 app = FastAPI(

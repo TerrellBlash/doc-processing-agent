@@ -8,9 +8,9 @@ fastapi>=0.115.0
 uvicorn[standard]>=0.34.0
 pydantic>=2.0.0
 
-# Azure deployment (swap MemorySaver for persistent storage)
-# langgraph-checkpoint-postgres>=0.1.0   # uncomment for production
-# asyncpg>=0.30.0                        # uncomment for production
+# Azure deployment — Postgres-backed checkpointer (survives worker/restart)
+langgraph-checkpoint-postgres>=2.0.0
+psycopg[binary,pool]>=3.2.0
 
 # Testing
 pytest>=8.0.0

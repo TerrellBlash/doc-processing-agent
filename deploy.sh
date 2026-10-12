@@ -52,6 +52,25 @@ az containerapp env create \
     --location $LOCATION
 
 # 5. Deploy the Container App
+#
+# DATABASE_URL must already be exported before running this script, and
+# should point at a provisioned Postgres instance (e.g. Azure Database
+# for PostgreSQL Flexible Server) — never a hardcoded credential here.
+# Omitting it makes the deployed service silently fall back to
+# in-memory checkpointing (see app/graph.py:build_checkpointer), which
+# defeats the purpose of running --workers 4: a paused human_review
+# would only survive in the one worker process that created it.
+#
+# Both secrets are registered with `az containerapp create --secrets`
+# and referenced via `secretref:`, not passed as literal --env-vars
+# values. A literal env var is stored in plain text in the container
+# app's configuration, visible to anyone who can read the app in the
+# portal or via `az containerapp show`. A Container Apps secret is
+# stored separately and only resolved inside the container.
+# Limitation: the values still pass through this script's argv while
+# `az` runs, so `ps` on this machine can see them for that moment.
+# For production, store them in Azure Key Vault and pass
+# `keyvaultref:` secrets instead.
 echo "🚢 Deploying container app..."
 az containerapp create \
     --name $CONTAINER_APP_NAME \
@@ -65,8 +84,12 @@ az containerapp create \
     --max-replicas 5 \
     --cpu 1.0 \
     --memory 2.0Gi \
+    --secrets \
+        openai-api-key="$OPENAI_API_KEY" \
+        database-url="$DATABASE_URL" \
     --env-vars \
-        OPENAI_API_KEY="$OPENAI_API_KEY"
+        OPENAI_API_KEY=secretref:openai-api-key \
+        DATABASE_URL=secretref:database-url
 
 # 6. Get the URL
 APP_URL=$(az containerapp show \

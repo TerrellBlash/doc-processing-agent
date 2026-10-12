@@ -1,0 +1,24 @@
+# ============================================================
+# Local development / testing only.
+#
+# This brings up a disposable Postgres instance so the
+# Postgres-backed checkpointer (see app/graph.py:build_checkpointer)
+# and tests/test_checkpointer_restart.py have something real to talk
+# to. It is NOT what gets deployed — see deploy.sh / README.md for
+# how the deployed service points DATABASE_URL at a provisioned
+# instance such as Azure Database for PostgreSQL Flexible Server.
+# ============================================================
+services:
+  postgres:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: docagent
+      POSTGRES_PASSWORD: docagent
+      POSTGRES_DB: docagent
+    ports:
+      - "5433:5432" # 5433 on the host to avoid colliding with any other local Postgres
+    volumes:
+      - doc_agent_postgres_data:/var/lib/postgresql/data
+
+volumes:
+  doc_agent_postgres_data:

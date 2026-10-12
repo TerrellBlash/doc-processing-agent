@@ -1,13 +1,13 @@
 """
-NODES — Each Stop on the Adventure
-====================================
+Graph nodes.
+
 Every node is a Python function that:
-  1. Reads the current state (the notebook)
+  1. Reads the current state
   2. Does its ONE job
   3. Returns what changed
 
 Some nodes also say WHERE TO GO NEXT using Command objects.
-That's how the graph makes decisions — "if urgent, go to human review."
+That's how the graph branches, e.g. low confidence routes to human review.
 """
 
 import json
@@ -26,17 +26,52 @@ logger = logging.getLogger(__name__)
 # Just change the import and model name.
 llm = ChatOpenAI(model="gpt-4o-mini", temperature=0)
 
+# --- Required fields per doc type ---
+# These mirror exactly what extract_invoice/extract_resume/extract_contract
+# ask the model for, so completeness can be measured against the same list
+# the prompts promise to extract.
+REQUIRED_FIELDS: dict[str, list[str]] = {
+    "invoice": [
+        "vendor_name",
+        "invoice_number",
+        "invoice_date",
+        "due_date",
+        "line_items",
+        "subtotal",
+        "tax",
+        "total_amount",
+        "currency",
+    ],
+    "resume": [
+        "full_name",
+        "email",
+        "phone",
+        "location",
+        "summary",
+        "skills",
+        "experience",
+        "education",
+    ],
+    "contract": [
+        "contract_type",
+        "parties",
+        "effective_date",
+        "expiration_date",
+        "key_terms",
+        "payment_terms",
+        "termination_clause",
+        "governing_law",
+    ],
+}
+
 
 # ============================================================
 # NODE 1: INGEST
-# "The receptionist" — reads the document, confirms it's valid
+# Ingest: validates the input document
 # ============================================================
 def ingest_document(state: DocAgentState) -> dict:
     """
-    First stop: make sure we actually have a document to work with.
-    
-    Like a receptionist checking that a patient actually filled out
-    their paperwork before sending them to the doctor.
+    First stop: reject empty or unusable input before any LLM call.
     """
     doc_text = state.get("document_text", "")
 
@@ -56,7 +91,7 @@ def ingest_document(state: DocAgentState) -> dict:
 
 # ============================================================
 # NODE 2: CLASSIFY
-# "The triage nurse" — figures out what type of document this is
+# Classify: determines document type
 # and decides which specialist to send it to
 # ============================================================
 def classify_document(
@@ -66,8 +101,8 @@ def classify_document(
     Uses an LLM to figure out: is this an invoice, resume, or contract?
     Then ROUTES to the right extraction specialist.
     
-    This is where the 'choose your own adventure' happens —
-    the LLM reads the document and picks the next path.
+    The LLM's structured classification picks the next node; unknown
+    types or confidence below 0.7 route to human review.
     """
     structured_llm = llm.with_structured_output(DocumentClassification)
 
@@ -119,7 +154,7 @@ Provide your confidence (0.0 to 1.0), the language, and a one-line summary.
 
 # ============================================================
 # NODE 3a: EXTRACT INVOICE
-# "The accountant" — pulls out line items, totals, dates
+# Extract (invoice): line items, totals, dates
 # ============================================================
 def extract_invoice(
     state: DocAgentState,
@@ -150,7 +185,7 @@ Return ONLY valid JSON, no other text.
 
 # ============================================================
 # NODE 3b: EXTRACT RESUME
-# "The recruiter" — pulls out skills, experience, education
+# Extract (resume): skills, experience, education
 # ============================================================
 def extract_resume(
     state: DocAgentState,
@@ -180,7 +215,7 @@ Return ONLY valid JSON, no other text.
 
 # ============================================================
 # NODE 3c: EXTRACT CONTRACT
-# "The lawyer" — pulls out terms, parties, dates, obligations
+# Extract (contract): terms, parties, dates, obligations
 # ============================================================
 def extract_contract(
     state: DocAgentState,
@@ -208,6 +243,44 @@ Return ONLY valid JSON, no other text.
     return _parse_extraction(response.content, state, "validate_extraction")
 
 
+def compute_extraction_confidence(
+    doc_type: str | None, fields: dict
+) -> tuple[float, list[str]]:
+    """
+    Measure how complete an extraction is against the required fields for
+    its document type.
+
+    Pure function: no side effects, no network calls. A field counts as
+    missing if its key is absent from `fields`, or its value is None, an
+    empty string, an empty list, or an empty dict.
+
+    - Parameter doc_type: the classified document type (e.g. "invoice").
+        If it is None or not a key in REQUIRED_FIELDS (e.g. "unknown"), there is
+        nothing to check completeness against.
+    - Parameter fields: the extracted field dict to check.
+    - Returns: a tuple of (confidence, missing_fields) where confidence is
+        the fraction of required fields present, rounded to 4 decimal
+        places, and missing_fields lists the required field names that are
+        absent or empty. When doc_type is not in REQUIRED_FIELDS, returns
+        (1.0, []).
+    """
+    required = REQUIRED_FIELDS.get(doc_type) if doc_type else None
+    if required is None:
+        return 1.0, []
+
+    empty_values = ("", [], {})
+    missing = [
+        field
+        for field in required
+        if field not in fields
+        or fields[field] is None
+        or fields[field] in empty_values
+    ]
+
+    confidence = round((len(required) - len(missing)) / len(required), 4)
+    return confidence, missing
+
+
 def _parse_extraction(
     raw_response: str, state: DocAgentState, next_node: str
 ) -> Command:
@@ -228,13 +301,13 @@ def _parse_extraction(
 
     try:
         fields = json.loads(cleaned)
-        missing = []
-        confidence = 0.9  # base confidence for successful parse
+        doc_type = (state.get("classification") or {}).get("doc_type")
+        confidence, missing = compute_extraction_confidence(doc_type, fields)
     except json.JSONDecodeError:
         logger.warning("Failed to parse LLM extraction as JSON")
         fields = {"raw_response": raw_response}
         missing = ["all_fields"]
-        confidence = 0.3
+        confidence = 0.0  # zero verified fields were extracted
 
     extraction = ExtractionResult(
         fields=fields,
@@ -251,7 +324,7 @@ def _parse_extraction(
 
 # ============================================================
 # NODE 4: VALIDATE
-# "The quality checker" — makes sure the extraction looks right
+# Validate: gates extraction on required-field completeness
 # ============================================================
 def validate_extraction(
     state: DocAgentState,
@@ -278,29 +351,16 @@ def validate_extraction(
             goto="human_review",
         )
 
-    # Check extraction confidence
-    if extraction["confidence"] < 0.85:
-        issues.append(
-            f"Low extraction confidence: {extraction['confidence']:.2f}"
-        )
-
-    # Check for missing required fields
+    # confidence is derived entirely from missing_fields (see
+    # compute_extraction_confidence), so a separate `confidence < threshold`
+    # check would always fire exactly when this one does — never
+    # independently. One real signal, one check; the confidence number
+    # still rides along in the message for a human reviewer's benefit.
     if extraction["missing_fields"]:
         issues.append(
-            f"Missing fields: {', '.join(extraction['missing_fields'])}"
+            f"Missing fields: {', '.join(extraction['missing_fields'])} "
+            f"(confidence: {extraction['confidence']:.2f})"
         )
-
-    # Cross-check: does the extraction match the classification?
-    if classification and extraction["fields"]:
-        doc_type = classification["doc_type"]
-        fields = extraction["fields"]
-
-        if doc_type == "invoice" and "total_amount" not in fields:
-            issues.append("Invoice missing total_amount")
-        elif doc_type == "resume" and "full_name" not in fields:
-            issues.append("Resume missing full_name")
-        elif doc_type == "contract" and "parties" not in fields:
-            issues.append("Contract missing parties")
 
     # --- THE CONFIDENCE GATE ---
     passed = len(issues) == 0
@@ -329,7 +389,7 @@ def validate_extraction(
 
 # ============================================================
 # NODE 5: HUMAN REVIEW
-# "The supervisor" — pauses everything and waits for a human
+# Human review: interrupt() pauses until a reviewer responds
 # ============================================================
 def human_review(
     state: DocAgentState,
@@ -401,7 +461,7 @@ def human_review(
 
 # ============================================================
 # NODE 6: STORE RESULTS
-# "The filing clerk" — packages everything up as the final output
+# Store: packages the final output
 # ============================================================
 def store_results(state: DocAgentState) -> dict:
     """
@@ -440,7 +500,7 @@ def store_results(state: DocAgentState) -> dict:
 
 # ============================================================
 # NODE 6: ENRICH EXTRACTION
-# "The researcher" — optionally looks up vendor details via a tool
+# Enrich: optional LLM-decided vendor lookup tool call
 # ============================================================
 def enrich_extraction(
     state: DocAgentState,

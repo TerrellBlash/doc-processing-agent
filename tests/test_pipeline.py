@@ -8,7 +8,7 @@ Run with: pytest tests/test_pipeline.py -v
 """
 
 import pytest
-from app.graph import build_graph
+from app.graph import build_graph, close_checkpointer
 from langgraph.types import Command
 
 
@@ -108,8 +108,16 @@ TechStartup Inc.           Venture Capital Partners LLC
 
 @pytest.fixture
 def graph():
-    """Build a fresh graph for each test."""
-    return build_graph()
+    """Build a fresh graph for each test.
+
+    When DATABASE_URL is set (e.g. running the full suite alongside
+    test_checkpointer_restart.py, per the README), this opens a real
+    Postgres connection pool per test function — close it on teardown so
+    a full test run doesn't accumulate one pool per test.
+    """
+    g = build_graph()
+    yield g
+    close_checkpointer(g.checkpointer)
 
 
 class TestInvoiceProcessing:

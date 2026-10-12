@@ -1,6 +1,6 @@
 # Intelligent Document Processing Agent
 
-> LangGraph-powered pipeline that classifies, extracts, validates, and routes documents with human-in-the-loop review. Deployed to Azure Container Apps.
+> LangGraph-powered pipeline that classifies, extracts, validates, and routes documents with human-in-the-loop review. Paused reviews persist in Postgres, and a deploy script targets Azure Container Apps.
 
 
 
@@ -81,6 +81,18 @@ curl -X POST http://localhost:8000/review \
 pytest tests/test_pipeline.py -v
 ```
 
+#### Local Postgres for testing
+
+The checkpointer test that proves paused reviews survive a restart
+(`tests/test_checkpointer_restart.py`) needs a real Postgres instance —
+it's skipped automatically if `DATABASE_URL` isn't set. To run it:
+
+```bash
+docker compose up -d postgres
+export DATABASE_URL=postgresql://docagent:docagent@localhost:5433/docagent
+pytest tests/test_checkpointer_restart.py -v
+```
+
 ## Deploy to Azure
 
 ```bash
@@ -89,6 +101,12 @@ az login
 
 # Set your API key
 export OPENAI_API_KEY="sk-..."
+
+# Point at a provisioned Postgres instance (e.g. Azure Database for
+# PostgreSQL Flexible Server) so checkpoints survive restarts — see
+# "Checkpointing & Persistence" below. Omitting this falls back to
+# in-memory checkpointing, which defeats --workers 4 in the Dockerfile.
+export DATABASE_URL="postgresql://user:password@host:5432/dbname"
 
 # Deploy (creates all Azure resources)
 ./deploy.sh
@@ -102,13 +120,17 @@ See `deploy.sh` for the full Azure Container Apps setup.
 doc-processing-agent/
 ├── app/
 │   ├── __init__.py
-│   ├── state.py          # State definitions (the shared notebook)
+│   ├── state.py          # State definitions
 │   ├── nodes.py          # All node functions (each does one job)
-│   ├── graph.py          # Graph wiring (connects nodes with edges)
+│   ├── graph.py          # Graph wiring (connects nodes with edges), build_checkpointer()
 │   └── main.py           # FastAPI server (API endpoints)
 ├── tests/
-│   └── test_pipeline.py  # Full pipeline tests with sample docs
+│   ├── test_pipeline.py              # Full pipeline tests with sample docs
+│   ├── test_confidence.py            # Unit tests for extraction confidence scoring
+│   ├── test_checkpointer_restart.py  # Proves paused reviews survive a worker restart (needs Postgres)
+│   └── test_checkpointer_infra.py    # LLM-free Postgres persistence and setup tests (needs Postgres)
 ├── Dockerfile            # Container config for Azure
+├── docker-compose.yml    # Local Postgres for development/testing only
 ├── deploy.sh             # One-command Azure deployment
 ├── requirements.txt
 └── README.md
@@ -124,13 +146,32 @@ doc-processing-agent/
 | **Confidence gating** | `validate_extraction()` — auto-store vs human review |
 | **interrupt()** | `human_review()` — pause/resume across sessions |
 | **Retry policies** | `graph.py` — extraction nodes retry on failure |
-| **Checkpointing** | `graph.py` — MemorySaver enables durable execution |
+| **Checkpointing** | `graph.py` — `build_checkpointer()` picks Postgres or MemorySaver, enabling durable execution |
+
+## Checkpointing & Persistence
+
+The pipeline's `human_review` step pauses the graph with LangGraph's
+`interrupt()` — state has to live somewhere for that pause to survive
+until a human responds. Where it lives depends on `DATABASE_URL`:
+
+- **`DATABASE_URL` set** — `build_checkpointer()` (in `app/graph.py`) builds
+  a `psycopg_pool.ConnectionPool` and a `PostgresSaver` on top of it. Every
+  worker process's `.setup()` call is idempotent, so all 4 uvicorn workers
+  can run it concurrently on startup. A review submitted to a different
+  worker than the one that paused it still resolves, and a full container
+  restart doesn't lose pending reviews.
+- **`DATABASE_URL` not set** — falls back to an in-memory `MemorySaver`,
+  logs a `WARNING`, and keeps running. This is fine for local development
+  and tests, but **not restart-safe**: a container restart or a request
+  landing on a different worker silently loses any paused review. Never
+  run it this way in a multi-worker deployment.
+
+For local Postgres setup, see "Local Postgres for testing" above.
 
 ## Production Upgrades
 
 For a real production deployment, consider:
 
-- **Persistent checkpointer**: Swap `MemorySaver` for `PostgresCheckpointer` so state survives container restarts
 - **PDF parsing**: Add PyMuPDF or pdf-parse to handle actual PDF files, not just text
 - **Authentication**: Add API key auth or OAuth to the FastAPI endpoints
 - **Observability**: Connect LangSmith for tracing and debugging
