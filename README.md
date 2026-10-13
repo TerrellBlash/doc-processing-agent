@@ -62,6 +62,7 @@ curl http://localhost:8000/health
 | `DOC_AGENT_MODEL` | `gpt-6-luna` | OpenAI model for every step. A run can override it with `{"configurable": {"model": ...}}`. |
 | `DOC_AGENT_REASONING_EFFORT` | `none` | Reasoning effort for reasoning models (GPT-5 and later). Older models run at temperature 0 instead. Some models don't accept `none` (gpt-6.1-sol needs `low` or higher) and fail every call with a 400 until this is set. |
 | `DATABASE_URL` | unset | Postgres for paused reviews. Unset falls back to in-memory checkpoints. |
+| `DOC_AGENT_API_KEY` | unset | When set, every endpoint except `/health` and the API docs requires it in an `X-API-Key` header. Leave unset only for local development. |
 
 ### Process a Document
 
@@ -132,23 +133,26 @@ pytest tests/test_checkpointer_restart.py -v
 ## Deploy to Azure
 
 ```bash
-# Login to Azure
+brew install azure-cli
 az login
-
-# Set your API key
 export OPENAI_API_KEY="sk-..."
-
-# Point at a provisioned Postgres instance (e.g. Azure Database for
-# PostgreSQL Flexible Server) so checkpoints survive restarts — see
-# "Checkpointing & Persistence" below. Omitting this falls back to
-# in-memory checkpointing, which defeats --workers 4 in the Dockerfile.
-export DATABASE_URL="postgresql://user:password@host:5432/dbname"
-
-# Deploy (creates all Azure resources)
 ./deploy.sh
 ```
 
-See `deploy.sh` for the full Azure Container Apps setup.
+`deploy.sh` builds the current commit in Azure and creates, or on later
+runs updates, a resource group with:
+
+- a Container App that scales to zero when idle, so it costs nothing
+  between requests. The first request after a quiet spell takes about 15
+  seconds while it starts.
+- a Postgres Flexible Server (Burstable B1ms) so paused reviews survive
+  restarts and scale-downs
+- a Basic container registry for the image
+
+The deployed API requires an `X-API-Key` header, since every accepted
+request spends OpenAI credits. The script generates the key and the
+database password on its first run, keeps them in
+`~/.config/doc-agent/azure.env` (mode 600), and never prints them.
 
 ## Project Structure
 
@@ -291,7 +295,7 @@ synthetic set, good for comparing models, not a production accuracy figure.
 
 For a real production deployment, consider:
 
-- **Authentication**: Add API key auth or OAuth to the FastAPI endpoints
+- **Authentication**: Replace the single shared API key with per-client keys or OAuth
 - **Observability**: Connect LangSmith for tracing and debugging
 - **Streaming**: Add SSE endpoints to stream progress updates to a frontend
 

@@ -11,6 +11,8 @@ Any client (webhook, dashboard, mobile app) integrates through these
 endpoints. The Dockerfile runs this app under uvicorn.
 """
 
+import os
+import secrets
 import uuid
 import logging
 from contextlib import asynccontextmanager
@@ -37,6 +39,7 @@ MULTIPART_OVERHEAD_BYTES = 64 * 1024  # form boundaries and fields around the fi
 # About 30k tokens. Every extraction prompt carries the whole text, so this
 # bounds the cost of a single document.
 MAX_TEXT_CHARS = 120_000
+OPEN_PATHS = {"/health", "/docs", "/openapi.json", "/redoc"}  # reachable without an API key
 
 
 # --- Request/Response Models ---
@@ -71,6 +74,8 @@ class StatusResponse(BaseModel):
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     logger.info("Document Processing Agent starting up")
+    if not os.environ.get("DOC_AGENT_API_KEY"):
+        logger.warning("DOC_AGENT_API_KEY is not set: the API accepts requests from anyone.")
     yield
     logger.info("Document Processing Agent shutting down")
     close_checkpointer(graph.checkpointer)
@@ -85,6 +90,24 @@ app = FastAPI(
     version="1.0.0",
     lifespan=lifespan,
 )
+
+
+@app.middleware("http")
+async def require_api_key(request: Request, call_next):
+    """
+    Refuse requests without the deployment's API key, before the body is
+    read or a model is called: every accepted request spends OpenAI
+    credits. The health probe and the API docs stay open.
+
+    The key comes from DOC_AGENT_API_KEY. Unset, the API is open, which is
+    only meant for local development.
+    """
+    expected = os.environ.get("DOC_AGENT_API_KEY")
+    if expected and request.url.path not in OPEN_PATHS:
+        given = request.headers.get("x-api-key", "")
+        if not secrets.compare_digest(given.encode(), expected.encode()):
+            return JSONResponse({"detail": "Missing or invalid X-API-Key header"}, status_code=401)
+    return await call_next(request)
 
 
 @app.middleware("http")

@@ -1,0 +1,11 @@
+# The image only needs requirements.txt and app/ (see Dockerfile).
+.git
+.venv
+.env
+.env.*
+__pycache__/
+*.pyc
+.pytest_cache/
+.DS_Store
+evals/
+tests/

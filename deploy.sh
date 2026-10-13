@@ -2,110 +2,163 @@
 # ============================================
 # DEPLOY TO AZURE CONTAINER APPS
 # ============================================
-# Run this once to set up everything on Azure.
-# After that, just push new Docker images.
+# Creates everything on the first run; later runs reuse what exists and
+# roll the app to a new image built from the current commit.
+#
+# What it creates, in resource group doc-agent-rg:
+#   - a Basic container registry for the image
+#   - a Postgres Flexible Server (Burstable B1ms) for paused reviews
+#   - a Container Apps environment and the app itself, which scales to
+#     zero when idle (the first request after a quiet spell takes ~15 s)
+#
+# The API requires an X-API-Key header. The key and the database password
+# are generated on the first run and kept in $SECRETS_FILE (mode 600).
+# Nothing secret is printed.
 #
 # Prerequisites:
-#   1. Azure CLI installed (brew install azure-cli)
-#   2. Logged in (az login)
-#   3. OPENAI_API_KEY set as env variable
+#   1. Azure CLI installed (brew install azure-cli) and logged in (az login)
+#   2. OPENAI_API_KEY exported
 #
-# Usage: ./deploy.sh
+# Usage: ./deploy.sh          (LOCATION=westus2 ./deploy.sh for another region)
 
-set -e  # Stop on any error
+set -euo pipefail
 
-# --- Configuration (edit these) ---
+: "${OPENAI_API_KEY:?Export OPENAI_API_KEY first}"
+
+LOCATION="${LOCATION:-eastus}"
 RESOURCE_GROUP="doc-agent-rg"
-LOCATION="eastus"                    # Close to Atlanta for low latency
-CONTAINER_REGISTRY="docagentacr"     # Must be globally unique
-CONTAINER_APP_ENV="doc-agent-env"
-CONTAINER_APP_NAME="doc-agent"
+APP_ENV="doc-agent-env"
+APP_NAME="doc-agent"
 IMAGE_NAME="doc-processing-agent"
+DB_NAME="docagent"
+DB_ADMIN="docagent"
+SECRETS_FILE="${HOME}/.config/doc-agent/azure.env"
 
-echo "🚀 Deploying Intelligent Document Processing Agent to Azure"
+# Registry and database server names must be unique across all of Azure.
+# A suffix from the subscription ID keeps them stable between runs.
+SUFFIX=$(az account show --query id -o tsv | shasum | cut -c1-6)
+REGISTRY="docagent${SUFFIX}"
+DB_SERVER="doc-agent-db-${SUFFIX}"
 
-# 1. Create Resource Group
-echo "📦 Creating resource group..."
-az group create \
-    --name $RESOURCE_GROUP \
-    --location $LOCATION
+# Ship exactly what's committed: uncommitted or untracked files never
+# reach the image.
+TAG=$(git rev-parse --short HEAD)
+BUILD_DIR=$(mktemp -d)
+trap 'rm -rf "$BUILD_DIR"' EXIT
+git archive HEAD | tar -x -C "$BUILD_DIR"
+if [ -n "$(git status --porcelain --untracked-files=no)" ]; then
+    echo "Note: uncommitted changes are not deployed; building commit $TAG."
+fi
 
-# 2. Create Container Registry (where your Docker image lives)
-echo "🏗️  Creating container registry..."
-az acr create \
-    --resource-group $RESOURCE_GROUP \
-    --name $CONTAINER_REGISTRY \
-    --sku Basic
+echo "Deploying commit $TAG to $LOCATION"
 
-# 3. Build and push Docker image to Azure
-echo "🐳 Building and pushing Docker image..."
-az acr build \
-    --registry $CONTAINER_REGISTRY \
-    --image $IMAGE_NAME:latest \
-    .
+# --- Secrets, generated once ---
+if [ ! -f "$SECRETS_FILE" ]; then
+    mkdir -p "$(dirname "$SECRETS_FILE")"
+    chmod 700 "$(dirname "$SECRETS_FILE")"
+    (
+        umask 077
+        echo "DOC_AGENT_API_KEY=$(openssl rand -hex 32)" > "$SECRETS_FILE"
+        echo "DB_PASSWORD=$(openssl rand -hex 24)" >> "$SECRETS_FILE"
+    )
+fi
+# shellcheck source=/dev/null
+source "$SECRETS_FILE"
 
-# 4. Create Container Apps Environment
-echo "🌍 Creating Container Apps environment..."
-az containerapp env create \
-    --name $CONTAINER_APP_ENV \
-    --resource-group $RESOURCE_GROUP \
-    --location $LOCATION
+echo "Preparing the subscription..."
+az extension add --name containerapp --upgrade --only-show-errors
+for provider in Microsoft.App Microsoft.OperationalInsights Microsoft.ContainerRegistry Microsoft.DBforPostgreSQL; do
+    az provider register --namespace "$provider" --wait --only-show-errors
+done
 
-# 5. Deploy the Container App
-#
-# DATABASE_URL must already be exported before running this script, and
-# should point at a provisioned Postgres instance (e.g. Azure Database
-# for PostgreSQL Flexible Server) — never a hardcoded credential here.
-# Omitting it makes the deployed service silently fall back to
-# in-memory checkpointing (see app/graph.py:build_checkpointer), which
-# defeats the purpose of running --workers 4: a paused human_review
-# would only survive in the one worker process that created it.
-#
-# Both secrets are registered with `az containerapp create --secrets`
-# and referenced via `secretref:`, not passed as literal --env-vars
-# values. A literal env var is stored in plain text in the container
-# app's configuration, visible to anyone who can read the app in the
-# portal or via `az containerapp show`. A Container Apps secret is
-# stored separately and only resolved inside the container.
-# Limitation: the values still pass through this script's argv while
-# `az` runs, so `ps` on this machine can see them for that moment.
-# For production, store them in Azure Key Vault and pass
-# `keyvaultref:` secrets instead.
-echo "🚢 Deploying container app..."
-az containerapp create \
-    --name $CONTAINER_APP_NAME \
-    --resource-group $RESOURCE_GROUP \
-    --environment $CONTAINER_APP_ENV \
-    --image "$CONTAINER_REGISTRY.azurecr.io/$IMAGE_NAME:latest" \
-    --registry-server "$CONTAINER_REGISTRY.azurecr.io" \
-    --target-port 8000 \
-    --ingress external \
-    --min-replicas 1 \
-    --max-replicas 5 \
-    --cpu 1.0 \
-    --memory 2.0Gi \
-    --secrets \
-        openai-api-key="$OPENAI_API_KEY" \
-        database-url="$DATABASE_URL" \
-    --env-vars \
-        OPENAI_API_KEY=secretref:openai-api-key \
-        DATABASE_URL=secretref:database-url
+echo "Resource group..."
+az group create --name "$RESOURCE_GROUP" --location "$LOCATION" -o none
 
-# 6. Get the URL
+echo "Container registry..."
+if ! az acr show --name "$REGISTRY" -o none 2>/dev/null; then
+    az acr create --resource-group "$RESOURCE_GROUP" --name "$REGISTRY" --sku Basic -o none
+fi
+
+echo "Building the image in Azure..."
+az acr build --registry "$REGISTRY" --image "$IMAGE_NAME:$TAG" "$BUILD_DIR" -o none
+
+# Public access is limited to Azure services (0.0.0.0) and the server
+# requires TLS. A private network would be tighter but costs more.
+# Limitation: the admin password passes through this script's argv while
+# `az` runs, so `ps` on this machine can see it for that moment.
+echo "Postgres (first run takes about 5 minutes)..."
+if ! az postgres flexible-server show --resource-group "$RESOURCE_GROUP" --name "$DB_SERVER" -o none 2>/dev/null; then
+    az postgres flexible-server create \
+        --resource-group "$RESOURCE_GROUP" \
+        --name "$DB_SERVER" \
+        --location "$LOCATION" \
+        --tier Burstable \
+        --sku-name Standard_B1ms \
+        --storage-size 32 \
+        --version 16 \
+        --admin-user "$DB_ADMIN" \
+        --admin-password "$DB_PASSWORD" \
+        --public-access 0.0.0.0 \
+        --yes -o none
+    az postgres flexible-server db create \
+        --resource-group "$RESOURCE_GROUP" \
+        --server-name "$DB_SERVER" \
+        --database-name "$DB_NAME" -o none
+fi
+DATABASE_URL="postgresql://${DB_ADMIN}:${DB_PASSWORD}@${DB_SERVER}.postgres.database.azure.com:5432/${DB_NAME}?sslmode=require"
+
+echo "Container Apps environment..."
+if ! az containerapp env show --resource-group "$RESOURCE_GROUP" --name "$APP_ENV" -o none 2>/dev/null; then
+    az containerapp env create --resource-group "$RESOURCE_GROUP" --name "$APP_ENV" --location "$LOCATION" -o none
+fi
+
+# Secrets are Container Apps secrets referenced with secretref:, never
+# literal env vars, which anyone who can read the app's configuration
+# could see. For production, keep them in Key Vault (keyvaultref:).
+IMAGE="$REGISTRY.azurecr.io/$IMAGE_NAME:$TAG"
+SECRETS=(
+    "openai-api-key=$OPENAI_API_KEY"
+    "database-url=$DATABASE_URL"
+    "api-key=$DOC_AGENT_API_KEY"
+)
+echo "App..."
+if ! az containerapp show --resource-group "$RESOURCE_GROUP" --name "$APP_NAME" -o none 2>/dev/null; then
+    az containerapp create \
+        --resource-group "$RESOURCE_GROUP" \
+        --name "$APP_NAME" \
+        --environment "$APP_ENV" \
+        --image "$IMAGE" \
+        --registry-server "$REGISTRY.azurecr.io" \
+        --registry-identity system \
+        --target-port 8000 \
+        --ingress external \
+        --min-replicas 0 \
+        --max-replicas 2 \
+        --cpu 1.0 \
+        --memory 2.0Gi \
+        --secrets "${SECRETS[@]}" \
+        --env-vars \
+            OPENAI_API_KEY=secretref:openai-api-key \
+            DATABASE_URL=secretref:database-url \
+            DOC_AGENT_API_KEY=secretref:api-key \
+        -o none
+else
+    az containerapp secret set --resource-group "$RESOURCE_GROUP" --name "$APP_NAME" --secrets "${SECRETS[@]}" -o none
+    az containerapp update --resource-group "$RESOURCE_GROUP" --name "$APP_NAME" --image "$IMAGE" -o none
+fi
+
 APP_URL=$(az containerapp show \
-    --name $CONTAINER_APP_NAME \
-    --resource-group $RESOURCE_GROUP \
+    --resource-group "$RESOURCE_GROUP" \
+    --name "$APP_NAME" \
     --query "properties.configuration.ingress.fqdn" \
     --output tsv)
 
 echo ""
-echo "✅ Deployment complete!"
-echo "🌐 Your agent is live at: https://$APP_URL"
+echo "Deployed commit $TAG to https://$APP_URL"
+echo "API key: DOC_AGENT_API_KEY in $SECRETS_FILE"
 echo ""
-echo "Test it:"
+echo "Try it:"
 echo "  curl https://$APP_URL/health"
-echo ""
-echo "Process a document:"
-echo '  curl -X POST https://$APP_URL/process \'
-echo '    -H "Content-Type: application/json" \'
-echo '    -d '"'"'{"document_text": "INVOICE #123...", "document_filename": "test.pdf"}'"'"''
+echo "  source $SECRETS_FILE"
+echo "  curl -X POST https://$APP_URL/process -H \"X-API-Key: \$DOC_AGENT_API_KEY\" \\"
+echo "    -H 'Content-Type: application/json' -d '{\"document_text\": \"INVOICE #123 ...\"}'"
