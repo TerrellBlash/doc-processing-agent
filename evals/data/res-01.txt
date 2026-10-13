@@ -1,0 +1,26 @@
+MAYA OKAFOR
+Software Engineer
+Atlanta, GA | maya.okafor@example.com | (919) 555-0155
+
+SUMMARY
+Software Engineer with 7 years of experience turning messy operational data into reliable
+reporting and automation. Comfortable owning projects end to end.
+
+SKILLS
+Pandas, AWS, FastAPI, scikit-learn, Airflow, Kubernetes, SQL
+
+EXPERIENCE
+Machine Learning Engineer - Bayside Mutual (2024 - Present)
+- Built dashboards and pipelines used by finance and operations teams
+- Cut manual reporting time by automating weekly data pulls
+
+Software Engineer - Polaris Payments (2022 - 2024)
+- Built dashboards and pipelines used by finance and operations teams
+- Cut manual reporting time by automating weekly data pulls
+
+Operations Manager - Lumen Freight (2019 - 2022)
+- Built dashboards and pipelines used by finance and operations teams
+- Cut manual reporting time by automating weekly data pulls
+
+EDUCATION
+B.A. in Economics - University of Texas at Austin (2017)

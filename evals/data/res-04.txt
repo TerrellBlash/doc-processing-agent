@@ -1,0 +1,26 @@
+SAMUEL BROOKS
+Data Analyst
+Raleigh, NC | samuel.brooks@example.com | (206) 555-0199
+
+SUMMARY
+Data Analyst with 11 years of experience turning messy operational data into reliable
+reporting and automation. Comfortable owning projects end to end.
+
+SKILLS
+Pandas, Python, FastAPI, Docker, Tableau, SQL, Kubernetes, AWS, Git
+
+EXPERIENCE
+Product Analyst - Lumen Freight (2022 - Present)
+- Built dashboards and pipelines used by finance and operations teams
+- Cut manual reporting time by automating weekly data pulls
+
+Product Analyst - Riverstone Bank (2019 - 2022)
+- Built dashboards and pipelines used by finance and operations teams
+- Cut manual reporting time by automating weekly data pulls
+
+Software Engineer - Cardinal Insurance Co. (2017 - 2019)
+- Built dashboards and pipelines used by finance and operations teams
+- Cut manual reporting time by automating weekly data pulls
+
+EDUCATION
+B.S. in Applied Mathematics - University of Colorado Boulder (2018)

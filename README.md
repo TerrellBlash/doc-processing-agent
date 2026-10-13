@@ -170,10 +170,19 @@ doc-processing-agent/
 │   ├── test_llm.py                   # Model selection and per-run override
 │   ├── test_documents.py             # PDF/image reading, page sources, limits
 │   ├── test_api_file.py              # Upload endpoint: errors and page provenance
+│   ├── test_scoring.py               # Eval field-comparison rules
+│   ├── test_eval_summary.py          # Eval routing and accuracy metrics
 │   ├── test_checkpointer_restart.py  # Proves paused reviews survive a worker restart (needs Postgres)
 │   └── test_checkpointer_infra.py    # LLM-free Postgres persistence and setup tests (needs Postgres)
 ├── evals/
-│   └── pdfgen.py         # Builds text-layer and scanned PDFs for tests and the eval set
+│   ├── README.md         # Dataset, scoring rules, metric definitions, limits
+│   ├── build_dataset.py  # Seeded synthetic dataset: 44 docs across text, PDFs, scans
+│   ├── run_eval.py       # Runs the pipeline per model; accuracy, routing, latency, cost
+│   ├── scoring.py        # Field comparison rules
+│   ├── pricing.py        # Token prices for cost estimates
+│   ├── pdfgen.py         # Builds text-layer and scanned PDFs for tests and the eval set
+│   ├── data/             # The dataset and labels.json
+│   └── results/          # One JSON per run, plus a generated summary
 ├── Dockerfile            # Container config for Azure
 ├── docker-compose.yml    # Local Postgres for development/testing only
 ├── deploy.sh             # One-command Azure deployment

@@ -1,0 +1,18 @@
+INVOICE
+----------------------------------------
+From: Harbor & Finch Supply Co., 15 Wharf Lane, Portland, ME 04101
+To: Acme Corporation
+Invoice #: INV-2025-8434
+Issued: 30 Dec 2025
+Payment due: February 28, 2026
+
+Items:
+1. Implementation services (hours) - 16 x $136.93 = $2,190.88
+2. Software subscription - annual seat - 3 x $445.24 = $1,335.72
+3. Freight - LTL shipment - 4 x $834.08 = $3,336.32
+4. Warehouse storage (pallet-month) - 16 x $20.09 = $321.44
+5. Electrical inspection - 2 x $351.97 = $703.94
+
+Subtotal ........ $7,888.30
+Tax ............. $650.78
+TOTAL ........... $8,539.08

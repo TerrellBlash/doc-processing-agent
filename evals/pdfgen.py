@@ -3,14 +3,16 @@ Build PDFs for tests and the evaluation dataset, without a PDF library.
 
 text_pdf() writes a real text-layer PDF (Helvetica, US Letter), like the
 ones billing and HR systems export. scanned_pdf() renders that PDF to
-grayscale images, roughens them the way a desk scanner does (slight skew,
-blur, JPEG artifacts) and wraps them in a PDF with no text layer, so the
-only way to read it is a vision model.
+grayscale images, roughens them the way a scanner does (skew, blur, JPEG
+artifacts) and wraps them in a PDF with no text layer, so the only way to
+read it is a vision model. How rough depends on the ScanQuality.
 """
 
 import io
 import random
 import textwrap
+import time
+from dataclasses import dataclass
 
 import pypdfium2 as pdfium
 from PIL import Image, ImageFilter
@@ -22,8 +24,20 @@ LEADING = 13
 LINES_PER_PAGE = (PAGE_HEIGHT - 2 * MARGIN) // LEADING
 WRAP_COLUMNS = 90  # fits the text width at 10 pt Helvetica
 
-SCAN_DPI = 115
-JPEG_QUALITY = 50
+
+@dataclass(frozen=True)
+class ScanQuality:
+    dpi: int
+    max_skew_degrees: float
+    blur_radius: tuple[float, float]  # Gaussian blur, drawn per page from this range
+    jpeg_quality: int
+
+
+# A desk scanner on its default settings.
+OFFICE_SCAN = ScanQuality(dpi=115, max_skew_degrees=1.0, blur_radius=(0.3, 0.7), jpeg_quality=50)
+# A low-resolution fax or a quick phone photo: 10 pt digits are about
+# 11 pixels tall, and 3s, 6s and 8s start to look alike.
+POOR_SCAN = ScanQuality(dpi=80, max_skew_degrees=2.0, blur_radius=(0.8, 1.2), jpeg_quality=30)
 
 
 def _escape(line: str) -> str:
@@ -84,34 +98,39 @@ def text_pdf(text: str) -> bytes:
     return out.getvalue()
 
 
-def _scan_page(page: pdfium.PdfPage, rng: random.Random) -> Image.Image:
+def _scan_page(page: pdfium.PdfPage, rng: random.Random, quality: ScanQuality) -> Image.Image:
     # pypdfium2 takes a float scale; pyright infers int from its default.
-    image = page.render(scale=SCAN_DPI / 72).to_pil().convert("L")  # pyright: ignore[reportArgumentType]
-    image = image.rotate(rng.uniform(-1.0, 1.0), resample=Image.Resampling.BICUBIC, fillcolor=255)
-    image = image.filter(ImageFilter.GaussianBlur(radius=rng.uniform(0.3, 0.7)))
+    image = page.render(scale=quality.dpi / 72).to_pil().convert("L")  # pyright: ignore[reportArgumentType]
+    skew = rng.uniform(-quality.max_skew_degrees, quality.max_skew_degrees)
+    image = image.rotate(skew, resample=Image.Resampling.BICUBIC, fillcolor=255)
+    image = image.filter(ImageFilter.GaussianBlur(radius=rng.uniform(*quality.blur_radius)))
     # Lift the blacks a little, like toner on a worn drum.
     image = image.point(lambda value: 25 + value * 0.9)
     buffer = io.BytesIO()
-    image.save(buffer, format="JPEG", quality=JPEG_QUALITY)
+    image.save(buffer, format="JPEG", quality=quality.jpeg_quality)
     return Image.open(io.BytesIO(buffer.getvalue()))
 
 
-def scanned_pdf(text: str, seed: int = 0) -> bytes:
+def scanned_pdf(text: str, seed: int = 0, quality: ScanQuality = OFFICE_SCAN) -> bytes:
     """
     Render `text` as a scanned document: images only, no text layer.
 
     - Parameter text: plain text, laid out the same way as text_pdf().
     - Parameter seed: makes the skew and blur reproducible.
+    - Parameter quality: how rough the scan is; OFFICE_SCAN or POOR_SCAN.
     - Returns: the PDF file as bytes.
     """
     rng = random.Random(seed)
     source = pdfium.PdfDocument(text_pdf(text))
     try:
-        images = [_scan_page(source[index], rng) for index in range(len(source))]
+        images = [_scan_page(source[index], rng, quality) for index in range(len(source))]
     finally:
         source.close()
     out = io.BytesIO()
+    # Fixed timestamps keep the bytes identical from run to run.
+    fixed = time.strptime("2026-01-01", "%Y-%m-%d")
     images[0].save(
-        out, format="PDF", save_all=True, append_images=images[1:], resolution=SCAN_DPI
+        out, format="PDF", save_all=True, append_images=images[1:], resolution=quality.dpi,
+        creationDate=fixed, modDate=fixed,
     )
     return out.getvalue()

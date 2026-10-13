@@ -1,0 +1,59 @@
+%PDF-1.4
+1 0 obj
+<< /Type /Catalog /Pages 2 0 R >>
+endobj
+2 0 obj
+<< /Type /Pages /Kids [4 0 R] /Count 1 >>
+endobj
+3 0 obj
+<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica /Encoding /WinAnsiEncoding >>
+endobj
+4 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Resources << /Font << /F1 3 0 R >> >> /Contents 5 0 R >>
+endobj
+5 0 obj
+<< /Length 1018 >>
+stream
+BT /F1 10 Tf 13 TL 72 720 Td
+(Juniper Labs GmbH) Tj T*
+(Lindenstrasse 12) Tj T*
+(10969 Berlin, Germany) Tj T*
+() Tj T*
+(INVOICE) Tj T*
+() Tj T*
+(Invoice Number: JU-51999) Tj T*
+(Invoice Date: February 16, 2025) Tj T*
+(Due Date: 18 Mar 2025) Tj T*
+(Payment Terms: Net 30) Tj T*
+() Tj T*
+(Bill To:) Tj T*
+(Orchard Hill Schools) Tj T*
+() Tj T*
+(Description                             Qty    Unit Price        Amount) Tj T*
+(Implementation services \(hours\)          29    EUR 137.78  EUR 3,995.62) Tj T*
+(Warehouse storage \(pallet-month\)         14     EUR 16.59    EUR 232.26) Tj T*
+(Printer toner cartridge                   7     EUR 66.90    EUR 468.30) Tj T*
+(On-site support visit                     1    EUR 287.99    EUR 287.99) Tj T*
+(Freight - LTL shipment                    2    EUR 432.62    EUR 865.24) Tj T*
+() Tj T*
+(Subtotal: EUR 5,849.41) Tj T*
+(Tax \(20%\): EUR 1,169.88) Tj T*
+(Total Due: EUR 7,019.29) Tj T*
+() Tj T*
+(Thank you for your business. Questions? billing@juniper.example.com) Tj T*
+ET
+endstream
+endobj
+xref
+0 6
+0000000000 65535 f 
+0000000009 00000 n 
+0000000058 00000 n 
+0000000115 00000 n 
+0000000212 00000 n 
+0000000338 00000 n 
+trailer
+<< /Size 6 /Root 1 0 R >>
+startxref
+1408
+%%EOF

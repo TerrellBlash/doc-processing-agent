@@ -1,0 +1,50 @@
+%PDF-1.4
+1 0 obj
+<< /Type /Catalog /Pages 2 0 R >>
+endobj
+2 0 obj
+<< /Type /Pages /Kids [4 0 R] /Count 1 >>
+endobj
+3 0 obj
+<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica /Encoding /WinAnsiEncoding >>
+endobj
+4 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Resources << /Font << /F1 3 0 R >> >> /Contents 5 0 R >>
+endobj
+5 0 obj
+<< /Length 681 >>
+stream
+BT /F1 10 Tf 13 TL 72 720 Td
+(INVOICE) Tj T*
+(----------------------------------------) Tj T*
+(From: Silverleaf Catering LLC, 620 Orchard Way, Savannah, GA 31401) Tj T*
+(To: Acme Corporation) Tj T*
+(Invoice #: INV-2026-9392) Tj T*
+(Issued: 19 May 2026) Tj T*
+(Payment due: Jul 18, 2026) Tj T*
+() Tj T*
+(Items:) Tj T*
+(1. Cloud storage \(TB-month\) - 15 x $32.81 = $492.15) Tj T*
+(2. Catering - working lunch for 20 - 1 x $399.78 = $399.78) Tj T*
+(3. Ergonomic office chair - 7 x $411.86 = $2,883.02) Tj T*
+(4. Freight - LTL shipment - 3 x $296.84 = $890.52) Tj T*
+() Tj T*
+(Subtotal ........ $4,665.47) Tj T*
+(Tax ............. $338.25) Tj T*
+(TOTAL ........... $5,003.72) Tj T*
+ET
+endstream
+endobj
+xref
+0 6
+0000000000 65535 f 
+0000000009 00000 n 
+0000000058 00000 n 
+0000000115 00000 n 
+0000000212 00000 n 
+0000000338 00000 n 
+trailer
+<< /Size 6 /Root 1 0 R >>
+startxref
+1070
+%%EOF

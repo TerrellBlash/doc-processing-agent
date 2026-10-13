@@ -1,0 +1,14 @@
+INVOICE
+----------------------------------------
+From: Vantage Point Consulting, 500 Lake Shore Dr, Chicago, IL 60611
+To: Summit Ridge Manufacturing
+Invoice #: INV-2025-1864
+Issued: May 6, 2025
+Payment due: July 5, 2025
+
+Items:
+1. Warehouse storage (pallet-month) - 30 x $15.08 = $452.40
+
+Subtotal ........ $452.40
+Tax ............. $22.62
+TOTAL ........... $475.02

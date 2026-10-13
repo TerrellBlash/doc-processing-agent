@@ -1,0 +1,51 @@
+%PDF-1.4
+1 0 obj
+<< /Type /Catalog /Pages 2 0 R >>
+endobj
+2 0 obj
+<< /Type /Pages /Kids [4 0 R] /Count 1 >>
+endobj
+3 0 obj
+<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica /Encoding /WinAnsiEncoding >>
+endobj
+4 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Resources << /Font << /F1 3 0 R >> >> /Contents 5 0 R >>
+endobj
+5 0 obj
+<< /Length 779 >>
+stream
+BT /F1 10 Tf 13 TL 72 720 Td
+(INVOICE) Tj T*
+(----------------------------------------) Tj T*
+(From: Northwind Analytics Inc., 88 Market Street, Suite 400, Denver, CO 80202) Tj T*
+(To: Orchard Hill Schools) Tj T*
+(Invoice #: NO-83430) Tj T*
+(Issued: 03 Mar 2025) Tj T*
+(Payment due: Mar 18, 2025) Tj T*
+() Tj T*
+(Items:) Tj T*
+(1. Implementation services \(hours\) - 13 x $150.39 = $1,955.07) Tj T*
+(2. Catering - working lunch for 20 - 1 x $530.92 = $530.92) Tj T*
+(3. Cloud storage \(TB-month\) - 19 x $29.60 = $562.40) Tj T*
+(4. Software subscription - annual seat - 22 x $187.18 = $4,117.96) Tj T*
+(5. Ergonomic office chair - 4 x $256.58 = $1,026.32) Tj T*
+() Tj T*
+(Subtotal ........ $8,192.67) Tj T*
+(Tax ............. $409.63) Tj T*
+(TOTAL ........... $8,602.30) Tj T*
+ET
+endstream
+endobj
+xref
+0 6
+0000000000 65535 f 
+0000000009 00000 n 
+0000000058 00000 n 
+0000000115 00000 n 
+0000000212 00000 n 
+0000000338 00000 n 
+trailer
+<< /Size 6 /Root 1 0 R >>
+startxref
+1168
+%%EOF

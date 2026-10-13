@@ -1,0 +1,55 @@
+%PDF-1.4
+1 0 obj
+<< /Type /Catalog /Pages 2 0 R >>
+endobj
+2 0 obj
+<< /Type /Pages /Kids [4 0 R] /Count 1 >>
+endobj
+3 0 obj
+<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica /Encoding /WinAnsiEncoding >>
+endobj
+4 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Resources << /Font << /F1 3 0 R >> >> /Contents 5 0 R >>
+endobj
+5 0 obj
+<< /Length 969 >>
+stream
+BT /F1 10 Tf 13 TL 72 720 Td
+(DANIEL REYES) Tj T*
+(Product Analyst) Tj T*
+(Austin, TX | daniel.reyes@example.com) Tj T*
+() Tj T*
+(SUMMARY) Tj T*
+(Product Analyst with 8 years of experience turning messy operational data into reliable) Tj T*
+(reporting and automation. Comfortable owning projects end to end.) Tj T*
+() Tj T*
+(SKILLS) Tj T*
+(AWS, Kubernetes, Pandas, Tableau, LangChain, Docker, Spark, PyTorch) Tj T*
+() Tj T*
+(EXPERIENCE) Tj T*
+(Product Analyst - Riverstone Bank \(2022 - Present\)) Tj T*
+(- Built dashboards and pipelines used by finance and operations teams) Tj T*
+(- Cut manual reporting time by automating weekly data pulls) Tj T*
+() Tj T*
+(Operations Manager - Cardinal Insurance Co. \(2020 - 2022\)) Tj T*
+(- Built dashboards and pipelines used by finance and operations teams) Tj T*
+(- Cut manual reporting time by automating weekly data pulls) Tj T*
+() Tj T*
+(EDUCATION) Tj T*
+(B.A. in Economics - University of Texas at Austin \(2015\)) Tj T*
+ET
+endstream
+endobj
+xref
+0 6
+0000000000 65535 f 
+0000000009 00000 n 
+0000000058 00000 n 
+0000000115 00000 n 
+0000000212 00000 n 
+0000000338 00000 n 
+trailer
+<< /Size 6 /Root 1 0 R >>
+startxref
+1358
+%%EOF

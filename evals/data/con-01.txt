@@ -1,0 +1,44 @@
+MASTER SERVICES AGREEMENT
+
+This Master Services Agreement (the "Agreement") is made as of February 27, 2026 (the
+"Effective Date") by and between Vantage Point Consulting, a Georgia company ("Provider"),
+and Quartzline Printing, a Delaware company ("Client").
+
+1. SCOPE. Provider shall perform the services described in each Statement of Work signed
+by both parties, with the skill and care of a qualified professional.
+
+2. TERM. This Agreement begins on the Effective Date and continues until terminated under
+Section 6.
+
+3. PAYMENT. Client shall pay Provider the fees set out in each Statement of Work. Provider
+will invoice monthly, and Client shall pay each invoice within thirty (30) days of
+receipt.
+
+4. CONFIDENTIALITY. Each party shall keep the other party's confidential information
+secret, use it only to perform this Agreement, and return or destroy it when this
+Agreement ends.
+
+5. WARRANTIES. Each party warrants that it has the authority to enter into this Agreement
+and that performing it will not breach any other agreement it is bound by.
+
+6. TERMINATION. Either party may terminate this Agreement for convenience on 30 days'
+written notice, or immediately if the other party materially breaches this Agreement and
+does not cure the breach within 15 days of written notice.
+
+7. LIMITATION OF LIABILITY. Neither party is liable for indirect or consequential damages.
+Each party's total liability is capped at the fees paid in the twelve months before the
+claim.
+
+8. GOVERNING LAW. This Agreement is governed by the laws of the State of Illinois, without
+regard to its conflict of laws rules.
+
+9. ENTIRE AGREEMENT. This Agreement is the parties' entire agreement on its subject and
+replaces all earlier proposals and understandings.
+
+IN WITNESS WHEREOF, the parties have signed this Agreement as of the Effective Date.
+
+Vantage Point Consulting
+By: Laura Chen
+
+Quartzline Printing
+By: Thomas Webb

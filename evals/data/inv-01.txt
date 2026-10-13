@@ -1,0 +1,23 @@
+Brightline Logistics LLC
+4100 Commerce Pkwy
+Memphis, TN 38118
+
+INVOICE
+
+Invoice Number: BR-71159
+Invoice Date: Jan 20, 2025
+
+Bill To:
+Orchard Hill Schools
+
+Description                             Qty    Unit Price        Amount
+Printer toner cartridge                   2        $94.26       $188.52
+Implementation services (hours)          34       $156.13     $5,308.42
+Cloud storage (TB-month)                  3        $29.68        $89.04
+Ergonomic office chair                    9       $187.95     $1,691.55
+
+Subtotal: $7,277.53
+Tax (8.25%): $600.40
+Total Due: $7,877.93
+
+Thank you for your business. Questions? billing@brightline.example.com

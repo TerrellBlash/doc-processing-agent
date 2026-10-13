@@ -1,0 +1,27 @@
+AISHA RAHMAN
+Machine Learning Engineer
+Charlotte, NC | aisha.rahman@example.com | (512) 555-0161
+
+SUMMARY
+Machine Learning Engineer with 7 years of experience turning messy operational data into
+reliable reporting and automation. Comfortable owning projects end to end.
+
+SKILLS
+AWS, Terraform, Airflow, PostgreSQL, Docker, Spark, PyTorch
+
+EXPERIENCE
+Data Analyst - Crescent Health Systems (2023 - Present)
+- Built dashboards and pipelines used by finance and operations teams
+- Cut manual reporting time by automating weekly data pulls
+
+Product Analyst - Bayside Mutual (2019 - 2023)
+- Built dashboards and pipelines used by finance and operations teams
+- Cut manual reporting time by automating weekly data pulls
+
+Data Analyst - Riverstone Bank (2017 - 2019)
+- Built dashboards and pipelines used by finance and operations teams
+- Cut manual reporting time by automating weekly data pulls
+
+EDUCATION
+B.S. in Computer Science - Georgia State University (2018)
+M.S. in Statistics - North Carolina State University (2018)

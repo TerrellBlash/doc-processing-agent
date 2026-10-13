@@ -1,0 +1,25 @@
+Redwood Data Systems
+1450 Pine Street
+Sacramento, CA 95814
+
+INVOICE
+
+Invoice Number: RE-80809
+Invoice Date: May 19, 2026
+Due Date: 2026-07-03
+Payment Terms: Net 45
+
+Bill To:
+Granite State Credit Union
+
+Description                             Qty    Unit Price        Amount
+Warehouse storage (pallet-month)         28        $22.39       $626.92
+Implementation services (hours)          36       $115.76     $4,167.36
+Ergonomic office chair                   10       $415.39     $4,153.90
+Printer toner cartridge                   2       $102.40       $204.80
+
+Subtotal: $9,152.98
+Tax (6.25%): $572.06
+Total Due: $9,725.04
+
+Thank you for your business. Questions? billing@redwood.example.com
