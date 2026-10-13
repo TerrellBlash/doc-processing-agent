@@ -37,6 +37,16 @@ def test_default_model_is_used_when_nothing_is_configured():
     assert get_llm().model_name == DEFAULT_MODEL
 
 
+def test_default_is_the_model_the_eval_chose():
+    """gpt-6-luna at effort none had the fewest silent errors of the cheap
+    runs in evals/results, at a fifth of gpt-4o-mini's cost. Changing the
+    default should mean re-running the eval, not just editing a string."""
+    llm = get_llm()
+    assert llm.model_name == "gpt-6-luna"
+    assert llm.reasoning_effort == "none"
+    assert llm.use_responses_api is False  # tool calls work on Chat Completions only at effort none
+
+
 def test_reasoning_model_gets_reasoning_effort_and_no_temperature():
     """gpt-6 models only accept the default temperature."""
     llm = get_llm({"configurable": {"model": "gpt-6-luna"}})

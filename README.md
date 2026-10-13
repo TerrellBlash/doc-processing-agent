@@ -59,7 +59,7 @@ curl http://localhost:8000/health
 | Variable | Default | Purpose |
 |---|---|---|
 | `OPENAI_API_KEY` | none | Required. |
-| `DOC_AGENT_MODEL` | `gpt-4o-mini` | OpenAI model for every step. A run can override it with `{"configurable": {"model": ...}}`. |
+| `DOC_AGENT_MODEL` | `gpt-6-luna` | OpenAI model for every step. A run can override it with `{"configurable": {"model": ...}}`. |
 | `DOC_AGENT_REASONING_EFFORT` | `none` | Reasoning effort for reasoning models (GPT-5 and later). Older models run at temperature 0 instead. Some models don't accept `none` (gpt-6.1-sol needs `low` or higher) and fail every call with a 400 until this is set. |
 | `DATABASE_URL` | unset | Postgres for paused reviews. Unset falls back to in-memory checkpoints. |
 
@@ -223,7 +223,60 @@ until a human responds. Where it lives depends on `DATABASE_URL`:
 
 For local Postgres setup, see "Local Postgres for testing" above.
 
+## Evaluation
+
+The default model was chosen by running the pipeline over a labeled set of
+44 synthetic documents: invoices, resumes and contracts as plain text,
+text-layer PDFs and scanned PDFs, plus a poor-scan copy (80 DPI, heavy blur)
+of every scanned one. [evals/README.md](evals/README.md) covers the dataset
+and scoring. Every run's per-document output is in
+[evals/results/](evals/results/README.md).
+
+| Model | Fields correct, poor scans | Fields correct, everything else | Silent errors | Cost per 1,000 docs | p50 seconds |
+|---|---|---|---|---|---|
+| gpt-4o-mini | 62% | 99% | 2 | $2.30 | 3.9 |
+| **gpt-6-luna**, effort none | 88% | 100% | 1 | $0.48 | 5.7 |
+| gpt-6-luna, effort low | 93% | 100% | 2 | $0.54 | 7.1 |
+| gpt-6.1-sol, effort low | 99% | 100% | 1 | $9.48 | 11.7 |
+
+A silent error is a document stored without review that had something
+wrong in it. Those are the expensive ones, because nobody looks at them.
+
+What the numbers say:
+
+- **Clean input is solved.** On plain text, text PDFs and ordinary scans,
+  every gpt-6 run extracted every field correctly. gpt-4o-mini missed the
+  contract type on two contracts, but the confidence gate sent both to review.
+- **Every silent error came from a poor scan.** The model misread a digit or
+  a word, and the result looked like a valid value: 2026 read as 2025,
+  invoice 91630 as 91830, a (312) area code as (912), "Cardinal Insurance"
+  as "Cleartrail Insurance". The confidence gate checks that fields are
+  present, not that they're right, so these were stored.
+- **gpt-6-luna costs a fifth of gpt-4o-mini.** Most of the gap is image
+  tokens: a scanned page costs about 27,000 input tokens on gpt-4o-mini and
+  about 3,900 on gpt-6-luna. gpt-6-luna is about 2 seconds slower per
+  document.
+- **gpt-6.1-sol reads poor scans almost perfectly, at 20 times the cost.**
+  Worth it only if most of the input is bad scans and review is expensive.
+- **Reasoning effort low didn't clearly help.** Its gain on poor scans is
+  within run-to-run noise on 11 documents.
+
+The default is gpt-6-luna at effort none. These are one run each on a small
+synthetic set, good for comparing models, not a production accuracy figure.
+
 ## Known Limitations
+
+- **The confidence gate can't see misreads.** It counts missing fields, so a
+  wrong value read from a bad scan passes as confidently as a right one (see
+  Evaluation). Reading low-resolution pages twice and sending disagreements
+  to review, or sending every low-resolution page to review, would close
+  most of this.
+
+- **A vision refusal becomes the document's text.** gpt-4o-mini refused to
+  transcribe two of the poor scans ("I'm sorry, but I can't assist with
+  that."). The pipeline classified that text as an unknown document and sent
+  it to review, which is safe, but the refusal should be detected and
+  reported as unreadable.
 
 - **PDF reading is serialized per process.** PDFium isn't thread-safe, so one
   lock covers every PDFium call. Vision calls, the slow part, still run in

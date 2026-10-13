@@ -13,7 +13,7 @@ from functools import lru_cache
 from langchain_core.runnables import RunnableConfig
 from langchain_openai import ChatOpenAI
 
-DEFAULT_MODEL = "gpt-4o-mini"
+DEFAULT_MODEL = "gpt-6-luna"  # chosen by the eval; see evals/results
 DEFAULT_REASONING_EFFORT = "none"
 
 # Reasoning models reject temperature=0 with a 400 error and take
