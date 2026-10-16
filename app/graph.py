@@ -77,9 +77,14 @@ def build_checkpointer():
     from psycopg.rows import DictRow, dict_row
     from langgraph.checkpoint.postgres import PostgresSaver
 
+    # check= tests each connection before handing it out and replaces a
+    # dead one. Serverless Postgres (Neon) closes every connection when it
+    # suspends after a few idle minutes, and networks drop idle ones too;
+    # without the check, the next request after a quiet spell fails.
     pool: ConnectionPool[Connection[DictRow]] = ConnectionPool(
         conninfo=database_url,
         kwargs={"autocommit": True, "row_factory": dict_row},
+        check=ConnectionPool[Connection[DictRow]].check_connection,
     )
     checkpointer = PostgresSaver(pool)
 

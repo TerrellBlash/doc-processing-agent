@@ -117,3 +117,32 @@ def test_build_checkpointer_setup_is_safe_to_call_concurrently():
         results = list(pool.map(lambda _: _build_and_close(), range(4)))
 
     assert results == [True, True, True, True]
+
+
+@requires_postgres
+def test_paused_review_survives_the_database_dropping_idle_connections():
+    """Serverless Postgres (Neon) closes every connection when it suspends
+    after a few idle minutes, and networks drop idle connections too. The
+    pool must notice and reconnect, or the reviewer's next request fails
+    on a dead connection."""
+    import psycopg
+
+    checkpointer = build_checkpointer()
+    try:
+        graph = _build_mini_graph(checkpointer)
+        config = {"configurable": {"thread_id": "idle-drop-test"}}
+        graph.invoke({"value": "start"}, config)
+
+        # Kill every pooled connection from outside, as a suspend would.
+        pool = getattr(checkpointer, "_doc_agent_pool")
+        pool.wait()
+        with psycopg.connect(os.environ["DATABASE_URL"], autocommit=True) as admin:
+            admin.execute(
+                "SELECT pg_terminate_backend(pid) FROM pg_stat_activity "
+                "WHERE datname = current_database() AND pid <> pg_backend_pid()"
+            )
+
+        result = graph.invoke(Command(resume="yes"), config)
+        assert result["value"] == "resumed-with-yes"
+    finally:
+        close_checkpointer(checkpointer)

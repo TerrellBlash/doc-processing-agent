@@ -132,27 +132,32 @@ pytest tests/test_checkpointer_restart.py -v
 
 ## Deploy to Azure
 
+Every push to main that changes the app builds its image with GitHub
+Actions and publishes it to GitHub's container registry
+([.github/workflows/image.yml](.github/workflows/image.yml)). `deploy.sh`
+runs that image on Azure Container Apps:
+
 ```bash
 brew install azure-cli
 az login
 export OPENAI_API_KEY="sk-..."
+# DATABASE_URL='postgresql://...' (direct, not pooled) in ~/.config/doc-agent/neon.env
 ./deploy.sh
 ```
 
-`deploy.sh` builds the current commit in Azure and creates, or on later
-runs updates, a resource group with:
+- The app scales to zero when idle, so it costs nothing between
+  requests. The first request after a quiet spell takes about 15 seconds
+  while it starts.
+- Paused reviews live in the Postgres database you point it at. A free
+  [Neon](https://neon.com) project works. It suspends when idle too; the
+  connection pool checks each connection before use and reconnects.
+- The deployed API requires an `X-API-Key` header, since every accepted
+  request spends OpenAI credits. The script generates the key on its
+  first run, keeps it in `~/.config/doc-agent/azure.env` (mode 600), and
+  never prints it.
 
-- a Container App that scales to zero when idle, so it costs nothing
-  between requests. The first request after a quiet spell takes about 15
-  seconds while it starts.
-- a Postgres Flexible Server (Burstable B1ms) so paused reviews survive
-  restarts and scale-downs
-- a Basic container registry for the image
-
-The deployed API requires an `X-API-Key` header, since every accepted
-request spends OpenAI credits. The script generates the key and the
-database password on its first run, keeps them in
-`~/.config/doc-agent/azure.env` (mode 600), and never prints them.
+Within Azure's monthly free allowance this setup costs nothing: there's no
+Azure registry and no Azure database to pay for.
 
 ## Project Structure
 
@@ -187,6 +192,7 @@ doc-processing-agent/
 │   ├── pdfgen.py         # Builds text-layer and scanned PDFs for tests and the eval set
 │   ├── data/             # The dataset and labels.json
 │   └── results/          # One JSON per run, plus a generated summary
+├── .github/workflows/image.yml  # Builds and publishes the image on push to main
 ├── Dockerfile            # Container config for Azure
 ├── docker-compose.yml    # Local Postgres for development/testing only
 ├── deploy.sh             # One-command Azure deployment

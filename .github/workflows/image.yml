@@ -1,0 +1,44 @@
+# Builds the API image on every push to main that touches what goes into
+# it, and publishes it to GitHub's container registry tagged with the
+# commit hash. deploy.sh deploys the image for the commit it's run on.
+name: Build image
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - app/**
+      - requirements.txt
+      - Dockerfile
+      - .dockerignore
+      - .github/workflows/image.yml
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  packages: write
+
+env:
+  IMAGE: ghcr.io/terrellblash/doc-processing-agent  # registry names must be lowercase
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: docker/setup-buildx-action@v3
+      - uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      - uses: docker/build-push-action@v6
+        with:
+          context: .
+          push: true
+          tags: |
+            ${{ env.IMAGE }}:${{ github.sha }}
+            ${{ env.IMAGE }}:latest
+          labels: org.opencontainers.image.source=https://github.com/${{ github.repository }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
