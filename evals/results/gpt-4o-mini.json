@@ -2,45 +2,90 @@
   "run": "gpt-4o-mini",
   "model": "gpt-4o-mini",
   "reasoning_effort": null,
-  "run_at": "2026-10-12T22:42:08+00:00",
+  "check_model": null,
+  "run_at": "2026-10-17T05:10:53+00:00",
   "summary": {
     "documents": 44,
-    "errors": 0,
-    "classification_accuracy": 0.9318181818181818,
-    "field_accuracy": 0.8988095238095238,
+    "errors": 5,
+    "classification_accuracy": 0.8863636363636364,
+    "field_accuracy": 0.8482142857142857,
     "field_accuracy_by_format": {
       "text": 0.9761904761904762,
       "pdf_text": 1.0,
-      "pdf_scan": 1.0,
-      "pdf_scan_poor": 0.6190476190476191
+      "pdf_scan": 0.9880952380952381,
+      "pdf_scan_poor": 0.42857142857142855
     },
     "field_accuracy_by_type": {
-      "invoice": 0.9444444444444444,
-      "resume": 1.0,
-      "contract": 0.7291666666666666
+      "invoice": 0.9305555555555556,
+      "resume": 0.8333333333333334,
+      "contract": 0.7395833333333334
     },
     "field_outcomes": {
-      "correct": 302,
-      "filled_absent": 1,
+      "correct": 285,
+      "filled_absent": 2,
       "missed": 3,
-      "not_extracted": 24,
+      "not_extracted": 40,
       "wrong": 6
     },
-    "absent_fields_left_empty": 0.8888888888888888,
-    "straight_through_rate": 0.8064516129032258,
-    "review_catch_rate": 0.9230769230769231,
+    "absent_fields_left_empty": 0.6666666666666666,
+    "straight_through_rate": 0.7741935483870968,
+    "review_catch_rate": 0.7692307692307693,
     "auto_stored": 26,
-    "silent_errors": 2,
+    "silent_errors": 3,
     "silent_error_ids": [
+      "inv-09",
       "inv-06-poor",
       "inv-09-poor"
     ],
-    "auto_store_precision": 0.9230769230769231,
-    "seconds_p50": 3.91,
-    "seconds_p95": 7.48,
-    "mean_input_tokens": 14075.454545454546,
-    "mean_output_tokens": 310.72727272727275,
-    "cost_per_1000_docs_usd": 2.297754545454546
+    "auto_store_precision": 0.8846153846153846,
+    "seconds_p50": 3.73,
+    "seconds_p95": 7.59,
+    "mean_input_tokens": 14012.363636363636,
+    "mean_output_tokens": 290.4318181818182,
+    "cost_per_1000_docs_usd": 1.56135,
+    "pages_checked": 0,
+    "pages_flagged_by_check": 0,
+    "pages_unchecked": 0
+  },
+  "holdout_summary": {
+    "documents": 12,
+    "errors": 1,
+    "classification_accuracy": 0.9166666666666666,
+    "field_accuracy": 0.82,
+    "field_accuracy_by_format": {
+      "pdf_scan_poor": 0.82
+    },
+    "field_accuracy_by_type": {
+      "invoice": 0.7777777777777778,
+      "resume": 0.75,
+      "contract": 0.9375
+    },
+    "field_outcomes": {
+      "correct": 82,
+      "missed": 2,
+      "not_extracted": 8,
+      "wrong": 8
+    },
+    "absent_fields_left_empty": null,
+    "straight_through_rate": 0.75,
+    "review_catch_rate": null,
+    "auto_stored": 9,
+    "silent_errors": 4,
+    "silent_error_ids": [
+      "inv-14",
+      "inv-16",
+      "con-11",
+      "con-13"
+    ],
+    "auto_store_precision": 0.5555555555555556,
+    "seconds_p50": 6.96,
+    "seconds_p95": 7.62,
+    "mean_input_tokens": 27053.166666666668,
+    "mean_output_tokens": 529.3333333333334,
+    "cost_per_1000_docs_usd": 2.877975,
+    "pages_checked": 0,
+    "pages_flagged_by_check": 0,
+    "pages_unchecked": 0
   },
   "documents": [
     {
@@ -49,6 +94,7 @@
       "format": "text",
       "expected_route": "review",
       "absent_field": "due_date",
+      "split": "main",
       "error": null,
       "route": "review",
       "classified_as": "invoice",
@@ -105,10 +151,10 @@
         "total_amount": "correct",
         "currency": "correct"
       },
-      "seconds": 3.45,
+      "seconds": 2.6,
       "input_tokens": 1066,
-      "output_tokens": 204,
-      "cost_usd": 0.00028230000000000003
+      "output_tokens": 200,
+      "cost_usd": 0.0002799
     },
     {
       "id": "inv-02",
@@ -116,6 +162,7 @@
       "format": "pdf_text",
       "expected_route": "auto",
       "absent_field": null,
+      "split": "main",
       "error": null,
       "route": "auto",
       "classified_as": "invoice",
@@ -182,7 +229,7 @@
         "total_amount": "correct",
         "currency": "correct"
       },
-      "seconds": 4.16,
+      "seconds": 3.55,
       "input_tokens": 1619,
       "output_tokens": 252,
       "cost_usd": 0.00039404999999999996
@@ -193,6 +240,7 @@
       "format": "pdf_scan",
       "expected_route": "auto",
       "absent_field": null,
+      "split": "main",
       "error": null,
       "route": "auto",
       "classified_as": "invoice",
@@ -202,10 +250,10 @@
         {
           "page": 1,
           "source": "vision",
-          "chars": 513
+          "chars": 509
         }
       ],
-      "text_read": "Cobalt Peak Software\n2200 Ridge Road\nBoise, ID 83702\n\nINVOICE\n\nInvoice Number: 91630\nInvoice Date: 23 Apr 2026\nDue Date: June 7, 2026\nPayment Terms: Net 45\n\nBill To:\nSummit Ridge Manufacturing\n\nDescription                          Qty   Unit Price   Amount\nWarehouse storage (pallet-month)   31    $23.51       $728.81\nSoftware subscription - annual seat   17    $304.30      $5,173.10\n\nSubtotal: $5,901.91\nTax (5%): $295.10\nTotal Due: $6,197.01\n\nThank you for your business. Questions? billing@cobalt.example.com",
+      "text_read": "Cobalt Peak Software\n2200 Ridge Road\nBoise, ID 83702\n\nINVOICE\n\nInvoice Number: 91630\nInvoice Date: 23 Apr 2026\nDue Date: June 7, 2026\nPayment Terms: Net 45\n\nBill To:\nSummit Ridge Manufacturing\n\nDescription                       Qty    Unit Price    Amount\nWarehouse storage (pallet-month) 31    $23.51        $728.81\nSoftware subscription - annual seat 17    $304.30      $5,173.10\n\nSubtotal: $5,901.91\nTax (5%): $295.10\nTotal Due: $6,197.01\n\nThank you for your business. Questions? billing@cobalt.example.com",
       "extracted": {
         "vendor_name": "Cobalt Peak Software",
         "invoice_number": "91630",
@@ -241,10 +289,10 @@
         "total_amount": "correct",
         "currency": "correct"
       },
-      "seconds": 5.69,
-      "input_tokens": 26949,
-      "output_tokens": 335,
-      "cost_usd": 0.004243350000000001
+      "seconds": 5.23,
+      "input_tokens": 26945,
+      "output_tokens": 327,
+      "cost_usd": 0.0027403499999999995
     },
     {
       "id": "inv-04",
@@ -252,11 +300,14 @@
       "format": "text",
       "expected_route": "auto",
       "absent_field": null,
+      "split": "main",
       "error": null,
-      "route": "auto",
+      "route": "review",
       "classified_as": "invoice",
-      "extraction_confidence": 1.0,
-      "missing_fields": [],
+      "extraction_confidence": 0.8889,
+      "missing_fields": [
+        "currency"
+      ],
       "document_pages": null,
       "text_read": null,
       "extracted": {
@@ -299,7 +350,7 @@
         "subtotal": 7888.3,
         "tax": 650.78,
         "total_amount": 8539.08,
-        "currency": "USD"
+        "currency": null
       },
       "outcomes": {
         "vendor_name": "correct",
@@ -310,12 +361,12 @@
         "subtotal": "correct",
         "tax": "correct",
         "total_amount": "correct",
-        "currency": "correct"
+        "currency": "missed"
       },
-      "seconds": 4.36,
-      "input_tokens": 1614,
-      "output_tokens": 261,
-      "cost_usd": 0.0003987
+      "seconds": 4.09,
+      "input_tokens": 1098,
+      "output_tokens": 345,
+      "cost_usd": 0.0003717
     },
     {
       "id": "inv-05",
@@ -323,6 +374,7 @@
       "format": "pdf_text",
       "expected_route": "review",
       "absent_field": "invoice_number",
+      "split": "main",
       "error": null,
       "route": "review",
       "classified_as": "invoice",
@@ -373,10 +425,10 @@
         "total_amount": "correct",
         "currency": "correct"
       },
-      "seconds": 2.2,
+      "seconds": 1.88,
       "input_tokens": 974,
-      "output_tokens": 147,
-      "cost_usd": 0.0002343
+      "output_tokens": 143,
+      "cost_usd": 0.00023189999999999997
     },
     {
       "id": "inv-06",
@@ -384,6 +436,7 @@
       "format": "pdf_scan",
       "expected_route": "auto",
       "absent_field": null,
+      "split": "main",
       "error": null,
       "route": "auto",
       "classified_as": "invoice",
@@ -393,10 +446,10 @@
         {
           "page": 1,
           "source": "vision",
-          "chars": 357
+          "chars": 350
         }
       ],
-      "text_read": "INVOICE\n----------------------------------------\nFrom: Quartzline Printing, 39 Press Avenue, Raleigh, NC 27601\nTo: Granite State Credit Union\nInvoice #: INV-2025-5398\nIssued: Sep 18, 2025\nPayment due: October 3, 2025\n\nItems:\n1. Electrical inspection - 1 x $506.18 = $506.18\n\nSubtotal .......... $506.18\nTax ............... $25.31\nTOTAL ............. $531.49",
+      "text_read": "INVOICE\n-----------------------------------------\nFrom: Quartzline Printing, 39 Press Avenue, Raleigh, NC 27601\nTo: Granite State Credit Union\nInvoice #: INV-2025-5398\nIssued: Sep 18, 2025\nPayment due: October 3, 2025\n\nItems:\n1. Electrical inspection - 1 x $506.18 = $506.18\n\nSubtotal ........ $506.18\nTax ............ $25.31\nTOTAL .......... $531.49",
       "extracted": {
         "vendor_name": "Quartzline Printing",
         "invoice_number": "INV-2025-5398",
@@ -426,10 +479,10 @@
         "total_amount": "correct",
         "currency": "correct"
       },
-      "seconds": 4.26,
-      "input_tokens": 26795,
-      "output_tokens": 245,
-      "cost_usd": 0.00416625
+      "seconds": 3.86,
+      "input_tokens": 26793,
+      "output_tokens": 244,
+      "cost_usd": 0.00266775
     },
     {
       "id": "inv-07",
@@ -437,6 +490,7 @@
       "format": "text",
       "expected_route": "auto",
       "absent_field": null,
+      "split": "main",
       "error": null,
       "route": "auto",
       "classified_as": "invoice",
@@ -491,7 +545,7 @@
         "total_amount": "correct",
         "currency": "correct"
       },
-      "seconds": 3.63,
+      "seconds": 3.01,
       "input_tokens": 1569,
       "output_tokens": 223,
       "cost_usd": 0.00036915
@@ -502,6 +556,7 @@
       "format": "pdf_text",
       "expected_route": "auto",
       "absent_field": null,
+      "split": "main",
       "error": null,
       "route": "auto",
       "classified_as": "invoice",
@@ -562,10 +617,10 @@
         "total_amount": "correct",
         "currency": "correct"
       },
-      "seconds": 3.44,
+      "seconds": 3.02,
       "input_tokens": 1527,
-      "output_tokens": 230,
-      "cost_usd": 0.00036704999999999995
+      "output_tokens": 235,
+      "cost_usd": 0.00037004999999999997
     },
     {
       "id": "inv-09",
@@ -573,21 +628,20 @@
       "format": "pdf_scan",
       "expected_route": "review",
       "absent_field": "currency",
+      "split": "main",
       "error": null,
-      "route": "review",
+      "route": "auto",
       "classified_as": "invoice",
-      "extraction_confidence": 0.8889,
-      "missing_fields": [
-        "currency"
-      ],
+      "extraction_confidence": 1.0,
+      "missing_fields": [],
       "document_pages": [
         {
           "page": 1,
           "source": "vision",
-          "chars": 560
+          "chars": 565
         }
       ],
-      "text_read": "Tidewater Electrical Inc.\n77 Harbor Drive\nNorfolk, VA 23510\n\nINVOICE\n\nInvoice Number: TI-10167\nInvoice Date: Mar 2, 2025\nDue Date: 01 May 2025\nPayment Terms: Net 60\n\nBill To:\nAcme Corporation\n\nDescription                     Qty   Unit Price   Amount\nWarehouse storage (pallet-month) 21    14.68        308.28\nSoftware subscription - annual seat 25   389.77      9,744.25\nFreight - LTL shipment           4    404.11      1,616.44\n\nSubtotal: 11,668.97\nTax (5%): 583.45\nTotal Due: 12,252.42\n\nThank you for your business. Questions? billing@tidewater.example.com",
+      "text_read": "Tidewater Electrical Inc.\n77 Harbor Drive\nNorfolk, VA 23510\n\nINVOICE\n\nInvoice Number: TI-10167\nInvoice Date: Mar 2, 2025\nDue Date: 01 May 2025\nPayment Terms: Net 60\n\nBill To:\nAcme Corporation\n\nDescription                       Qty   Unit Price   Amount\nWarehouse storage (pallet-month) 21    14.68        308.28\nSoftware subscription - annual seat 25    389.77      9,744.25\nFreight - LTL shipment            4     404.11      1,616.44\n\nSubtotal: 11,668.97\nTax (5%): 583.45\nTotal Due: 12,252.42\n\nThank you for your business. Questions? billing@tidewater.example.com",
       "extracted": {
         "vendor_name": "Tidewater Electrical Inc.",
         "invoice_number": "TI-10167",
@@ -616,7 +670,7 @@
         "subtotal": 11668.97,
         "tax": 583.45,
         "total_amount": 12252.42,
-        "currency": null
+        "currency": "USD"
       },
       "outcomes": {
         "vendor_name": "correct",
@@ -627,12 +681,12 @@
         "subtotal": "correct",
         "tax": "correct",
         "total_amount": "correct",
-        "currency": "correct"
+        "currency": "filled_absent"
       },
-      "seconds": 5.13,
-      "input_tokens": 26610,
-      "output_tokens": 443,
-      "cost_usd": 0.0042573
+      "seconds": 4.95,
+      "input_tokens": 27039,
+      "output_tokens": 389,
+      "cost_usd": 0.00279165
     },
     {
       "id": "inv-10",
@@ -640,6 +694,7 @@
       "format": "text",
       "expected_route": "auto",
       "absent_field": null,
+      "split": "main",
       "error": null,
       "route": "auto",
       "classified_as": "invoice",
@@ -676,10 +731,10 @@
         "total_amount": "correct",
         "currency": "correct"
       },
-      "seconds": 2.59,
+      "seconds": 2.46,
       "input_tokens": 1258,
-      "output_tokens": 148,
-      "cost_usd": 0.0002775
+      "output_tokens": 149,
+      "cost_usd": 0.0002781
     },
     {
       "id": "inv-11",
@@ -687,6 +742,7 @@
       "format": "pdf_text",
       "expected_route": "auto",
       "absent_field": null,
+      "split": "main",
       "error": null,
       "route": "auto",
       "classified_as": "invoice",
@@ -753,7 +809,7 @@
         "total_amount": "correct",
         "currency": "correct"
       },
-      "seconds": 3.87,
+      "seconds": 3.42,
       "input_tokens": 1637,
       "output_tokens": 255,
       "cost_usd": 0.00039854999999999996
@@ -764,6 +820,7 @@
       "format": "pdf_scan",
       "expected_route": "auto",
       "absent_field": null,
+      "split": "main",
       "error": null,
       "route": "auto",
       "classified_as": "invoice",
@@ -773,10 +830,10 @@
         {
           "page": 1,
           "source": "vision",
-          "chars": 422
+          "chars": 420
         }
       ],
-      "text_read": "INVOICE\n-------------------------------\nFrom: Kestrel Office Partners Ltd, 8 Bishopsgate, London EC2N 4BQ, UK\nTo: Pinecrest Hotel Group\nInvoice #: INV-2025-4409\nIssued: Oct 23, 2025\nPayment due: December 7, 2025\n\nItems:\n1. Electrical inspection - 1 x GBP 352.52 = GBP 352.52\n2. On-site support visit - 4 x GBP 278.68 = GBP 1,114.72\n\nSubtotal ........ GBP 1,467.24\nTax .............. GBP 293.45\nTOTAL ......... GBP 1,760.69",
+      "text_read": "INVOICE\n-------------------------------\nFrom: Kestrel Office Partners Ltd, 8 Bishopsgate, London EC2N 4BQ, UK\nTo: Pinecrest Hotel Group\nInvoice #: INV-2025-4409\nIssued: Oct 23, 2025\nPayment due: December 7, 2025\n\nItems:\n1. Electrical inspection - 1 x GBP 352.52 = GBP 352.52\n2. On-site support visit - 4 x GBP 278.68 = GBP 1,114.72\n\nSubtotal ........ GBP 1,467.24\nTax .............. GBP 293.45\nTOTAL ....... GBP 1,760.69",
       "extracted": {
         "vendor_name": "Kestrel Office Partners Ltd",
         "invoice_number": "INV-2025-4409",
@@ -812,10 +869,10 @@
         "total_amount": "correct",
         "currency": "correct"
       },
-      "seconds": 4.83,
+      "seconds": 4.97,
       "input_tokens": 26921,
       "output_tokens": 327,
-      "cost_usd": 0.00423435
+      "cost_usd": 0.00273675
     },
     {
       "id": "res-01",
@@ -823,6 +880,7 @@
       "format": "text",
       "expected_route": "auto",
       "absent_field": null,
+      "split": "main",
       "error": null,
       "route": "auto",
       "classified_as": "resume",
@@ -887,7 +945,7 @@
         "experience": "correct",
         "education": "correct"
       },
-      "seconds": 3.88,
+      "seconds": 3.85,
       "input_tokens": 1793,
       "output_tokens": 370,
       "cost_usd": 0.00049095
@@ -898,6 +956,7 @@
       "format": "pdf_text",
       "expected_route": "review",
       "absent_field": "phone",
+      "split": "main",
       "error": null,
       "route": "review",
       "classified_as": "resume",
@@ -964,7 +1023,7 @@
         "experience": "correct",
         "education": "correct"
       },
-      "seconds": 2.86,
+      "seconds": 2.41,
       "input_tokens": 1125,
       "output_tokens": 243,
       "cost_usd": 0.00031455
@@ -975,6 +1034,7 @@
       "format": "pdf_scan",
       "expected_route": "auto",
       "absent_field": null,
+      "split": "main",
       "error": null,
       "route": "auto",
       "classified_as": "resume",
@@ -1037,10 +1097,10 @@
         "experience": "correct",
         "education": "correct"
       },
-      "seconds": 5.26,
+      "seconds": 5.24,
       "input_tokens": 27187,
       "output_tokens": 448,
-      "cost_usd": 0.004346849999999999
+      "cost_usd": 0.00284925
     },
     {
       "id": "res-04",
@@ -1048,6 +1108,7 @@
       "format": "text",
       "expected_route": "auto",
       "absent_field": null,
+      "split": "main",
       "error": null,
       "route": "auto",
       "classified_as": "resume",
@@ -1114,10 +1175,10 @@
         "experience": "correct",
         "education": "correct"
       },
-      "seconds": 3.94,
+      "seconds": 3.73,
       "input_tokens": 1804,
-      "output_tokens": 374,
-      "cost_usd": 0.000495
+      "output_tokens": 370,
+      "cost_usd": 0.0004925999999999999
     },
     {
       "id": "res-05",
@@ -1125,6 +1186,7 @@
       "format": "pdf_text",
       "expected_route": "auto",
       "absent_field": null,
+      "split": "main",
       "error": null,
       "route": "auto",
       "classified_as": "resume",
@@ -1201,7 +1263,7 @@
         "experience": "correct",
         "education": "correct"
       },
-      "seconds": 3.95,
+      "seconds": 3.85,
       "input_tokens": 1860,
       "output_tokens": 394,
       "cost_usd": 0.0005154
@@ -1212,6 +1274,7 @@
       "format": "pdf_scan",
       "expected_route": "review",
       "absent_field": "summary",
+      "split": "main",
       "error": null,
       "route": "review",
       "classified_as": "resume",
@@ -1282,10 +1345,10 @@
         "experience": "correct",
         "education": "correct"
       },
-      "seconds": 4.5,
+      "seconds": 4.37,
       "input_tokens": 26653,
       "output_tokens": 411,
-      "cost_usd": 0.004244550000000001
+      "cost_usd": 0.0027469499999999997
     },
     {
       "id": "res-07",
@@ -1293,6 +1356,7 @@
       "format": "text",
       "expected_route": "auto",
       "absent_field": null,
+      "split": "main",
       "error": null,
       "route": "auto",
       "classified_as": "resume",
@@ -1363,10 +1427,10 @@
         "experience": "correct",
         "education": "correct"
       },
-      "seconds": 3.74,
+      "seconds": 4.44,
       "input_tokens": 1856,
-      "output_tokens": 338,
-      "cost_usd": 0.00048119999999999993
+      "output_tokens": 349,
+      "cost_usd": 0.00048779999999999993
     },
     {
       "id": "res-08",
@@ -1374,6 +1438,7 @@
       "format": "pdf_text",
       "expected_route": "auto",
       "absent_field": null,
+      "split": "main",
       "error": null,
       "route": "auto",
       "classified_as": "resume",
@@ -1445,10 +1510,10 @@
         "experience": "correct",
         "education": "correct"
       },
-      "seconds": 3.77,
+      "seconds": 3.81,
       "input_tokens": 1732,
-      "output_tokens": 296,
-      "cost_usd": 0.00043739999999999995
+      "output_tokens": 297,
+      "cost_usd": 0.000438
     },
     {
       "id": "res-09",
@@ -1456,6 +1521,7 @@
       "format": "pdf_scan",
       "expected_route": "auto",
       "absent_field": null,
+      "split": "main",
       "error": null,
       "route": "auto",
       "classified_as": "resume",
@@ -1524,10 +1590,10 @@
         "experience": "correct",
         "education": "correct"
       },
-      "seconds": 5.92,
+      "seconds": 5.77,
       "input_tokens": 27264,
-      "output_tokens": 524,
-      "cost_usd": 0.004404
+      "output_tokens": 497,
+      "cost_usd": 0.0043878
     },
     {
       "id": "con-01",
@@ -1535,6 +1601,7 @@
       "format": "text",
       "expected_route": "review",
       "absent_field": "expiration_date",
+      "split": "main",
       "error": null,
       "route": "review",
       "classified_as": "contract",
@@ -1562,8 +1629,8 @@
           "Provider shall perform the services described in each Statement of Work signed by both parties.",
           "Client shall pay Provider the fees set out in each Statement of Work.",
           "Provider will invoice monthly, and Client shall pay each invoice within thirty (30) days of receipt.",
-          "Either party may terminate this Agreement for convenience on 30 days' written notice.",
-          "Either party may terminate this Agreement immediately if the other party materially breaches this Agreement and does not cure the breach within 15 days of written notice."
+          "Each party shall keep the other party's confidential information secret, use it only to perform this Agreement, and return or destroy it when this Agreement ends.",
+          "Either party may terminate this Agreement for convenience on 30 days' written notice, or immediately if the other party materially breaches this Agreement and does not cure the breach within 15 days of written notice."
         ],
         "payment_terms": "Client shall pay Provider the fees set out in each Statement of Work. Provider will invoice monthly, and Client shall pay each invoice within thirty (30) days of receipt.",
         "termination_clause": "Either party may terminate this Agreement for convenience on 30 days' written notice, or immediately if the other party materially breaches this Agreement and does not cure the breach within 15 days of written notice.",
@@ -1579,10 +1646,10 @@
         "termination_clause": "correct",
         "governing_law": "correct"
       },
-      "seconds": 3.26,
+      "seconds": 2.93,
       "input_tokens": 1423,
-      "output_tokens": 329,
-      "cost_usd": 0.00041085000000000004
+      "output_tokens": 299,
+      "cost_usd": 0.00039285000000000004
     },
     {
       "id": "con-02",
@@ -1590,6 +1657,7 @@
       "format": "pdf_text",
       "expected_route": "auto",
       "absent_field": null,
+      "split": "main",
       "error": null,
       "route": "auto",
       "classified_as": "contract",
@@ -1636,7 +1704,7 @@
         "termination_clause": "correct",
         "governing_law": "correct"
       },
-      "seconds": 3.67,
+      "seconds": 3.35,
       "input_tokens": 1904,
       "output_tokens": 315,
       "cost_usd": 0.0004746
@@ -1647,6 +1715,7 @@
       "format": "pdf_scan",
       "expected_route": "auto",
       "absent_field": null,
+      "split": "main",
       "error": null,
       "route": "auto",
       "classified_as": "contract",
@@ -1693,10 +1762,10 @@
         "termination_clause": "correct",
         "governing_law": "correct"
       },
-      "seconds": 7.82,
+      "seconds": 7.75,
       "input_tokens": 27469,
       "output_tokens": 733,
-      "cost_usd": 0.00456015
+      "cost_usd": 0.0030625500000000003
     },
     {
       "id": "con-04",
@@ -1704,6 +1773,7 @@
       "format": "text",
       "expected_route": "auto",
       "absent_field": null,
+      "split": "main",
       "error": null,
       "route": "review",
       "classified_as": "contract",
@@ -1748,7 +1818,7 @@
         "termination_clause": "correct",
         "governing_law": "correct"
       },
-      "seconds": 3.37,
+      "seconds": 3.12,
       "input_tokens": 1449,
       "output_tokens": 335,
       "cost_usd": 0.00041835
@@ -1759,6 +1829,7 @@
       "format": "pdf_text",
       "expected_route": "auto",
       "absent_field": null,
+      "split": "main",
       "error": null,
       "route": "auto",
       "classified_as": "contract",
@@ -1790,7 +1861,8 @@
           "Supplier shall deliver the products listed in Schedule A within ten (10) business days of each purchase order, packaged to prevent damage in transit.",
           "Buyer shall pay for each delivery at the unit prices in Schedule A within forty-five (45) days of the invoice date.",
           "Each party shall keep the other party's confidential information secret, use it only to perform this Agreement, and return or destroy it when this Agreement ends.",
-          "Each party warrants that it has the authority to enter into this Agreement and that performing it will not breach any other agreement it is bound by."
+          "Each party warrants that it has the authority to enter into this Agreement and that performing it will not breach any other agreement it is bound by.",
+          "Either party may terminate this Agreement for convenience on 90 days' written notice, or immediately if the other party materially breaches this Agreement and does not cure the breach within 30 days of written notice."
         ],
         "payment_terms": "Buyer shall pay for each delivery at the unit prices in Schedule A within forty-five (45) days of the invoice date.",
         "termination_clause": "Either party may terminate this Agreement for convenience on 90 days' written notice, or immediately if the other party materially breaches this Agreement and does not cure the breach within 30 days of written notice.",
@@ -1806,10 +1878,10 @@
         "termination_clause": "correct",
         "governing_law": "correct"
       },
-      "seconds": 4.0,
-      "input_tokens": 1949,
-      "output_tokens": 345,
-      "cost_usd": 0.00049935
+      "seconds": 4.2,
+      "input_tokens": 1991,
+      "output_tokens": 385,
+      "cost_usd": 0.00052965
     },
     {
       "id": "con-06",
@@ -1817,6 +1889,7 @@
       "format": "pdf_scan",
       "expected_route": "auto",
       "absent_field": null,
+      "split": "main",
       "error": null,
       "route": "auto",
       "classified_as": "contract",
@@ -1864,10 +1937,10 @@
         "termination_clause": "correct",
         "governing_law": "correct"
       },
-      "seconds": 7.98,
+      "seconds": 7.59,
       "input_tokens": 27469,
-      "output_tokens": 733,
-      "cost_usd": 0.00456015
+      "output_tokens": 734,
+      "cost_usd": 0.00306315
     },
     {
       "id": "con-07",
@@ -1875,17 +1948,16 @@
       "format": "text",
       "expected_route": "auto",
       "absent_field": null,
+      "split": "main",
       "error": null,
-      "route": "review",
+      "route": "auto",
       "classified_as": "contract",
-      "extraction_confidence": 0.875,
-      "missing_fields": [
-        "contract_type"
-      ],
+      "extraction_confidence": 1.0,
+      "missing_fields": [],
       "document_pages": null,
       "text_read": null,
       "extracted": {
-        "contract_type": null,
+        "contract_type": "Consulting Agreement",
         "parties": [
           {
             "name": "Brightline Logistics LLC",
@@ -1908,7 +1980,7 @@
         "governing_law": "State of Delaware"
       },
       "outcomes": {
-        "contract_type": "missed",
+        "contract_type": "correct",
         "parties": "correct",
         "effective_date": "correct",
         "expiration_date": "correct",
@@ -1917,10 +1989,10 @@
         "termination_clause": "correct",
         "governing_law": "correct"
       },
-      "seconds": 3.07,
-      "input_tokens": 1425,
-      "output_tokens": 307,
-      "cost_usd": 0.00039795
+      "seconds": 3.69,
+      "input_tokens": 1900,
+      "output_tokens": 310,
+      "cost_usd": 0.000471
     },
     {
       "id": "con-08",
@@ -1928,6 +2000,7 @@
       "format": "pdf_text",
       "expected_route": "review",
       "absent_field": "governing_law",
+      "split": "main",
       "error": null,
       "route": "review",
       "classified_as": "contract",
@@ -1976,7 +2049,7 @@
         "termination_clause": "correct",
         "governing_law": "correct"
       },
-      "seconds": 2.97,
+      "seconds": 2.86,
       "input_tokens": 1387,
       "output_tokens": 278,
       "cost_usd": 0.00037485
@@ -1987,6 +2060,7 @@
       "format": "pdf_scan",
       "expected_route": "auto",
       "absent_field": null,
+      "split": "main",
       "error": null,
       "route": "auto",
       "classified_as": "contract",
@@ -2015,9 +2089,11 @@
         "effective_date": "2025-11-04",
         "expiration_date": "2026-11-04",
         "key_terms": [
-          "Landlord leases to Tenant approximately 4,800 square feet of office space for general office use, with access to shared parking.",
-          "Tenant shall pay monthly rent of 3300, due on the first day of each month, and a security deposit equal to two months' rent on signing.",
-          "Either party may terminate this Agreement for convenience on 60 days' written notice, or immediately if the other party materially breaches this Agreement and does not cure the breach within 30 days of written notice."
+          "Landlord leases to Tenant approximately 4800 square feet of office space for general office use.",
+          "Tenant shall pay monthly rent of 3300, due on the first day of each month.",
+          "Tenant shall pay a security deposit equal to two months' rent on signing.",
+          "Either party may terminate this Agreement for convenience on 60 days' written notice.",
+          "Either party may terminate this Agreement immediately if the other party materially breaches this Agreement and does not cure the breach within 30 days of written notice."
         ],
         "payment_terms": "Tenant shall pay monthly rent of 3300, due on the first day of each month, and a security deposit equal to two months' rent on signing.",
         "termination_clause": "Either party may terminate this Agreement for convenience on 60 days' written notice, or immediately if the other party materially breaches this Agreement and does not cure the breach within 30 days of written notice.",
@@ -2033,10 +2109,10 @@
         "termination_clause": "correct",
         "governing_law": "correct"
       },
-      "seconds": 7.48,
-      "input_tokens": 27473,
-      "output_tokens": 740,
-      "cost_usd": 0.00456495
+      "seconds": 8.01,
+      "input_tokens": 27477,
+      "output_tokens": 796,
+      "cost_usd": 0.00310155
     },
     {
       "id": "unk-01",
@@ -2044,6 +2120,7 @@
       "format": "text",
       "expected_route": "review",
       "absent_field": null,
+      "split": "main",
       "error": null,
       "route": "review",
       "classified_as": "unknown",
@@ -2053,7 +2130,7 @@
       "text_read": null,
       "extracted": null,
       "outcomes": {},
-      "seconds": 0.48,
+      "seconds": 0.6,
       "input_tokens": 269,
       "output_tokens": 28,
       "cost_usd": 5.715000000000001e-05
@@ -2064,6 +2141,7 @@
       "format": "pdf_text",
       "expected_route": "review",
       "absent_field": null,
+      "split": "main",
       "error": null,
       "route": "review",
       "classified_as": "unknown",
@@ -2079,7 +2157,7 @@
       "text_read": "Q3 PLANNING OFFSITE - NOTES\nAttendees: Laura, Kevin, Fatima, Grace\nDecisions\n- Move the weekly sync to Tuesdays at 10:00.\n- Pilot the new onboarding checklist with the October hires.\nAction items\n- Kevin: draft the onboarding checklist by Friday.\n- Grace: book the room for the November review.\n- Fatima: collect feedback from the support team.",
       "extracted": null,
       "outcomes": {},
-      "seconds": 0.62,
+      "seconds": 0.56,
       "input_tokens": 226,
       "output_tokens": 32,
       "cost_usd": 5.3099999999999996e-05
@@ -2090,6 +2168,7 @@
       "format": "pdf_scan",
       "expected_route": "review",
       "absent_field": null,
+      "split": "main",
       "error": null,
       "route": "review",
       "classified_as": "unknown",
@@ -2105,10 +2184,10 @@
       "text_read": "BUILDING NOTICE\nTo all tenants of 500 Lake Shore Drive\n\nThe north elevator will be out of service for scheduled maintenance from Monday through Wednesday next week. The south elevator and both stairwells remain open. Deliveries should use the loading dock entrance on Grand Avenue. Thank you for your patience.\n\nProperty Management Office",
       "extracted": null,
       "outcomes": {},
-      "seconds": 2.03,
+      "seconds": 1.52,
       "input_tokens": 25759,
       "output_tokens": 92,
-      "cost_usd": 0.0039190499999999994
+      "cost_usd": 0.00242145
     },
     {
       "id": "inv-03-poor",
@@ -2116,6 +2195,7 @@
       "format": "pdf_scan_poor",
       "expected_route": "auto",
       "absent_field": null,
+      "split": "main",
       "error": null,
       "route": "review",
       "classified_as": "invoice",
@@ -2166,10 +2246,10 @@
         "total_amount": "wrong",
         "currency": "missed"
       },
-      "seconds": 4.91,
+      "seconds": 4.21,
       "input_tokens": 26568,
-      "output_tokens": 370,
-      "cost_usd": 0.0042071999999999995
+      "output_tokens": 374,
+      "cost_usd": 0.002712
     },
     {
       "id": "inv-06-poor",
@@ -2177,6 +2257,7 @@
       "format": "pdf_scan_poor",
       "expected_route": "auto",
       "absent_field": null,
+      "split": "main",
       "error": null,
       "route": "auto",
       "classified_as": "invoice",
@@ -2219,10 +2300,10 @@
         "total_amount": "correct",
         "currency": "correct"
       },
-      "seconds": 3.91,
+      "seconds": 3.86,
       "input_tokens": 26785,
       "output_tokens": 245,
-      "cost_usd": 0.00416475
+      "cost_usd": 0.0026671499999999996
     },
     {
       "id": "inv-09-poor",
@@ -2230,6 +2311,7 @@
       "format": "pdf_scan_poor",
       "expected_route": "review",
       "absent_field": "currency",
+      "split": "main",
       "error": null,
       "route": "auto",
       "classified_as": "invoice",
@@ -2239,10 +2321,10 @@
         {
           "page": 1,
           "source": "vision",
-          "chars": 655
+          "chars": 666
         }
       ],
-      "text_read": "Tidewater Electrical Inc.\n77 Harbor Drive\nNorfolk, VA 23510\n\nINVOICE\n\nInvoice Number: T1-10187\nInvoice Date: Mar 2, 2025\nDue Date: 01 May 2025\nPayment Terms: Net 60\n\nBill To\nAcme Corporation\n\nDescription                          Qty    Unit Price    Amount\nWarehouse storage (pallet-month)   21     14.68        308.28\nSoftware subscription - annual seat   25     361.77      7,644.25\nFreight - LTL shipment               4      404.11      1,616.44\n\nSubtotal:                          11,668.97\nTax (5%):                             583.45\nTotal Due:                        12,252.42\n\nThank you for your business. Questions? billing@tidewater.example.com",
+      "text_read": "Tidewater Electrical Inc.\n77 Harbor Drive\nNorfolk, VA 23510\n\nINVOICE\n\nInvoice Number: T1-10187\nInvoice Date: Mar 2, 2025\nDue Date: 01 May 2025\nPayment Terms: Net 60\n\nBill To\nAcme Corporation\n\nDescription                          Qty    Unit Price    Amount\nWarehouse storage (pallet-month)    21      14.68       308.28\nSoftware subscription - annual seat    25      361.77      9,044.25\nFreight - LTL shipment                4       404.11      1,616.44\n\nSubtotal:                             11,668.97\nTax (5%):                             583.45\nTotal Due:                           12,252.42\n\nThank you for your business. Questions? billing@tidewater.example.com",
       "extracted": {
         "vendor_name": "Tidewater Electrical Inc.",
         "invoice_number": "T1-10187",
@@ -2259,7 +2341,7 @@
             "description": "Software subscription - annual seat",
             "quantity": 25.0,
             "unit_price": 361.77,
-            "total": 7644.25
+            "total": 9044.25
           },
           {
             "description": "Freight - LTL shipment",
@@ -2284,10 +2366,10 @@
         "total_amount": "correct",
         "currency": "filled_absent"
       },
-      "seconds": 5.74,
+      "seconds": 4.5,
       "input_tokens": 27052,
       "output_tokens": 396,
-      "cost_usd": 0.0042953999999999996
+      "cost_usd": 0.0027977999999999996
     },
     {
       "id": "inv-12-poor",
@@ -2295,6 +2377,7 @@
       "format": "pdf_scan_poor",
       "expected_route": "auto",
       "absent_field": null,
+      "split": "main",
       "error": null,
       "route": "auto",
       "classified_as": "invoice",
@@ -2304,10 +2387,10 @@
         {
           "page": 1,
           "source": "vision",
-          "chars": 398
+          "chars": 378
         }
       ],
-      "text_read": "INVOICE\n____________________\nFrom: Kestrel Office Partners Ltd, 8 Bishopsgate, London EC2N 4BQ, UK\nTo: Pinecrest Hotel Group\nInvoice #: INV-2025-4409\nIssued: Oct 23, 2025\nPayment due: December 7, 2025\n\nItems:\n1. Electrical inspection - 1 x GBP 352.52 = GBP 352.52\n2. On-site support visit - 4 x GBP 278.68 = GBP 1,114.72\n\nSubtotal ______ GBP 1,467.24\nTax ______ GBP 293.45\nTOTAL ______ GBP 1,760.69",
+      "text_read": "INVOICE\n\nFrom: Kestrel Office Partners Ltd, 8 Bishopsgate, London EC2N 4BQ, UK\nTo: Pinecrest Hotel Group\nInvoice #: INV-2025-4409\nIssued: Oct 23, 2025\nPayment due: December 7, 2025\n\nItems:\n1. Electrical inspection - 1 x GBP 352.52 = GBP 352.52\n2. On-site support visit - 4 x GBP 278.68 = GBP 1,114.72\n\nSubtotal ______ GBP 1,467.24\nTax ______ GBP 293.45\nTOTAL ______ GBP 1,760.69",
       "extracted": {
         "vendor_name": "Kestrel Office Partners Ltd",
         "invoice_number": "INV-2025-4409",
@@ -2343,10 +2426,10 @@
         "total_amount": "correct",
         "currency": "correct"
       },
-      "seconds": 5.01,
-      "input_tokens": 26919,
-      "output_tokens": 324,
-      "cost_usd": 0.00423225
+      "seconds": 4.73,
+      "input_tokens": 26913,
+      "output_tokens": 323,
+      "cost_usd": 0.00273315
     },
     {
       "id": "res-03-poor",
@@ -2354,72 +2437,29 @@
       "format": "pdf_scan_poor",
       "expected_route": "auto",
       "absent_field": null,
-      "error": null,
-      "route": "auto",
-      "classified_as": "resume",
-      "extraction_confidence": 1.0,
-      "missing_fields": [],
-      "document_pages": [
-        {
-          "page": 1,
-          "source": "vision",
-          "chars": 786
-        }
-      ],
-      "text_read": "PRIYA NATARAJAN\nSoftware Engineer\nSeattle, WA | priya.natarajan@example.com | (404) 555-0111\n\nSUMMARY\nSoftware Engineer with 12 years of experience turning messy operational data into reliable reporting and automation. Comfortable owning projects end to end.\n\nSKILLS\nPython, Spark, Airflow, Pandas, Terrafom, FastAPI\n\nEXPERIENCE\nSoftware Engineer - Cardinal Insurance Co. (2023 - Present)\n- Built dashboards and pipelines used by finance and operations teams\n- Cut manual reporting time by automating weekly data pulls\n\nMachine Learning Engineer - Ironwood Retail Group (2021 - 2022)\n- Built dashboards and pipelines used by finance and operations teams\n- Cut manual reporting time by automating weekly data pulls\n\nEDUCATION\nB.S. in Information Systems - Arizona State University (2009)",
-      "extracted": {
-        "full_name": "PRIYA NATARAJAN",
-        "email": "priya.natarajan@example.com",
-        "phone": "(404) 555-0111",
-        "location": "Seattle, WA",
-        "summary": "Software Engineer with 12 years of experience turning messy operational data into reliable reporting and automation. Comfortable owning projects end to end.",
-        "skills": [
-          "Python",
-          "Spark",
-          "Airflow",
-          "Pandas",
-          "Terrafom",
-          "FastAPI"
-        ],
-        "experience": [
-          {
-            "company": "Cardinal Insurance Co.",
-            "title": "Software Engineer",
-            "start_date": "2023",
-            "end_date": "Present",
-            "description": "Built dashboards and pipelines used by finance and operations teams. Cut manual reporting time by automating weekly data pulls."
-          },
-          {
-            "company": "Ironwood Retail Group",
-            "title": "Machine Learning Engineer",
-            "start_date": "2021",
-            "end_date": "2022",
-            "description": "Built dashboards and pipelines used by finance and operations teams. Cut manual reporting time by automating weekly data pulls."
-          }
-        ],
-        "education": [
-          {
-            "institution": "Arizona State University",
-            "degree": "B.S.",
-            "field": "Information Systems",
-            "graduation_date": "2009"
-          }
-        ]
-      },
+      "split": "main",
+      "error": "DocumentError: Page 1 couldn't be read: the vision model declined to transcribe it.",
+      "route": "error",
+      "classified_as": null,
+      "extraction_confidence": null,
+      "missing_fields": null,
+      "document_pages": null,
+      "text_read": null,
+      "extracted": null,
       "outcomes": {
-        "full_name": "correct",
-        "email": "correct",
-        "phone": "correct",
-        "location": "correct",
-        "summary": "correct",
-        "skills": "correct",
-        "experience": "correct",
-        "education": "correct"
+        "full_name": "not_extracted",
+        "email": "not_extracted",
+        "phone": "not_extracted",
+        "location": "not_extracted",
+        "summary": "not_extracted",
+        "skills": "not_extracted",
+        "experience": "not_extracted",
+        "education": "not_extracted"
       },
-      "seconds": 5.57,
-      "input_tokens": 27193,
-      "output_tokens": 452,
-      "cost_usd": 0.00435015
+      "seconds": 0.91,
+      "input_tokens": 25552,
+      "output_tokens": 10,
+      "cost_usd": 0.0023412
     },
     {
       "id": "res-06-poor",
@@ -2427,80 +2467,29 @@
       "format": "pdf_scan_poor",
       "expected_route": "review",
       "absent_field": "summary",
-      "error": null,
-      "route": "review",
-      "classified_as": "resume",
-      "extraction_confidence": 0.875,
-      "missing_fields": [
-        "summary"
-      ],
-      "document_pages": [
-        {
-          "page": 1,
-          "source": "vision",
-          "chars": 647
-        }
-      ],
-      "text_read": "JORDAN KIM\nMachine Learning Engineer\nChicago, IL | jordan.kim@example.com | (512) 555-0134\n\nSKILLS\nTerraform, Docker, PostgreSQL, LangChain, PyTorch, AWS\n\nEXPERIENCE\nData Analyst - Polaris Payments (2024 - Present)\n- Built dashboards and pipelines used by finance and operations teams\n- Cut manual reporting time by automating weekly data pulls\n\nData Analyst - Bayside Mutual (2021 - 2024)\n- Built dashboards and pipelines used by finance and operations teams\n- Cut manual reporting time by automating weekly data pulls\n\nEDUCATION\nB.A. in Economics - University of Texas at Austin (2008)\nM.S. in Statistics - North Carolina State University (2010)",
-      "extracted": {
-        "full_name": "JORDAN KIM",
-        "email": "jordan.kim@example.com",
-        "phone": "(512) 555-0134",
-        "location": "Chicago, IL",
-        "summary": null,
-        "skills": [
-          "Terraform",
-          "Docker",
-          "PostgreSQL",
-          "LangChain",
-          "PyTorch",
-          "AWS"
-        ],
-        "experience": [
-          {
-            "company": "Polaris Payments",
-            "title": "Data Analyst",
-            "start_date": "2024",
-            "end_date": "Present",
-            "description": "Built dashboards and pipelines used by finance and operations teams. Cut manual reporting time by automating weekly data pulls."
-          },
-          {
-            "company": "Bayside Mutual",
-            "title": "Data Analyst",
-            "start_date": "2021",
-            "end_date": "2024",
-            "description": "Built dashboards and pipelines used by finance and operations teams. Cut manual reporting time by automating weekly data pulls."
-          }
-        ],
-        "education": [
-          {
-            "institution": "University of Texas at Austin",
-            "degree": "B.A.",
-            "field": "Economics",
-            "graduation_date": "2008"
-          },
-          {
-            "institution": "North Carolina State University",
-            "degree": "M.S.",
-            "field": "Statistics",
-            "graduation_date": "2010"
-          }
-        ]
-      },
+      "split": "main",
+      "error": "DocumentError: Page 1 couldn't be read: the vision model declined to transcribe it.",
+      "route": "error",
+      "classified_as": null,
+      "extraction_confidence": null,
+      "missing_fields": null,
+      "document_pages": null,
+      "text_read": null,
+      "extracted": null,
       "outcomes": {
-        "full_name": "correct",
-        "email": "correct",
-        "phone": "correct",
-        "location": "correct",
-        "summary": "correct",
-        "skills": "correct",
-        "experience": "correct",
-        "education": "correct"
+        "full_name": "not_extracted",
+        "email": "not_extracted",
+        "phone": "not_extracted",
+        "location": "not_extracted",
+        "summary": "not_extracted",
+        "skills": "not_extracted",
+        "experience": "not_extracted",
+        "education": "not_extracted"
       },
-      "seconds": 4.73,
-      "input_tokens": 26653,
-      "output_tokens": 411,
-      "cost_usd": 0.004244550000000001
+      "seconds": 0.82,
+      "input_tokens": 25552,
+      "output_tokens": 10,
+      "cost_usd": 0.0023412
     },
     {
       "id": "res-09-poor",
@@ -2508,6 +2497,7 @@
       "format": "pdf_scan_poor",
       "expected_route": "auto",
       "absent_field": null,
+      "split": "main",
       "error": null,
       "route": "auto",
       "classified_as": "resume",
@@ -2576,10 +2566,10 @@
         "experience": "correct",
         "education": "correct"
       },
-      "seconds": 6.2,
+      "seconds": 5.69,
       "input_tokens": 27264,
-      "output_tokens": 527,
-      "cost_usd": 0.0044058000000000005
+      "output_tokens": 494,
+      "cost_usd": 0.0028884
     },
     {
       "id": "con-03-poor",
@@ -2587,19 +2577,14 @@
       "format": "pdf_scan_poor",
       "expected_route": "auto",
       "absent_field": null,
-      "error": null,
-      "route": "review",
-      "classified_as": "unknown",
+      "split": "main",
+      "error": "DocumentError: Page 1 couldn't be read: the vision model declined to transcribe it.",
+      "route": "error",
+      "classified_as": null,
       "extraction_confidence": null,
       "missing_fields": null,
-      "document_pages": [
-        {
-          "page": 1,
-          "source": "vision",
-          "chars": 40
-        }
-      ],
-      "text_read": "I'm sorry, but I can't assist with that.",
+      "document_pages": null,
+      "text_read": null,
       "extracted": null,
       "outcomes": {
         "contract_type": "not_extracted",
@@ -2611,10 +2596,10 @@
         "termination_clause": "not_extracted",
         "governing_law": "not_extracted"
       },
-      "seconds": 1.92,
-      "input_tokens": 25704,
-      "output_tokens": 40,
-      "cost_usd": 0.0038796
+      "seconds": 0.81,
+      "input_tokens": 25552,
+      "output_tokens": 10,
+      "cost_usd": 0.0023412
     },
     {
       "id": "con-06-poor",
@@ -2622,19 +2607,14 @@
       "format": "pdf_scan_poor",
       "expected_route": "auto",
       "absent_field": null,
-      "error": null,
-      "route": "review",
-      "classified_as": "unknown",
+      "split": "main",
+      "error": "DocumentError: Page 1 couldn't be read: the vision model declined to transcribe it.",
+      "route": "error",
+      "classified_as": null,
       "extraction_confidence": null,
       "missing_fields": null,
-      "document_pages": [
-        {
-          "page": 1,
-          "source": "vision",
-          "chars": 40
-        }
-      ],
-      "text_read": "I'm sorry, but I can't assist with that.",
+      "document_pages": null,
+      "text_read": null,
       "extracted": null,
       "outcomes": {
         "contract_type": "not_extracted",
@@ -2646,10 +2626,10 @@
         "termination_clause": "not_extracted",
         "governing_law": "not_extracted"
       },
-      "seconds": 1.82,
-      "input_tokens": 25704,
-      "output_tokens": 40,
-      "cost_usd": 0.0038796
+      "seconds": 0.74,
+      "input_tokens": 25552,
+      "output_tokens": 10,
+      "cost_usd": 0.0023412
     },
     {
       "id": "con-09-poor",
@@ -2657,19 +2637,14 @@
       "format": "pdf_scan_poor",
       "expected_route": "auto",
       "absent_field": null,
-      "error": null,
-      "route": "review",
-      "classified_as": "unknown",
+      "split": "main",
+      "error": "DocumentError: Page 1 couldn't be read: the vision model declined to transcribe it.",
+      "route": "error",
+      "classified_as": null,
       "extraction_confidence": null,
       "missing_fields": null,
-      "document_pages": [
-        {
-          "page": 1,
-          "source": "vision",
-          "chars": 40
-        }
-      ],
-      "text_read": "I'm sorry, but I can't assist with that.",
+      "document_pages": null,
+      "text_read": null,
       "extracted": null,
       "outcomes": {
         "contract_type": "not_extracted",
@@ -2681,10 +2656,10 @@
         "termination_clause": "not_extracted",
         "governing_law": "not_extracted"
       },
-      "seconds": 2.18,
-      "input_tokens": 25704,
-      "output_tokens": 40,
-      "cost_usd": 0.0038796
+      "seconds": 0.84,
+      "input_tokens": 25552,
+      "output_tokens": 10,
+      "cost_usd": 0.0023412
     },
     {
       "id": "unk-03-poor",
@@ -2692,6 +2667,7 @@
       "format": "pdf_scan_poor",
       "expected_route": "review",
       "absent_field": null,
+      "split": "main",
       "error": null,
       "route": "review",
       "classified_as": "unknown",
@@ -2707,10 +2683,798 @@
       "text_read": "BUILDING NOTICE\nTo all tenants of 500 Lake Shore Drive\n\nThe north elevator will be out of service for scheduled maintenance from Monday through Wednesday next week. The south elevator and both stairwells remain open. Deliveries should use the loading dock entrance on Grand Avenue. Thank you for your patience.\n\nProperty Management Office",
       "extracted": null,
       "outcomes": {},
-      "seconds": 2.36,
+      "seconds": 1.76,
       "input_tokens": 25759,
       "output_tokens": 92,
-      "cost_usd": 0.0039190499999999994
+      "cost_usd": 0.00242145
+    },
+    {
+      "id": "inv-13",
+      "doc_type": "invoice",
+      "format": "pdf_scan_poor",
+      "expected_route": "auto",
+      "absent_field": null,
+      "split": "holdout",
+      "error": null,
+      "route": "review",
+      "classified_as": "invoice",
+      "extraction_confidence": 0.8889,
+      "missing_fields": [
+        "currency"
+      ],
+      "document_pages": [
+        {
+          "page": 1,
+          "source": "vision",
+          "chars": 692
+        }
+      ],
+      "text_read": "Brightline Logistics LLC\n4100 Commerce Pkwy\nMemphis, TN 38118\n\nINVOICE\n\nInvoice Number: 45731\nInvoice Date: Nov 16, 2025\nDue Date: 16 Dec 2025\nPayment Terms: Net 30\n\nBill To:\nPrescott Hotel Group\n\nDescription                       Qty   Unit Price   Amount\nPrinter toner cartridge           4    $56.44       $221.76\nErgonomic office chair            4    $236.41      $1,177.64\nFreight - LTL shipment            2    $909.53      $1,819.06\nCatering - special lunch for 20   2    $333.41      $666.82\nOn-site                           1    $173.72      $173.72\n\nSubtotal: $4,069.00\nTax (5%): $320.95\nTotal Due: $4,361.95\n\nThank you for your business. Questions? billing@brightline.example.com",
+      "extracted": {
+        "vendor_name": "Brightline Logistics LLC",
+        "invoice_number": "45731",
+        "invoice_date": "2025-11-16",
+        "due_date": "2025-12-16",
+        "line_items": [
+          {
+            "description": "Printer toner cartridge",
+            "quantity": 4.0,
+            "unit_price": 56.44,
+            "total": 221.76
+          },
+          {
+            "description": "Ergonomic office chair",
+            "quantity": 4.0,
+            "unit_price": 236.41,
+            "total": 1177.64
+          },
+          {
+            "description": "Freight - LTL shipment",
+            "quantity": 2.0,
+            "unit_price": 909.53,
+            "total": 1819.06
+          },
+          {
+            "description": "Catering - special lunch for 20",
+            "quantity": 2.0,
+            "unit_price": 333.41,
+            "total": 666.82
+          },
+          {
+            "description": "On-site",
+            "quantity": 1.0,
+            "unit_price": 173.72,
+            "total": 173.72
+          }
+        ],
+        "subtotal": 4069.0,
+        "tax": 320.95,
+        "total_amount": 4361.95,
+        "currency": null
+      },
+      "outcomes": {
+        "vendor_name": "correct",
+        "invoice_number": "correct",
+        "invoice_date": "correct",
+        "due_date": "correct",
+        "line_items": "correct",
+        "subtotal": "wrong",
+        "tax": "wrong",
+        "total_amount": "wrong",
+        "currency": "missed"
+      },
+      "seconds": 6.24,
+      "input_tokens": 26682,
+      "output_tokens": 550,
+      "cost_usd": 0.0028347
+    },
+    {
+      "id": "inv-14",
+      "doc_type": "invoice",
+      "format": "pdf_scan_poor",
+      "expected_route": "auto",
+      "absent_field": null,
+      "split": "holdout",
+      "error": null,
+      "route": "auto",
+      "classified_as": "invoice",
+      "extraction_confidence": 1.0,
+      "missing_fields": [],
+      "document_pages": [
+        {
+          "page": 1,
+          "source": "vision",
+          "chars": 473
+        }
+      ],
+      "text_read": "INVOICE\n\nFrom: Northwind Analytics Inc., 88 Market Street, Suite 400, Denver, CO 80202\nTo: Summit Ridge Manufacturing\nInvoice #: NO-99687\nIssued: 2025-06-06\nPayment due: Jun 21, 2025\n\nItems:\n1. On-site support visit - 1 x $379.26 = $379.26\n2. Printer toner cartridge - 12 x $96.61 = $1,163.32\n3. Warehouse storage (pallet-month) - 31 x $22.10 = $685.10\n4. Freight - LTL shipment - 2 x $688.29 = $1,376.58\n\nSubtotal ______ $3,624.26\nTax ______ $181.21\nTOTAL ______ $3,805.47",
+      "extracted": {
+        "vendor_name": "Northwind Analytics Inc.",
+        "invoice_number": "NO-99687",
+        "invoice_date": "2025-06-06",
+        "due_date": "2025-06-21",
+        "line_items": [
+          {
+            "description": "On-site support visit",
+            "quantity": 1.0,
+            "unit_price": 379.26,
+            "total": 379.26
+          },
+          {
+            "description": "Printer toner cartridge",
+            "quantity": 12.0,
+            "unit_price": 96.61,
+            "total": 1163.32
+          },
+          {
+            "description": "Warehouse storage (pallet-month)",
+            "quantity": 31.0,
+            "unit_price": 22.1,
+            "total": 685.1
+          },
+          {
+            "description": "Freight - LTL shipment",
+            "quantity": 2.0,
+            "unit_price": 688.29,
+            "total": 1376.58
+          }
+        ],
+        "subtotal": 3624.26,
+        "tax": 181.21,
+        "total_amount": 3805.47,
+        "currency": "USD"
+      },
+      "outcomes": {
+        "vendor_name": "correct",
+        "invoice_number": "wrong",
+        "invoice_date": "correct",
+        "due_date": "correct",
+        "line_items": "wrong",
+        "subtotal": "correct",
+        "tax": "correct",
+        "total_amount": "correct",
+        "currency": "correct"
+      },
+      "seconds": 5.93,
+      "input_tokens": 27066,
+      "output_tokens": 403,
+      "cost_usd": 0.0028041000000000003
+    },
+    {
+      "id": "inv-15",
+      "doc_type": "invoice",
+      "format": "pdf_scan_poor",
+      "expected_route": "auto",
+      "absent_field": null,
+      "split": "holdout",
+      "error": null,
+      "route": "review",
+      "classified_as": "invoice",
+      "extraction_confidence": 0.8889,
+      "missing_fields": [
+        "currency"
+      ],
+      "document_pages": [
+        {
+          "page": 1,
+          "source": "vision",
+          "chars": 528
+        }
+      ],
+      "text_read": "Cobalt Peak Software\n2200 Ridge Road\nBoise, ID 83702\n\nINVOICE\n\nInvoice Number: INV-2026-7958\nInvoice Date: Feb 28, 2026\nDue Date: March 15, 2026\nPayment Terms: Net 15\n\nBill To:\nGranite State Credit Union\n\nDescription                          Qty    Unit Price    Amount\nWarehouse storage (pallet-month)   29     $14.18       $411.22\nImplementation services (hours)     22     $97.74      $2,150.28\n\nSubtotal: $2,561.50\nTax (6.25%): $160.09\nTotal Due: $2,721.59\n\nThank you for your business. Questions? billing@cobalt.example.com",
+      "extracted": {
+        "vendor_name": "Cobalt Peak Software",
+        "invoice_number": "INV-2026-7958",
+        "invoice_date": "2026-02-28",
+        "due_date": "2026-03-15",
+        "line_items": [
+          {
+            "description": "Warehouse storage (pallet-month)",
+            "quantity": 29.0,
+            "unit_price": 14.18,
+            "total": 411.22
+          },
+          {
+            "description": "Implementation services (hours)",
+            "quantity": 22.0,
+            "unit_price": 97.74,
+            "total": 2150.28
+          }
+        ],
+        "subtotal": 2561.5,
+        "tax": 160.09,
+        "total_amount": 2721.59,
+        "currency": null
+      },
+      "outcomes": {
+        "vendor_name": "correct",
+        "invoice_number": "correct",
+        "invoice_date": "correct",
+        "due_date": "correct",
+        "line_items": "correct",
+        "subtotal": "correct",
+        "tax": "correct",
+        "total_amount": "correct",
+        "currency": "missed"
+      },
+      "seconds": 4.08,
+      "input_tokens": 26584,
+      "output_tokens": 387,
+      "cost_usd": 0.0027221999999999997
+    },
+    {
+      "id": "inv-16",
+      "doc_type": "invoice",
+      "format": "pdf_scan_poor",
+      "expected_route": "auto",
+      "absent_field": null,
+      "split": "holdout",
+      "error": null,
+      "route": "auto",
+      "classified_as": "invoice",
+      "extraction_confidence": 1.0,
+      "missing_fields": [],
+      "document_pages": [
+        {
+          "page": 1,
+          "source": "vision",
+          "chars": 340
+        }
+      ],
+      "text_read": "INVOICE\nFrom: Harbor & Finch Supply Co., 15 Wharf Lane, Portland, ME 04101\nTo: Pinecrest Hotel Group\nInvoice #: INV-2025-290\nIssued: 2025-09-07\nPayment due: October 22, 2025\n\nItems\n1. Ergonomic office chair - 2 x $399.91 = $799.82\n2. Catering - working lunch for 20 - 1 x $522.44 = $522.44\n\nSubtotal  $1,322.26\nTax  $109.09\nTOTAL  $1,431.36",
+      "extracted": {
+        "vendor_name": "Harbor & Finch Supply Co.",
+        "invoice_number": "INV-2025-290",
+        "invoice_date": "2025-09-07",
+        "due_date": "2025-10-22",
+        "line_items": [
+          {
+            "description": "Ergonomic office chair",
+            "quantity": 2.0,
+            "unit_price": 399.91,
+            "total": 799.82
+          },
+          {
+            "description": "Catering - working lunch for 20",
+            "quantity": 1.0,
+            "unit_price": 522.44,
+            "total": 522.44
+          }
+        ],
+        "subtotal": 1322.26,
+        "tax": 109.09,
+        "total_amount": 1431.36,
+        "currency": "USD"
+      },
+      "outcomes": {
+        "vendor_name": "correct",
+        "invoice_number": "wrong",
+        "invoice_date": "correct",
+        "due_date": "correct",
+        "line_items": "correct",
+        "subtotal": "correct",
+        "tax": "correct",
+        "total_amount": "correct",
+        "currency": "correct"
+      },
+      "seconds": 4.54,
+      "input_tokens": 26898,
+      "output_tokens": 319,
+      "cost_usd": 0.0027285
+    },
+    {
+      "id": "res-10",
+      "doc_type": "resume",
+      "format": "pdf_scan_poor",
+      "expected_route": "auto",
+      "absent_field": null,
+      "split": "holdout",
+      "error": null,
+      "route": "auto",
+      "classified_as": "resume",
+      "extraction_confidence": 1.0,
+      "missing_fields": [],
+      "document_pages": [
+        {
+          "page": 1,
+          "source": "vision",
+          "chars": 808
+        }
+      ],
+      "text_read": "MAYA OKAFOR\nProduct Analyst\nAtlanta, GA | maya.okafor@example.com | (404) 555-0146\n\nSUMMARY\nProduct Analyst with 7 years of experience turning messy operational data into reliable reporting and automation. Comfortable owning projects end to end.\n\nSKILLS\nscikit-learn, AWS, PostgreSQL, PyTorch, Pandas, Python, Kubernetes, Tableau, LangChain\n\nEXPERIENCE\nMachine Learning Engineer - Cardinal Insurance Co. (2023 - Present)\n- Built dashboards and pipelines used by finance and operations teams\n- Cut manual reporting time by automating weekly data pulls\n\nMachine Learning Engineer - Bayside Mutual (2019 - 2023)\n- Built dashboards and pipelines used by finance and operations teams\n- Cut manual reporting time by automating weekly data pulls\n\nEDUCATION\nB.S. in Computer Science - Georgia State University (2014)",
+      "extracted": {
+        "full_name": "MAYA OKAFOR",
+        "email": "maya.okafor@example.com",
+        "phone": "(404) 555-0146",
+        "location": "Atlanta, GA",
+        "summary": "Product Analyst with 7 years of experience turning messy operational data into reliable reporting and automation. Comfortable owning projects end to end.",
+        "skills": [
+          "scikit-learn",
+          "AWS",
+          "PostgreSQL",
+          "PyTorch",
+          "Pandas",
+          "Python",
+          "Kubernetes",
+          "Tableau",
+          "LangChain"
+        ],
+        "experience": [
+          {
+            "company": "Cardinal Insurance Co.",
+            "title": "Machine Learning Engineer",
+            "start_date": "2023",
+            "end_date": "Present",
+            "description": "Built dashboards and pipelines used by finance and operations teams. Cut manual reporting time by automating weekly data pulls."
+          },
+          {
+            "company": "Bayside Mutual",
+            "title": "Machine Learning Engineer",
+            "start_date": "2019",
+            "end_date": "2023",
+            "description": "Built dashboards and pipelines used by finance and operations teams. Cut manual reporting time by automating weekly data pulls."
+          }
+        ],
+        "education": [
+          {
+            "institution": "Georgia State University",
+            "degree": "B.S.",
+            "field": "Computer Science",
+            "graduation_date": "2014"
+          }
+        ]
+      },
+      "outcomes": {
+        "full_name": "correct",
+        "email": "correct",
+        "phone": "correct",
+        "location": "correct",
+        "summary": "correct",
+        "skills": "correct",
+        "experience": "correct",
+        "education": "correct"
+      },
+      "seconds": 6.7,
+      "input_tokens": 27224,
+      "output_tokens": 503,
+      "cost_usd": 0.0028878000000000003
+    },
+    {
+      "id": "res-11",
+      "doc_type": "resume",
+      "format": "pdf_scan_poor",
+      "expected_route": "auto",
+      "absent_field": null,
+      "split": "holdout",
+      "error": null,
+      "route": "auto",
+      "classified_as": "resume",
+      "extraction_confidence": 1.0,
+      "missing_fields": [],
+      "document_pages": [
+        {
+          "page": 1,
+          "source": "vision",
+          "chars": 1021
+        }
+      ],
+      "text_read": "DANIEL REYES\nSoftware Engineer\nAustin, TX | daniel.reyes@example.com | (404) 555-0123\n\nSUMMARY\nSoftware Engineer with 8 years of experience turning messy operational data into reliable reporting and automation. Comfortable owning projects end to end.\n\nSKILLS\nSQL, Spark, PostgreSQL, Tableau, Airflow, FastAPI\n\nEXPERIENCE\nMachine Learning Engineer - Ironwood Retail Group (2023 - Present)\n- Built dashboards and pipelines used by finance and operations teams\n- Cut manual reporting time by automating weekly data pulls\n\nOperations Manager - Bayside Mutual (2021 - 2023)\n- Built dashboards and pipelines used by finance and operations teams\n- Cut manual reporting time by automating weekly data pulls\n\nOperations Manager - Crescent Health Systems (2017 - 2021)\n- Built dashboards and pipelines used by finance and operations teams\n- Cut manual reporting time by automating weekly data pulls\n\nEDUCATION\nM.S. in Statistics - North Carolina State University (2017)\nB.S. in Information Systems - Arizona State University (2016)",
+      "extracted": {
+        "full_name": "DANIEL REYES",
+        "email": "daniel.reyes@example.com",
+        "phone": "(404) 555-0123",
+        "location": "Austin, TX",
+        "summary": "Software Engineer with 8 years of experience turning messy operational data into reliable reporting and automation. Comfortable owning projects end to end.",
+        "skills": [
+          "SQL",
+          "Spark",
+          "PostgreSQL",
+          "Tableau",
+          "Airflow",
+          "FastAPI"
+        ],
+        "experience": [
+          {
+            "company": "Ironwood Retail Group",
+            "title": "Machine Learning Engineer",
+            "start_date": "2023",
+            "end_date": "Present",
+            "description": "Built dashboards and pipelines used by finance and operations teams. Cut manual reporting time by automating weekly data pulls."
+          },
+          {
+            "company": "Bayside Mutual",
+            "title": "Operations Manager",
+            "start_date": "2021",
+            "end_date": "2023",
+            "description": "Built dashboards and pipelines used by finance and operations teams. Cut manual reporting time by automating weekly data pulls."
+          },
+          {
+            "company": "Crescent Health Systems",
+            "title": "Operations Manager",
+            "start_date": "2017",
+            "end_date": "2021",
+            "description": "Built dashboards and pipelines used by finance and operations teams. Cut manual reporting time by automating weekly data pulls."
+          }
+        ],
+        "education": [
+          {
+            "institution": "North Carolina State University",
+            "degree": "M.S.",
+            "field": "Statistics",
+            "graduation_date": "2017"
+          },
+          {
+            "institution": "Arizona State University",
+            "degree": "B.S.",
+            "field": "Information Systems",
+            "graduation_date": "2016"
+          }
+        ]
+      },
+      "outcomes": {
+        "full_name": "correct",
+        "email": "correct",
+        "phone": "correct",
+        "location": "correct",
+        "summary": "correct",
+        "skills": "correct",
+        "experience": "correct",
+        "education": "correct"
+      },
+      "seconds": 6.96,
+      "input_tokens": 27395,
+      "output_tokens": 622,
+      "cost_usd": 0.0029848499999999994
+    },
+    {
+      "id": "res-12",
+      "doc_type": "resume",
+      "format": "pdf_scan_poor",
+      "expected_route": "auto",
+      "absent_field": null,
+      "split": "holdout",
+      "error": "DocumentError: Page 1 couldn't be read: the vision model declined to transcribe it.",
+      "route": "error",
+      "classified_as": null,
+      "extraction_confidence": null,
+      "missing_fields": null,
+      "document_pages": null,
+      "text_read": null,
+      "extracted": null,
+      "outcomes": {
+        "full_name": "not_extracted",
+        "email": "not_extracted",
+        "phone": "not_extracted",
+        "location": "not_extracted",
+        "summary": "not_extracted",
+        "skills": "not_extracted",
+        "experience": "not_extracted",
+        "education": "not_extracted"
+      },
+      "seconds": 0.72,
+      "input_tokens": 25552,
+      "output_tokens": 10,
+      "cost_usd": 0.0023412
+    },
+    {
+      "id": "res-13",
+      "doc_type": "resume",
+      "format": "pdf_scan_poor",
+      "expected_route": "auto",
+      "absent_field": null,
+      "split": "holdout",
+      "error": null,
+      "route": "auto",
+      "classified_as": "resume",
+      "extraction_confidence": 1.0,
+      "missing_fields": [],
+      "document_pages": [
+        {
+          "page": 1,
+          "source": "vision",
+          "chars": 966
+        }
+      ],
+      "text_read": "SAMUEL BROOKS\nOperations Manager\nRaleigh, NC | samuel.brooks@example.com | (512) 555-0133\n\nSUMMARY\nOperations Manager with 12 years of experience turning messy operational data into reliable reporting and automation. Comfortable owning projects end to end.\n\nSKILLS\nLangChain, PyTorch, AWS, Python, FastAPI, Airflow, SQL, Docker, PostgreSQL\n\nEXPERIENCE\nData Analyst - Lumen Freight (2023 - Present)\n- Built dashboards and pipelines used by finance and operations teams\n- Cut manual reporting time by automating weekly data pulls\n\nProduct Analyst - Polaris Payments (2020 - 2023)\n- Built dashboards and pipelines used by finance and operations teams\n- Cut manual reporting time by automating weekly data pulls\n\nOperations Manager - Cardinal Insurance Co. (2016 - 2020)\n- Built dashboards and pipelines used by finance and operations teams\n- Cut manual reporting time by automating weekly data pulls\n\nEDUCATION\nB.S. in Computer Science - Georgia State University (2011)",
+      "extracted": {
+        "full_name": "SAMUEL BROOKS",
+        "email": "samuel.brooks@example.com",
+        "phone": "(512) 555-0133",
+        "location": "Raleigh, NC",
+        "summary": "Operations Manager with 12 years of experience turning messy operational data into reliable reporting and automation. Comfortable owning projects end to end.",
+        "skills": [
+          "LangChain",
+          "PyTorch",
+          "AWS",
+          "Python",
+          "FastAPI",
+          "Airflow",
+          "SQL",
+          "Docker",
+          "PostgreSQL"
+        ],
+        "experience": [
+          {
+            "company": "Lumen Freight",
+            "title": "Data Analyst",
+            "start_date": "2023",
+            "end_date": "Present",
+            "description": "Built dashboards and pipelines used by finance and operations teams. Cut manual reporting time by automating weekly data pulls."
+          },
+          {
+            "company": "Polaris Payments",
+            "title": "Product Analyst",
+            "start_date": "2020",
+            "end_date": "2023",
+            "description": "Built dashboards and pipelines used by finance and operations teams. Cut manual reporting time by automating weekly data pulls."
+          },
+          {
+            "company": "Cardinal Insurance Co.",
+            "title": "Operations Manager",
+            "start_date": "2016",
+            "end_date": "2020",
+            "description": "Built dashboards and pipelines used by finance and operations teams. Cut manual reporting time by automating weekly data pulls."
+          }
+        ],
+        "education": [
+          {
+            "institution": "Georgia State University",
+            "degree": "B.S.",
+            "field": "Computer Science",
+            "graduation_date": "2011"
+          }
+        ]
+      },
+      "outcomes": {
+        "full_name": "correct",
+        "email": "correct",
+        "phone": "correct",
+        "location": "correct",
+        "summary": "correct",
+        "skills": "correct",
+        "experience": "correct",
+        "education": "correct"
+      },
+      "seconds": 7.62,
+      "input_tokens": 27355,
+      "output_tokens": 597,
+      "cost_usd": 0.0029638499999999996
+    },
+    {
+      "id": "con-10",
+      "doc_type": "contract",
+      "format": "pdf_scan_poor",
+      "expected_route": "auto",
+      "absent_field": null,
+      "split": "holdout",
+      "error": null,
+      "route": "auto",
+      "classified_as": "contract",
+      "extraction_confidence": 1.0,
+      "missing_fields": [],
+      "document_pages": [
+        {
+          "page": 1,
+          "source": "vision",
+          "chars": 1852
+        }
+      ],
+      "text_read": "SUPPLY AGREEMENT\n\nThis Supply Agreement (the \"Agreement\") is made as of May 10, 2026 (the \"Effective Date\") by and between Redwood Data Systems, a California company (\"Supplier\"), and Vantage Point Consulting, a Colorado company (\"Buyer\").\n\n1. SCOPE. Supplier shall deliver the products listed in Schedule A within ten (10) business days of each purchase order, packaged to prevent damage in transit.\n\n2. TERM. This Agreement begins on the Effective Date and ends on May 10, 2029, unless terminated earlier under Section 6.\n\n3. PAYMENT. Buyer shall pay for each delivery at the unit prices in Schedule A within forty-five (45) days of the invoice date.\n\n4. CONFIDENTIALITY. Each party shall keep the other party's confidential information secret, use it only to perform this Agreement, and return or destroy it when this Agreement ends.\n\n5. WARRANTIES. Each party warrants that it has the authority to enter into this Agreement and that performing it will not breach any other agreement it is bound by.\n\n6. TERMINATION. Either party may terminate this Agreement for convenience on 60 days' notice, or immediately if the other party materially breaches this Agreement and does not cure the breach within 15 days of written notice.\n\n7. LIMITATION OF LIABILITY. Neither party is liable for indirect or consequential damages. Each party's total liability is capped at the fees paid in the twelve months before the claim.\n\n8. GOVERNING LAW. This Agreement is governed by the laws of the State of Illinois, without regard to its conflict of laws rules.\n\n9. ENTIRE AGREEMENT. This Agreement is the parties' entire agreement on its subject and replaces all earlier proposals and understandings.\n\nIN WITNESS WHEREOF, the parties have signed this Agreement as of the Effective Date.\n\nRedwood Data Systems\nBy: Thomas Webb\n\nVantage Point Consulting\nBy: Robert Diaz",
+      "extracted": {
+        "contract_type": "Supply Agreement",
+        "parties": [
+          {
+            "name": "Redwood Data Systems",
+            "role": "Supplier"
+          },
+          {
+            "name": "Vantage Point Consulting",
+            "role": "Buyer"
+          }
+        ],
+        "effective_date": "2026-05-10",
+        "expiration_date": "2029-05-10",
+        "key_terms": [
+          "Supplier shall deliver the products listed in Schedule A within ten (10) business days of each purchase order, packaged to prevent damage in transit.",
+          "Buyer shall pay for each delivery at the unit prices in Schedule A within forty-five (45) days of the invoice date.",
+          "Each party shall keep the other party's confidential information secret, use it only to perform this Agreement, and return or destroy it when this Agreement ends.",
+          "Each party warrants that it has the authority to enter into this Agreement and that performing it will not breach any other agreement it is bound by.",
+          "Either party may terminate this Agreement for convenience on 60 days' notice, or immediately if the other party materially breaches this Agreement and does not cure the breach within 15 days of written notice."
+        ],
+        "payment_terms": "Buyer shall pay for each delivery at the unit prices in Schedule A within forty-five (45) days of the invoice date.",
+        "termination_clause": "Either party may terminate this Agreement for convenience on 60 days' notice, or immediately if the other party materially breaches this Agreement and does not cure the breach within 15 days of written notice.",
+        "governing_law": "State of Illinois"
+      },
+      "outcomes": {
+        "contract_type": "correct",
+        "parties": "correct",
+        "effective_date": "correct",
+        "expiration_date": "correct",
+        "key_terms": "correct",
+        "payment_terms": "correct",
+        "termination_clause": "correct",
+        "governing_law": "correct"
+      },
+      "seconds": 7.13,
+      "input_tokens": 27495,
+      "output_tokens": 765,
+      "cost_usd": 0.0030856499999999997
+    },
+    {
+      "id": "con-11",
+      "doc_type": "contract",
+      "format": "pdf_scan_poor",
+      "expected_route": "auto",
+      "absent_field": null,
+      "split": "holdout",
+      "error": null,
+      "route": "auto",
+      "classified_as": "contract",
+      "extraction_confidence": 1.0,
+      "missing_fields": [],
+      "document_pages": [
+        {
+          "page": 1,
+          "source": "vision",
+          "chars": 1925
+        }
+      ],
+      "text_read": "MASTER SERVICES AGREEMENT\n\nThis Master Services Agreement (the \"Agreement\") is made as of Aug 23, 2023 (the \"Effective Date\") by and between Vantage Point Consulting, a Texas company (\"Provider\"), and Tidewater Electrical Inc., a Ohio company (\"Client\").\n\n1. SCOPE. Provider shall perform the services described in each Statement of Work signed by both parties, with the skill and care of a qualified professional.\n\n2. TERM. This Agreement begins on the Effective Date and ends on 2028-08-23, unless terminated earlier under Section 6.\n\n3. PAYMENT. Client shall pay Provider the fees set out in each Statement of Work. Provider will invoice monthly, and Client shall pay each invoice within thirty (30) days of receipt.\n\n4. CONFIDENTIALITY. Each party shall keep the other party's confidential information secret, use it only to perform this Agreement, and return or destroy it when this Agreement ends.\n\n5. WARRANTIES. Each party warrants that it has the authority to enter into this Agreement and that performing it will not breach any other agreement it is bound by.\n\n6. TERMINATION. Either party may terminate this Agreement for convenience on 60 days' notice, or immediately if the other party materially breaches this Agreement and does not cure the breach within 15 days of written notice.\n\n7. LIMITATION OF LIABILITY. Neither party is liable for indirect or consequential damages. Each party's total liability is capped at the fees paid in the twelve months before the claim.\n\n8. GOVERNING LAW. This Agreement is governed by the laws of the State of New York, without regard to its conflict of laws rules.\n\n9. ENTIRE AGREEMENT. This Agreement is the parties' entire agreement on its subject and replaces all earlier proposals and understandings.\n\nIN WITNESS WHEREOF, the parties have signed this Agreement as of the Effective Date.\n\nVantage Point Consulting\nBy: Fatima Noor\n\nTidewater Electrical Inc.\nBy: Kevin O'Neil",
+      "extracted": {
+        "contract_type": "Master Services Agreement",
+        "parties": [
+          {
+            "name": "Vantage Point Consulting",
+            "role": "Provider"
+          },
+          {
+            "name": "Tidewater Electrical Inc.",
+            "role": "Client"
+          }
+        ],
+        "effective_date": "2023-08-23",
+        "expiration_date": "2028-08-23",
+        "key_terms": [
+          "Provider shall perform the services described in each Statement of Work signed by both parties.",
+          "Client shall pay Provider the fees set out in each Statement of Work.",
+          "Provider will invoice monthly, and Client shall pay each invoice within thirty (30) days of receipt.",
+          "Each party shall keep the other party's confidential information secret, use it only to perform this Agreement, and return or destroy it when this Agreement ends.",
+          "Either party may terminate this Agreement for convenience on 60 days' notice, or immediately if the other party materially breaches this Agreement and does not cure the breach within 15 days of written notice."
+        ],
+        "payment_terms": "Client shall pay Provider the fees set out in each Statement of Work. Provider will invoice monthly, and Client shall pay each invoice within thirty (30) days of receipt.",
+        "termination_clause": "Either party may terminate this Agreement for convenience on 60 days' notice, or immediately if the other party materially breaches this Agreement and does not cure the breach within 15 days of written notice.",
+        "governing_law": "State of New York"
+      },
+      "outcomes": {
+        "contract_type": "correct",
+        "parties": "correct",
+        "effective_date": "wrong",
+        "expiration_date": "correct",
+        "key_terms": "correct",
+        "payment_terms": "correct",
+        "termination_clause": "correct",
+        "governing_law": "correct"
+      },
+      "seconds": 7.42,
+      "input_tokens": 27504,
+      "output_tokens": 765,
+      "cost_usd": 0.003087
+    },
+    {
+      "id": "con-12",
+      "doc_type": "contract",
+      "format": "pdf_scan_poor",
+      "expected_route": "auto",
+      "absent_field": null,
+      "split": "holdout",
+      "error": null,
+      "route": "auto",
+      "classified_as": "contract",
+      "extraction_confidence": 1.0,
+      "missing_fields": [],
+      "document_pages": [
+        {
+          "page": 1,
+          "source": "vision",
+          "chars": 1881
+        }
+      ],
+      "text_read": "CONSULTING AGREEMENT\n\nThis Consulting Agreement (the \"Agreement\") is made as of 16 Sep 2025 (the \"Effective Date\") by and between Northwind Analytics Inc., a New York company (\"Consultant\"), and Vantage Point Consulting, a Texas company (\"Company\").\n\n1. SCOPE. Consultant shall provide data and reporting advisory services as requested by Company and shall not subcontract any work without written consent.\n\n2. TERM. This Agreement begins on the Effective Date and ends on September 16, 2027, unless terminated earlier under Section 6.\n\n3. PAYMENT. Company shall pay Consultant $116 per hour, invoiced monthly and payable within fifteen (15) days of the invoice date.\n\n4. CONFIDENTIALITY. Each party shall keep the other party's confidential information secret, use it only to perform this Agreement, and return or destroy it when this Agreement ends.\n\n5. WARRANTIES. Each party warrants that it has the authority to enter into this Agreement and that performing it will not breach any other agreement it is bound by.\n\n6. TERMINATION. Either party may terminate this Agreement for convenience on 90 days' written notice, or immediately if the other party materially breaches this Agreement and does not cure the breach within 30 days of written notice.\n\n7. LIMITATION OF LIABILITY. Neither party is liable for indirect or consequential damages. Each party's total liability is capped at the fees paid in the twelve months before the claim.\n\n8. GOVERNING LAW. This Agreement is governed by the laws of the State of Delaware, without regard to its conflict of laws rules.\n\n9. ENTIRE AGREEMENT. This Agreement is the parties' entire agreement on its subject and replaces all earlier proposals and understandings.\n\nIN WITNESS WHEREOF, the parties have signed this Agreement as of the Effective Date.\n\nNorthwind Analytics Inc.\nBy: Kevin O'Neill\n\nVantage Point Consulting\nBy: Thomas Webb",
+      "extracted": {
+        "contract_type": "Consulting Agreement",
+        "parties": [
+          {
+            "name": "Northwind Analytics Inc.",
+            "role": "Consultant"
+          },
+          {
+            "name": "Vantage Point Consulting",
+            "role": "Company"
+          }
+        ],
+        "effective_date": "2025-09-16",
+        "expiration_date": "2027-09-16",
+        "key_terms": [
+          "Consultant shall provide data and reporting advisory services as requested by Company and shall not subcontract any work without written consent.",
+          "Company shall pay Consultant 116 per hour, invoiced monthly and payable within fifteen days of the invoice date.",
+          "Either party may terminate this Agreement for convenience on 90 days' written notice, or immediately if the other party materially breaches this Agreement and does not cure the breach within 30 days of written notice."
+        ],
+        "payment_terms": "Company shall pay Consultant 116 per hour, invoiced monthly and payable within fifteen days of the invoice date.",
+        "termination_clause": "Either party may terminate this Agreement for convenience on 90 days' written notice, or immediately if the other party materially breaches this Agreement and does not cure the breach within 30 days of written notice.",
+        "governing_law": "State of Delaware"
+      },
+      "outcomes": {
+        "contract_type": "correct",
+        "parties": "correct",
+        "effective_date": "correct",
+        "expiration_date": "correct",
+        "key_terms": "correct",
+        "payment_terms": "correct",
+        "termination_clause": "correct",
+        "governing_law": "correct"
+      },
+      "seconds": 7.88,
+      "input_tokens": 27426,
+      "output_tokens": 707,
+      "cost_usd": 0.0030405
+    },
+    {
+      "id": "con-13",
+      "doc_type": "contract",
+      "format": "pdf_scan_poor",
+      "expected_route": "auto",
+      "absent_field": null,
+      "split": "holdout",
+      "error": null,
+      "route": "auto",
+      "classified_as": "contract",
+      "extraction_confidence": 1.0,
+      "missing_fields": [],
+      "document_pages": [
+        {
+          "page": 1,
+          "source": "vision",
+          "chars": 1866
+        }
+      ],
+      "text_read": "SOFTWARE LICENSE AGREEMENT\n\nThis Software License Agreement (the \"Agreement\") is made as of 2016-03-21 (the \"Effective Date\") by and between Silverleaf Catering LLC, a Illinois company (\"Licensor\"), and Vantage Point Consulting, a Georgia company (\"Licensee\").\n\n1. SCOPE. Licensor grants Licensee a non-exclusive, non-transferable license to use the software for internal business purposes on up to 250 named users.\n\n2. TERM. This Agreement begins on the Effective Date and ends on 21 Mar 2029, unless terminated earlier under Section 6.\n\n3. PAYMENT. Licensee shall pay an annual license fee of $71,000, due within thirty (30) days of the Effective Date and of each anniversary.\n\n4. CONFIDENTIALITY. Each party shall keep the other party's confidential information secret, use it only to perform this Agreement, and return or destroy it when this Agreement ends.\n\n5. WARRANTIES. Each party warrants that it has the authority to enter into this Agreement and that performing it will not breach any other agreement it is bound by.\n\n6. TERMINATION. Either party may terminate this Agreement for convenience on 30 days' notice or if the other party materially breaches this Agreement and does not cure the breach within 30 days after notice.\n\n7. LIMITATION OF LIABILITY. Neither party is liable for indirect or consequential damages. Each party's total liability is capped at the fees paid in the twelve months before the claim.\n\n8. GOVERNING LAW. This Agreement is governed by the laws of the State of California, without regard to its conflict of laws rules.\n\n9. ENTIRE AGREEMENT. This Agreement is the parties' entire agreement on its subject and replaces all earlier proposals and understandings.\n\nIN WITNESS WHEREOF, the parties have signed this Agreement as of the Effective Date.\n\nSilverleaf Catering LLC\nBy: Kevin O'Neil\n\nVantage Point Consulting\nBy: Thomas Webb",
+      "extracted": {
+        "contract_type": "Software License Agreement",
+        "parties": [
+          {
+            "name": "Silverleaf Catering LLC",
+            "role": "Licensor"
+          },
+          {
+            "name": "Vantage Point Consulting",
+            "role": "Licensee"
+          }
+        ],
+        "effective_date": "2016-03-21",
+        "expiration_date": "2029-03-21",
+        "key_terms": [
+          "Licensor grants Licensee a non-exclusive, non-transferable license to use the software for internal business purposes on up to 250 named users.",
+          "Licensee shall pay an annual license fee of 71000, due within thirty (30) days of the Effective Date and of each anniversary.",
+          "Either party may terminate this Agreement for convenience on 30 days' notice or if the other party materially breaches this Agreement and does not cure the breach within 30 days after notice."
+        ],
+        "payment_terms": "Licensee shall pay an annual license fee of 71000, due within thirty (30) days of the Effective Date and of each anniversary.",
+        "termination_clause": "Either party may terminate this Agreement for convenience on 30 days' notice or if the other party materially breaches this Agreement and does not cure the breach within 30 days after notice.",
+        "governing_law": "State of California"
+      },
+      "outcomes": {
+        "contract_type": "correct",
+        "parties": "correct",
+        "effective_date": "wrong",
+        "expiration_date": "correct",
+        "key_terms": "correct",
+        "payment_terms": "correct",
+        "termination_clause": "correct",
+        "governing_law": "correct"
+      },
+      "seconds": 7.09,
+      "input_tokens": 27457,
+      "output_tokens": 724,
+      "cost_usd": 0.00305535
     }
   ]
 }

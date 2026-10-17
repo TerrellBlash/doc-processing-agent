@@ -8,8 +8,8 @@ Results for each run are in [results/README.md](results/README.md).
 
 ## Dataset
 
-44 synthetic documents in [data/](data/), built by `build_dataset.py` from a
-fixed seed. Running it again writes byte-identical files. All names,
+56 synthetic documents in [data/](data/), built by `build_dataset.py` from a
+fixed seed: a main set of 44 and 12 held out. Running it again writes byte-identical files. All names,
 companies, addresses and 555 phone numbers are fictional.
 
 | Type | Count | Missing one required field |
@@ -35,6 +35,12 @@ alone.
 A document missing a required field should be sent to human review, and so
 should every document of no supported type. Everything else should be stored
 without review.
+
+**Held out:** 12 more documents (4 invoices, 4 resumes, 4 contracts), poor
+scans only, all complete. They were added after the second read was chosen
+on the main set's poor scans, so they measure it on documents it was never
+tuned on. Results report them separately. Resumes reuse the same nine names,
+with different contact details, skills and jobs.
 
 Contracts are service, consulting, license, lease and supply agreements, all
 of which carry payment terms. NDAs are left out because the pipeline treats
@@ -73,7 +79,8 @@ placeholder gets past it the same way an invented value does.
 | Auto-store precision | Share of auto-stored documents that were entirely correct |
 | Straight-through | Of the documents that should be stored without review, how many were |
 | Review catch rate | Of the documents that should go to review, how many did |
-| Cost per 1,000 docs | From the API's token counts and the prices in `pricing.py` |
+| Cost per 1,000 docs | From the API's token counts and the prices in `pricing.py`, both reads included |
+| Pages flagged by check | Vision pages where the second read disagreed with the first (and, in the JSON, pages left unchecked because the second read failed) |
 | Errors | Documents where the pipeline raised an exception. Their fields count as not extracted and the tokens they used still count, so a crash lowers the numbers instead of dropping out of them |
 
 Every document is sent under a neutral file name (`document.pdf`), since the
@@ -85,14 +92,39 @@ dataset's own file names would tell the classifier the answer.
 python -m evals.build_dataset          # only needed after changing the generator
 python -m evals.run_eval --model gpt-4o-mini --model gpt-6-luna
 python -m evals.run_eval --model gpt-6-luna --reasoning-effort low
+python -m evals.run_eval --model gpt-6-luna --check-model off   # without the second read
 ```
 
-Each run makes real API calls. A full run over 44 documents costs well under
-a dollar on the small models.
+Runs use the app's second-read model (gpt-6.1-sol) unless `--check-model`
+says otherwise. Each run makes real API calls. A full run over 56 documents
+costs well under a dollar on the small models.
+
+## How the second read was chosen
+
+Before building it, every scanned page in the main set (11 ordinary, 11
+poor) was read several ways and each read was compared word for word with
+the text actually printed. gpt-6-luna misread 8 of the 11 poor scans and
+none of the ordinary ones. Each candidate check was scored on whether it
+flagged those 8:
+
+| Check | Misreads caught (of 8) | False alarms | Extra cost per scanned page |
+|---|---|---|---|
+| gpt-6-luna reads the page twice | 4 | 1 | $0.0003 |
+| gpt-6-luna again at reasoning effort medium | 4 | 0 | $0.0006 |
+| gpt-6.1-sol reads it; any disagreement goes to review | 8 | 0 | $0.0073 |
+| every page under 100 DPI goes to review | 8 | 3 | $0 |
+| ask the model to mark characters it's unsure of | 0 | 0 | about $0 |
+
+The same model repeats its own misreads (2026 read as 2025 both times),
+and no model marked anything as uncertain. The 100 DPI cutoff only looks
+good because it splits this dataset's two scan qualities; the usual 150 DPI
+rule would send every scan to review. The gpt-6.1-sol read was chosen, and
+the 12 held-out poor scans were added to measure it fairly. In the full
+runs it cost about $0.0026 per page, less than the experiment's estimate.
 
 ## Limits
 
-- **Small and synthetic.** 44 documents from templates the pipeline's author
+- **Small and synthetic.** 56 documents from templates the pipeline's author
   wrote. Use the numbers to compare models and changes, not as a production
   accuracy figure. Real documents have layouts, languages and handwriting
   these templates don't.

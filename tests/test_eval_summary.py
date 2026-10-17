@@ -21,7 +21,7 @@ from langchain_core.messages import AIMessage
 
 import evals.run_eval as run_eval
 from evals.pricing import cost_usd
-from evals.run_eval import markdown_report, run_document, summarize
+from evals.run_eval import markdown_report, run_document, run_label, summarize
 
 
 def record(doc_id, expected_route, route, outcomes, doc_type="invoice", classified_as=None,
@@ -139,3 +139,43 @@ def test_a_crashed_document_counts_against_the_model(dataset, monkeypatch):
     # ...and the tokens spent before the crash are still in the cost.
     assert record["input_tokens"] == 1_000_000
     assert record["cost_usd"] == pytest.approx(cost_usd("gpt-6-luna", {"input_tokens": 1_000_000}))
+
+
+def test_run_names_say_which_model_checked_the_pages():
+    assert run_label("gpt-6-luna", "none") == "gpt-6-luna@none"
+    assert run_label("gpt-6-luna", "none", "gpt-6.1-sol") == "gpt-6-luna@none+gpt-6.1-sol-check"
+
+
+def test_summary_counts_pages_the_check_flagged():
+    checked = record("p", "auto", "review", {"vendor_name": "correct"}, fmt="pdf_scan_poor")
+    checked["document_pages"] = [
+        {"page": 1, "source": "vision", "chars": 50, "check": {"agrees": False}},
+        {"page": 2, "source": "vision", "chars": 50, "check": {"agrees": True}},
+        {"page": 3, "source": "text_layer", "chars": 50},
+    ]
+    summary = summarize([checked])
+    assert summary["pages_checked"] == 2
+    assert summary["pages_flagged_by_check"] == 1
+
+
+def test_held_out_results_get_their_own_table_and_silent_errors():
+    held_out = record("h1", "auto", "auto", {"invoice_number": "wrong"}, fmt="pdf_scan_poor")
+    held_out["split"] = "holdout"
+    result = {"run": "test-model", "summary": summarize(RECORDS), "holdout_summary": summarize([held_out]),
+              "documents": RECORDS + [held_out]}
+    report = markdown_report([result])
+    assert "## Fresh poor scans (held out)" in report
+    assert "  - h1, Poor scan (held out): invoice_number wrong" in report
+
+
+def test_the_runner_passes_the_check_model_and_off_means_none(dataset, monkeypatch):
+    seen = []
+
+    class ConfigGraph(RecordingGraph):
+        def invoke(self, state, config):
+            seen.append(config["configurable"]["check_model"])
+
+    monkeypatch.setattr(run_eval, "build_graph", lambda checkpointer: ConfigGraph())
+    run_document(LABEL, "gpt-6-luna", "gpt-6.1-sol")
+    run_document(LABEL, "gpt-6-luna", None)
+    assert seen == ["gpt-6.1-sol", "off"]

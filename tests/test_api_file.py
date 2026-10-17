@@ -43,6 +43,13 @@ def client():
     return TestClient(main.app)
 
 
+@pytest.fixture(autouse=True)
+def _no_second_read(monkeypatch):
+    """No real check model in offline tests; the one test that needs a
+    check stubs it."""
+    monkeypatch.setattr(main, "check_transcriber", lambda: None)
+
+
 def upload(client, name, data, content_type="application/pdf"):
     return client.post("/process/file", files={"file": (name, data, content_type)})
 
@@ -127,3 +134,21 @@ def test_empty_document_is_the_clients_error(client, monkeypatch):
     response = client.post("/process", json={"document_text": "   "})
     assert response.status_code == 422
     assert "too short" in response.text
+
+
+def test_scanned_upload_is_read_twice_and_a_disagreement_reaches_the_graph(client, graph, monkeypatch):
+    monkeypatch.setattr(main, "vision_transcriber", lambda: lambda image, mime_type: "Invoice 91830 dated 2025-04-23")
+    monkeypatch.setattr(main, "check_transcriber", lambda: lambda image, mime_type: "Invoice 91630 dated 2026-04-23")
+    response = upload(client, "scan.pdf", scanned_pdf(INVOICE_TEXT, seed=1))
+    assert response.status_code == 200
+    check = graph.state["document_pages"][0]["check"]
+    assert check["agrees"] is False
+    assert set(check["first_read_only"]) == {"91830", "2025"}
+
+
+def test_a_page_the_model_declines_is_422(client, graph, monkeypatch):
+    monkeypatch.setattr(main, "vision_transcriber", lambda: lambda image, mime_type: "I'm sorry, but I can't assist with that.")
+    response = upload(client, "scan.pdf", scanned_pdf(INVOICE_TEXT, seed=1))
+    assert response.status_code == 422
+    assert "declined" in response.text
+    assert graph.state is None

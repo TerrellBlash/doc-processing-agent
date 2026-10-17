@@ -25,6 +25,7 @@ from langgraph.types import Command
 from app.documents import (
     DocumentError,
     UnsupportedDocumentError,
+    check_transcriber,
     document_to_text,
     vision_transcriber,
 )
@@ -160,8 +161,9 @@ def process_file(
     Start processing an uploaded PDF, PNG or JPEG.
 
     PDF pages with a text layer are read directly; scanned pages and images
-    are transcribed by the vision model first. The state records which
-    pages came from which, for the reviewer.
+    are transcribed by the vision model first, and read again by a second
+    model to catch misreads. The state records which pages came from which
+    and whether the two reads agreed, for the reviewer.
 
     This is a plain `def`, so FastAPI runs it in a worker thread and slow
     vision calls don't block the event loop.
@@ -174,7 +176,7 @@ def process_file(
         )
 
     try:
-        document = document_to_text(data, vision_transcriber())
+        document = document_to_text(data, vision_transcriber(), check_transcriber())
     except UnsupportedDocumentError as e:
         raise HTTPException(status_code=415, detail=str(e))
     except DocumentError as e:

@@ -248,6 +248,30 @@ def compute_extraction_confidence(
 # NODE 4: VALIDATE
 # Validate: gates extraction on required-field completeness
 # ============================================================
+def _page_check_issues(pages: list[dict]) -> list[str]:
+    """
+    Review issues for vision pages whose second read didn't confirm the first.
+
+    - Parameter pages: the state's document_pages.
+    - Returns: one issue per disagreeing or unchecked page, naming the
+        words that differ so the reviewer knows what to look at.
+    """
+    issues = []
+    for page in pages:
+        check = page.get("check")
+        if not check or check["agrees"]:
+            continue
+        if check.get("error"):
+            issues.append(f"Page {page['page']} is unchecked: the second read failed ({check['error']})")
+        else:
+            issues.append(
+                f"Page {page['page']}: the two reads disagree. First read only: "
+                f"{', '.join(check['first_read_only']) or 'nothing'}; second read only: "
+                f"{', '.join(check['second_read_only']) or 'nothing'}"
+            )
+    return issues
+
+
 def validate_extraction(
     state: DocAgentState,
 ) -> Command[Literal["enrich_extraction", "human_review"]]:
@@ -282,6 +306,11 @@ def validate_extraction(
             f"Missing fields: {', '.join(extraction['missing_fields'])} "
             f"(confidence: {extraction['confidence']:.2f})"
         )
+
+    # A vision page read twice by different models. A disagreement is the
+    # one signal of a misread: a misread value is present and well-formed,
+    # so the missing-fields check above can't see it.
+    issues.extend(_page_check_issues(state.get("document_pages") or []))
 
     # --- THE CONFIDENCE GATE ---
     passed = len(issues) == 0

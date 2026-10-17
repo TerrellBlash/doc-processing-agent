@@ -2,7 +2,8 @@
   "run": "gpt-6-luna@low",
   "model": "gpt-6-luna",
   "reasoning_effort": "low",
-  "run_at": "2026-10-12T22:44:48+00:00",
+  "check_model": null,
+  "run_at": "2026-10-17T05:13:59+00:00",
   "summary": {
     "documents": 44,
     "errors": 0,
@@ -15,8 +16,8 @@
       "pdf_scan_poor": 0.9285714285714286
     },
     "field_accuracy_by_type": {
-      "invoice": 0.9722222222222222,
-      "resume": 0.9791666666666666,
+      "invoice": 0.9652777777777778,
+      "resume": 0.9895833333333334,
       "contract": 1.0
     },
     "field_outcomes": {
@@ -30,14 +31,60 @@
     "silent_errors": 2,
     "silent_error_ids": [
       "inv-03-poor",
-      "res-09-poor"
+      "inv-12-poor"
     ],
     "auto_store_precision": 0.9354838709677419,
-    "seconds_p50": 7.08,
-    "seconds_p95": 13.55,
-    "mean_input_tokens": 2630.931818181818,
-    "mean_output_tokens": 556.7272727272727,
-    "cost_per_1000_docs_usd": 0.5414568181818181
+    "seconds_p50": 5.83,
+    "seconds_p95": 11.53,
+    "mean_input_tokens": 2631.2272727272725,
+    "mean_output_tokens": 568.1590909090909,
+    "cost_per_1000_docs_usd": 0.5472022727272727,
+    "pages_checked": 0,
+    "pages_flagged_by_check": 0,
+    "pages_unchecked": 0
+  },
+  "holdout_summary": {
+    "documents": 12,
+    "errors": 0,
+    "classification_accuracy": 1.0,
+    "field_accuracy": 0.84,
+    "field_accuracy_by_format": {
+      "pdf_scan_poor": 0.84
+    },
+    "field_accuracy_by_type": {
+      "invoice": 0.75,
+      "resume": 0.90625,
+      "contract": 0.875
+    },
+    "field_outcomes": {
+      "correct": 84,
+      "wrong": 16
+    },
+    "absent_fields_left_empty": null,
+    "straight_through_rate": 1.0,
+    "review_catch_rate": null,
+    "auto_stored": 12,
+    "silent_errors": 9,
+    "silent_error_ids": [
+      "inv-13",
+      "inv-14",
+      "inv-15",
+      "inv-16",
+      "res-10",
+      "res-13",
+      "con-10",
+      "con-11",
+      "con-13"
+    ],
+    "auto_store_precision": 0.25,
+    "seconds_p50": 9.37,
+    "seconds_p95": 13.44,
+    "mean_input_tokens": 4106.583333333333,
+    "mean_output_tokens": 1035.3333333333333,
+    "cost_per_1000_docs_usd": 0.9283250000000001,
+    "pages_checked": 0,
+    "pages_flagged_by_check": 0,
+    "pages_unchecked": 0
   },
   "documents": [
     {
@@ -46,6 +93,7 @@
       "format": "text",
       "expected_route": "review",
       "absent_field": "due_date",
+      "split": "main",
       "error": null,
       "route": "review",
       "classified_as": "invoice",
@@ -102,10 +150,10 @@
         "total_amount": "correct",
         "currency": "correct"
       },
-      "seconds": 5.61,
+      "seconds": 3.9,
       "input_tokens": 1048,
-      "output_tokens": 222,
-      "cost_usd": 0.00021580000000000001
+      "output_tokens": 234,
+      "cost_usd": 0.00022180000000000002
     },
     {
       "id": "inv-02",
@@ -113,6 +161,7 @@
       "format": "pdf_text",
       "expected_route": "auto",
       "absent_field": null,
+      "split": "main",
       "error": null,
       "route": "auto",
       "classified_as": "invoice",
@@ -179,10 +228,10 @@
         "total_amount": "correct",
         "currency": "correct"
       },
-      "seconds": 10.24,
+      "seconds": 6.08,
       "input_tokens": 1600,
-      "output_tokens": 327,
-      "cost_usd": 0.0003235
+      "output_tokens": 396,
+      "cost_usd": 0.000358
     },
     {
       "id": "inv-03",
@@ -190,6 +239,7 @@
       "format": "pdf_scan",
       "expected_route": "auto",
       "absent_field": null,
+      "split": "main",
       "error": null,
       "route": "auto",
       "classified_as": "invoice",
@@ -199,10 +249,10 @@
         {
           "page": 1,
           "source": "vision",
-          "chars": 502
+          "chars": 516
         }
       ],
-      "text_read": "Cobalt Peak Software\n2200 Ridge Road\nBoise, ID 83702\n\nINVOICE\n\nInvoice Number: 91630\nInvoice Date: 23 Apr 2026\nDue Date: June 7, 2026\nPayment Terms: Net 45\n\nBill To:\nSummit Ridge Manufacturing\n\nDescription                 Qty   Unit Price   Amount\nWarehouse storage (pallet-month)   31    $23.51      $728.81\nSoftware subscription - annual seat   17    $304.30     $5,173.10\n\nSubtotal: $5,901.91\nTax (5%): $295.10\nTotal Due: $6,197.01\n\nThank you for your business. Questions? billing@cobalt.example.com",
+      "text_read": "Cobalt Peak Software\n2200 Ridge Road\nBoise, ID 83702\n\nINVOICE\n\nInvoice Number: 91630\nInvoice Date: 23 Apr 2026\nDue Date: June 7, 2026\nPayment Terms: Net 45\n\nBill To:\nSummit Ridge Manufacturing\n\nDescription                          Qty   Unit Price   Amount\nWarehouse storage (pallet-month)      31    $23.51       $728.81\nSoftware subscription - annual seat   17    $304.30      $5,173.10\n\nSubtotal: $5,901.91\nTax (5%): $295.10\nTotal Due: $6,197.01\n\nThank you for your business. Questions? billing@cobalt.example.com",
       "extracted": {
         "vendor_name": "Cobalt Peak Software",
         "invoice_number": "91630",
@@ -238,10 +288,10 @@
         "total_amount": "correct",
         "currency": "correct"
       },
-      "seconds": 8.24,
+      "seconds": 7.75,
       "input_tokens": 3769,
-      "output_tokens": 367,
-      "cost_usd": 0.0005604000000000001
+      "output_tokens": 618,
+      "cost_usd": 0.0006859000000000001
     },
     {
       "id": "inv-04",
@@ -249,6 +299,7 @@
       "format": "text",
       "expected_route": "auto",
       "absent_field": null,
+      "split": "main",
       "error": null,
       "route": "auto",
       "classified_as": "invoice",
@@ -309,10 +360,10 @@
         "total_amount": "correct",
         "currency": "correct"
       },
-      "seconds": 7.13,
+      "seconds": 5.92,
       "input_tokens": 1595,
-      "output_tokens": 293,
-      "cost_usd": 0.000306
+      "output_tokens": 403,
+      "cost_usd": 0.000361
     },
     {
       "id": "inv-05",
@@ -320,6 +371,7 @@
       "format": "pdf_text",
       "expected_route": "review",
       "absent_field": "invoice_number",
+      "split": "main",
       "error": null,
       "route": "review",
       "classified_as": "invoice",
@@ -370,10 +422,10 @@
         "total_amount": "correct",
         "currency": "correct"
       },
-      "seconds": 3.33,
+      "seconds": 3.03,
       "input_tokens": 956,
-      "output_tokens": 178,
-      "cost_usd": 0.00018460000000000001
+      "output_tokens": 236,
+      "cost_usd": 0.00021360000000000001
     },
     {
       "id": "inv-06",
@@ -381,6 +433,7 @@
       "format": "pdf_scan",
       "expected_route": "auto",
       "absent_field": null,
+      "split": "main",
       "error": null,
       "route": "auto",
       "classified_as": "invoice",
@@ -390,10 +443,10 @@
         {
           "page": 1,
           "source": "vision",
-          "chars": 341
+          "chars": 351
         }
       ],
-      "text_read": "INVOICE\n------------------------------\nFrom: Quartzline Printing, 39 Press Avenue, Raleigh, NC 27601\nTo: Granite State Credit Union\nInvoice #: INV-2025-5398\nIssued: Sep 18, 2025\nPayment due: October 3, 2025\n\nItems:\n1. Electrical inspection - 1 x $506.18 = $506.18\n\nSubtotal ........ $506.18\nTax ............. $25.31\nTOTAL ........... $531.49",
+      "text_read": "INVOICE\n........................................\nFrom: Quartzline Printing, 39 Press Avenue, Raleigh, NC 27601\nTo: Granite State Credit Union\nInvoice #: INV-2025-5398\nIssued: Sep 18, 2025\nPayment due: October 3, 2025\n\nItems:\n1. Electrical inspection - 1 x $506.18 = $506.18\n\nSubtotal ........ $506.18\nTax ............ $25.31\nTOTAL ............ $531.49",
       "extracted": {
         "vendor_name": "Quartzline Printing",
         "invoice_number": "INV-2025-5398",
@@ -423,10 +476,10 @@
         "total_amount": "correct",
         "currency": "correct"
       },
-      "seconds": 5.8,
-      "input_tokens": 3613,
-      "output_tokens": 288,
-      "cost_usd": 0.0005053
+      "seconds": 8.04,
+      "input_tokens": 3615,
+      "output_tokens": 570,
+      "cost_usd": 0.0006465
     },
     {
       "id": "inv-07",
@@ -434,6 +487,7 @@
       "format": "text",
       "expected_route": "auto",
       "absent_field": null,
+      "split": "main",
       "error": null,
       "route": "auto",
       "classified_as": "invoice",
@@ -488,10 +542,10 @@
         "total_amount": "correct",
         "currency": "correct"
       },
-      "seconds": 5.54,
+      "seconds": 5.42,
       "input_tokens": 1550,
-      "output_tokens": 257,
-      "cost_usd": 0.0002835
+      "output_tokens": 265,
+      "cost_usd": 0.0002875
     },
     {
       "id": "inv-08",
@@ -499,6 +553,7 @@
       "format": "pdf_text",
       "expected_route": "auto",
       "absent_field": null,
+      "split": "main",
       "error": null,
       "route": "auto",
       "classified_as": "invoice",
@@ -559,10 +614,10 @@
         "total_amount": "correct",
         "currency": "correct"
       },
-      "seconds": 5.65,
+      "seconds": 4.2,
       "input_tokens": 1508,
-      "output_tokens": 264,
-      "cost_usd": 0.0002828
+      "output_tokens": 260,
+      "cost_usd": 0.0002808
     },
     {
       "id": "inv-09",
@@ -570,6 +625,7 @@
       "format": "pdf_scan",
       "expected_route": "review",
       "absent_field": "currency",
+      "split": "main",
       "error": null,
       "route": "review",
       "classified_as": "invoice",
@@ -581,10 +637,10 @@
         {
           "page": 1,
           "source": "vision",
-          "chars": 577
+          "chars": 571
         }
       ],
-      "text_read": "Tidewater Electrical Inc.\n77 Harbor Drive\nNorfolk, VA 23510\n\nINVOICE\n\nInvoice Number: TI-10167\nInvoice Date: Mar 2, 2025\nDue Date: 01 May 2025\nPayment Terms: Net 60\n\nBill To:\nAcme Corporation\n\nDescription                         Qty   Unit Price   Amount\nWarehouse storage (pallet-month)      21      14.68       308.28\nSoftware subscription - annual seat  25     389.77     9,744.25\nFreight - LTL shipment                4     404.11     1,616.44\n\nSubtotal: 11,668.97\nTax (5%): 583.45\nTotal Due: 12,252.42\n\nThank you for your business. Questions? billing@tidewater.example.com",
+      "text_read": "Tidewater Electrical Inc.\n77 Harbor Drive\nNorfolk, VA 23510\n\nINVOICE\n\nInvoice Number: TI-10167\nInvoice Date: Mar 2, 2025\nDue Date: 01 May 2025\nPayment Terms: Net 60\n\nBill To:\nAcme Corporation\n\nDescription                         Qty   Unit Price   Amount\nWarehouse storage (pallet-month)      21      14.68     308.28\nSoftware subscription - annual seat  25     389.77   9,744.25\nFreight - LTL shipment                4     404.11   1,616.44\n\nSubtotal: 11,668.97\nTax (5%): 583.45\nTotal Due: 12,252.42\n\nThank you for your business. Questions? billing@tidewater.example.com",
       "extracted": {
         "vendor_name": "Tidewater Electrical Inc.",
         "invoice_number": "TI-10167",
@@ -626,10 +682,10 @@
         "total_amount": "correct",
         "currency": "correct"
       },
-      "seconds": 5.98,
+      "seconds": 7.04,
       "input_tokens": 3435,
-      "output_tokens": 408,
-      "cost_usd": 0.0005475
+      "output_tokens": 589,
+      "cost_usd": 0.000638
     },
     {
       "id": "inv-10",
@@ -637,6 +693,7 @@
       "format": "text",
       "expected_route": "auto",
       "absent_field": null,
+      "split": "main",
       "error": null,
       "route": "auto",
       "classified_as": "invoice",
@@ -673,10 +730,10 @@
         "total_amount": "correct",
         "currency": "correct"
       },
-      "seconds": 4.33,
+      "seconds": 3.72,
       "input_tokens": 1239,
-      "output_tokens": 181,
-      "cost_usd": 0.0002144
+      "output_tokens": 187,
+      "cost_usd": 0.0002174
     },
     {
       "id": "inv-11",
@@ -684,6 +741,7 @@
       "format": "pdf_text",
       "expected_route": "auto",
       "absent_field": null,
+      "split": "main",
       "error": null,
       "route": "auto",
       "classified_as": "invoice",
@@ -750,10 +808,10 @@
         "total_amount": "correct",
         "currency": "correct"
       },
-      "seconds": 5.44,
+      "seconds": 3.94,
       "input_tokens": 1618,
-      "output_tokens": 396,
-      "cost_usd": 0.0003598
+      "output_tokens": 286,
+      "cost_usd": 0.00030480000000000004
     },
     {
       "id": "inv-12",
@@ -761,6 +819,7 @@
       "format": "pdf_scan",
       "expected_route": "auto",
       "absent_field": null,
+      "split": "main",
       "error": null,
       "route": "auto",
       "classified_as": "invoice",
@@ -809,10 +868,10 @@
         "total_amount": "correct",
         "currency": "correct"
       },
-      "seconds": 10.25,
+      "seconds": 8.03,
       "input_tokens": 3741,
-      "output_tokens": 689,
-      "cost_usd": 0.0007186
+      "output_tokens": 716,
+      "cost_usd": 0.0007321000000000001
     },
     {
       "id": "res-01",
@@ -820,6 +879,7 @@
       "format": "text",
       "expected_route": "auto",
       "absent_field": null,
+      "split": "main",
       "error": null,
       "route": "auto",
       "classified_as": "resume",
@@ -848,21 +908,21 @@
             "title": "Machine Learning Engineer",
             "start_date": "2024",
             "end_date": "Present",
-            "description": "Built dashboards and pipelines used by finance and operations teams; cut manual reporting time by automating weekly data pulls."
+            "description": "Built dashboards and pipelines used by finance and operations teams. Cut manual reporting time by automating weekly data pulls."
           },
           {
             "company": "Polaris Payments",
             "title": "Software Engineer",
             "start_date": "2022",
             "end_date": "2024",
-            "description": "Built dashboards and pipelines used by finance and operations teams; cut manual reporting time by automating weekly data pulls."
+            "description": "Built dashboards and pipelines used by finance and operations teams. Cut manual reporting time by automating weekly data pulls."
           },
           {
             "company": "Lumen Freight",
             "title": "Operations Manager",
             "start_date": "2019",
             "end_date": "2022",
-            "description": "Built dashboards and pipelines used by finance and operations teams; cut manual reporting time by automating weekly data pulls."
+            "description": "Built dashboards and pipelines used by finance and operations teams. Cut manual reporting time by automating weekly data pulls."
           }
         ],
         "education": [
@@ -884,10 +944,10 @@
         "experience": "correct",
         "education": "correct"
       },
-      "seconds": 6.17,
+      "seconds": 4.75,
       "input_tokens": 1774,
-      "output_tokens": 450,
-      "cost_usd": 0.00040239999999999997
+      "output_tokens": 367,
+      "cost_usd": 0.0003609
     },
     {
       "id": "res-02",
@@ -895,6 +955,7 @@
       "format": "pdf_text",
       "expected_route": "review",
       "absent_field": "phone",
+      "split": "main",
       "error": null,
       "route": "review",
       "classified_as": "resume",
@@ -932,14 +993,14 @@
             "title": "Product Analyst",
             "start_date": "2022",
             "end_date": "Present",
-            "description": "Built dashboards and pipelines used by finance and operations teams; cut manual reporting time by automating weekly data pulls."
+            "description": "Built dashboards and pipelines used by finance and operations teams. Cut manual reporting time by automating weekly data pulls."
           },
           {
             "company": "Cardinal Insurance Co.",
             "title": "Operations Manager",
             "start_date": "2020",
             "end_date": "2022",
-            "description": "Built dashboards and pipelines used by finance and operations teams; cut manual reporting time by automating weekly data pulls."
+            "description": "Built dashboards and pipelines used by finance and operations teams. Cut manual reporting time by automating weekly data pulls."
           }
         ],
         "education": [
@@ -961,10 +1022,10 @@
         "experience": "correct",
         "education": "correct"
       },
-      "seconds": 4.7,
+      "seconds": 3.71,
       "input_tokens": 1107,
-      "output_tokens": 366,
-      "cost_usd": 0.0002937
+      "output_tokens": 393,
+      "cost_usd": 0.0003072
     },
     {
       "id": "res-03",
@@ -972,6 +1033,7 @@
       "format": "pdf_scan",
       "expected_route": "auto",
       "absent_field": null,
+      "split": "main",
       "error": null,
       "route": "auto",
       "classified_as": "resume",
@@ -1034,10 +1096,10 @@
         "experience": "correct",
         "education": "correct"
       },
-      "seconds": 10.01,
+      "seconds": 7.35,
       "input_tokens": 4011,
-      "output_tokens": 788,
-      "cost_usd": 0.0007951
+      "output_tokens": 592,
+      "cost_usd": 0.0006971
     },
     {
       "id": "res-04",
@@ -1045,6 +1107,7 @@
       "format": "text",
       "expected_route": "auto",
       "absent_field": null,
+      "split": "main",
       "error": null,
       "route": "auto",
       "classified_as": "resume",
@@ -1053,7 +1116,7 @@
       "document_pages": null,
       "text_read": null,
       "extracted": {
-        "full_name": "Samuel Brooks",
+        "full_name": "SAMUEL BROOKS",
         "email": "samuel.brooks@example.com",
         "phone": "(206) 555-0199",
         "location": "Raleigh, NC",
@@ -1075,21 +1138,21 @@
             "title": "Product Analyst",
             "start_date": "2022",
             "end_date": "Present",
-            "description": "Built dashboards and pipelines used by finance and operations teams; cut manual reporting time by automating weekly data pulls."
+            "description": "Built dashboards and pipelines used by finance and operations teams. Cut manual reporting time by automating weekly data pulls."
           },
           {
             "company": "Riverstone Bank",
             "title": "Product Analyst",
             "start_date": "2019",
             "end_date": "2022",
-            "description": "Built dashboards and pipelines used by finance and operations teams; cut manual reporting time by automating weekly data pulls."
+            "description": "Built dashboards and pipelines used by finance and operations teams. Cut manual reporting time by automating weekly data pulls."
           },
           {
             "company": "Cardinal Insurance Co.",
             "title": "Software Engineer",
             "start_date": "2017",
             "end_date": "2019",
-            "description": "Built dashboards and pipelines used by finance and operations teams; cut manual reporting time by automating weekly data pulls."
+            "description": "Built dashboards and pipelines used by finance and operations teams. Cut manual reporting time by automating weekly data pulls."
           }
         ],
         "education": [
@@ -1111,10 +1174,10 @@
         "experience": "correct",
         "education": "correct"
       },
-      "seconds": 5.97,
-      "input_tokens": 1782,
-      "output_tokens": 472,
-      "cost_usd": 0.00041420000000000004
+      "seconds": 5.7,
+      "input_tokens": 1785,
+      "output_tokens": 515,
+      "cost_usd": 0.000436
     },
     {
       "id": "res-05",
@@ -1122,6 +1185,7 @@
       "format": "pdf_text",
       "expected_route": "auto",
       "absent_field": null,
+      "split": "main",
       "error": null,
       "route": "auto",
       "classified_as": "resume",
@@ -1156,21 +1220,21 @@
             "title": "Machine Learning Engineer",
             "start_date": "2022",
             "end_date": "Present",
-            "description": "Built dashboards and pipelines used by finance and operations teams; cut manual reporting time by automating weekly data pulls."
+            "description": "Built dashboards and pipelines used by finance and operations teams. Cut manual reporting time by automating weekly data pulls."
           },
           {
             "company": "Crescent Health Systems",
             "title": "Operations Manager",
             "start_date": "2020",
             "end_date": "2022",
-            "description": "Built dashboards and pipelines used by finance and operations teams; cut manual reporting time by automating weekly data pulls."
+            "description": "Built dashboards and pipelines used by finance and operations teams. Cut manual reporting time by automating weekly data pulls."
           },
           {
             "company": "Lumen Freight",
             "title": "Machine Learning Engineer",
             "start_date": "2018",
             "end_date": "2020",
-            "description": "Built dashboards and pipelines used by finance and operations teams; cut manual reporting time by automating weekly data pulls."
+            "description": "Built dashboards and pipelines used by finance and operations teams. Cut manual reporting time by automating weekly data pulls."
           }
         ],
         "education": [
@@ -1198,10 +1262,10 @@
         "experience": "correct",
         "education": "correct"
       },
-      "seconds": 6.86,
+      "seconds": 5.37,
       "input_tokens": 1841,
-      "output_tokens": 512,
-      "cost_usd": 0.0004401
+      "output_tokens": 482,
+      "cost_usd": 0.00042510000000000003
     },
     {
       "id": "res-06",
@@ -1209,6 +1273,7 @@
       "format": "pdf_scan",
       "expected_route": "review",
       "absent_field": "summary",
+      "split": "main",
       "error": null,
       "route": "review",
       "classified_as": "resume",
@@ -1225,7 +1290,7 @@
       ],
       "text_read": "JORDAN KIM\nMachine Learning Engineer\nChicago, IL | jordan.kim@example.com | (512) 555-0134\n\nSKILLS\nTerraform, Docker, PostgreSQL, LangChain, PyTorch, AWS\n\nEXPERIENCE\nData Analyst - Polaris Payments (2024 - Present)\n- Built dashboards and pipelines used by finance and operations teams\n- Cut manual reporting time by automating weekly data pulls\n\nData Analyst - Bayside Mutual (2021 - 2024)\n- Built dashboards and pipelines used by finance and operations teams\n- Cut manual reporting time by automating weekly data pulls\n\nEDUCATION\nB.A. in Economics - University of Texas at Austin (2009)\nM.S. in Statistics - North Carolina State University (2010)",
       "extracted": {
-        "full_name": "Jordan Kim",
+        "full_name": "JORDAN KIM",
         "email": "jordan.kim@example.com",
         "phone": "(512) 555-0134",
         "location": "Chicago, IL",
@@ -1244,14 +1309,14 @@
             "title": "Data Analyst",
             "start_date": "2024",
             "end_date": "Present",
-            "description": "Built dashboards and pipelines used by finance and operations teams; cut manual reporting time by automating weekly data pulls"
+            "description": "Built dashboards and pipelines used by finance and operations teams; cut manual reporting time by automating weekly data pulls."
           },
           {
             "company": "Bayside Mutual",
             "title": "Data Analyst",
             "start_date": "2021",
             "end_date": "2024",
-            "description": "Built dashboards and pipelines used by finance and operations teams; cut manual reporting time by automating weekly data pulls"
+            "description": "Built dashboards and pipelines used by finance and operations teams; cut manual reporting time by automating weekly data pulls."
           }
         ],
         "education": [
@@ -1279,10 +1344,10 @@
         "experience": "correct",
         "education": "correct"
       },
-      "seconds": 7.08,
+      "seconds": 5.52,
       "input_tokens": 3474,
-      "output_tokens": 530,
-      "cost_usd": 0.0006124000000000001
+      "output_tokens": 432,
+      "cost_usd": 0.0005634000000000001
     },
     {
       "id": "res-07",
@@ -1290,6 +1355,7 @@
       "format": "text",
       "expected_route": "auto",
       "absent_field": null,
+      "split": "main",
       "error": null,
       "route": "auto",
       "classified_as": "resume",
@@ -1298,7 +1364,7 @@
       "document_pages": null,
       "text_read": null,
       "extracted": {
-        "full_name": "Aisha Rahman",
+        "full_name": "AISHA RAHMAN",
         "email": "aisha.rahman@example.com",
         "phone": "(512) 555-0161",
         "location": "Charlotte, NC",
@@ -1360,10 +1426,10 @@
         "experience": "correct",
         "education": "correct"
       },
-      "seconds": 8.66,
-      "input_tokens": 1836,
-      "output_tokens": 503,
-      "cost_usd": 0.0004351
+      "seconds": 5.83,
+      "input_tokens": 1837,
+      "output_tokens": 397,
+      "cost_usd": 0.0003822
     },
     {
       "id": "res-08",
@@ -1371,6 +1437,7 @@
       "format": "pdf_text",
       "expected_route": "auto",
       "absent_field": null,
+      "split": "main",
       "error": null,
       "route": "auto",
       "classified_as": "resume",
@@ -1407,14 +1474,14 @@
             "title": "Operations Manager",
             "start_date": "2023",
             "end_date": "Present",
-            "description": "Built dashboards and pipelines used by finance and operations teams; cut manual reporting time by automating weekly data pulls."
+            "description": "Built dashboards and pipelines used by finance and operations teams. Cut manual reporting time by automating weekly data pulls."
           },
           {
             "company": "Cardinal Insurance Co.",
             "title": "Data Analyst",
             "start_date": "2019",
             "end_date": "2023",
-            "description": "Built dashboards and pipelines used by finance and operations teams; cut manual reporting time by automating weekly data pulls."
+            "description": "Built dashboards and pipelines used by finance and operations teams. Cut manual reporting time by automating weekly data pulls."
           }
         ],
         "education": [
@@ -1442,10 +1509,10 @@
         "experience": "correct",
         "education": "correct"
       },
-      "seconds": 6.35,
+      "seconds": 5.47,
       "input_tokens": 1713,
-      "output_tokens": 437,
-      "cost_usd": 0.0003898
+      "output_tokens": 517,
+      "cost_usd": 0.0004298
     },
     {
       "id": "res-09",
@@ -1453,6 +1520,7 @@
       "format": "pdf_scan",
       "expected_route": "auto",
       "absent_field": null,
+      "split": "main",
       "error": null,
       "route": "auto",
       "classified_as": "resume",
@@ -1486,14 +1554,14 @@
             "title": "Software Engineer",
             "start_date": "2024",
             "end_date": "Present",
-            "description": "Built dashboards and pipelines used by finance and operations teams. Cut manual reporting time by automating weekly data pulls."
+            "description": "Built dashboards and pipelines used by finance and operations teams; cut manual reporting time by automating weekly data pulls."
           },
           {
             "company": "Lumen Freight",
             "title": "Operations Manager",
             "start_date": "2020",
             "end_date": "2024",
-            "description": "Built dashboards and pipelines used by finance and operations teams. Cut manual reporting time by automating weekly data pulls."
+            "description": "Built dashboards and pipelines used by finance and operations teams; cut manual reporting time by automating weekly data pulls."
           }
         ],
         "education": [
@@ -1521,10 +1589,10 @@
         "experience": "correct",
         "education": "correct"
       },
-      "seconds": 9.02,
+      "seconds": 6.71,
       "input_tokens": 4088,
-      "output_tokens": 538,
-      "cost_usd": 0.0006778
+      "output_tokens": 563,
+      "cost_usd": 0.0006902999999999999
     },
     {
       "id": "con-01",
@@ -1532,6 +1600,7 @@
       "format": "text",
       "expected_route": "review",
       "absent_field": "expiration_date",
+      "split": "main",
       "error": null,
       "route": "review",
       "classified_as": "contract",
@@ -1559,8 +1628,7 @@
           "Provider will perform services described in Statements of Work signed by both parties with the skill and care of a qualified professional.",
           "Each party must keep the other party's confidential information secret, use it only to perform the Agreement, and return or destroy it when the Agreement ends.",
           "Each party warrants that it has authority to enter into the Agreement and that performing it will not breach another agreement.",
-          "Neither party is liable for indirect or consequential damages; each party's total liability is capped at fees paid in the 12 months before the claim.",
-          "The Agreement is the parties' entire agreement on its subject and replaces earlier proposals and understandings."
+          "Neither party is liable for indirect or consequential damages; each party's total liability is capped at the fees paid in the twelve months before the claim."
         ],
         "payment_terms": "Client pays the fees set out in each Statement of Work. Provider invoices monthly, and Client must pay each invoice within 30 days of receipt.",
         "termination_clause": "Either party may terminate for convenience on 30 days' written notice, or immediately if the other party materially breaches the Agreement and does not cure the breach within 15 days of written notice.",
@@ -1576,10 +1644,10 @@
         "termination_clause": "correct",
         "governing_law": "correct"
       },
-      "seconds": 4.78,
+      "seconds": 3.65,
       "input_tokens": 1405,
-      "output_tokens": 418,
-      "cost_usd": 0.0003495
+      "output_tokens": 396,
+      "cost_usd": 0.0003385
     },
     {
       "id": "con-02",
@@ -1587,6 +1655,7 @@
       "format": "pdf_text",
       "expected_route": "auto",
       "absent_field": null,
+      "split": "main",
       "error": null,
       "route": "auto",
       "classified_as": "contract",
@@ -1615,13 +1684,13 @@
         "effective_date": "2025-06-02",
         "expiration_date": "2027-06-02",
         "key_terms": [
-          "Consultant provides data and reporting advisory services as requested by Company and may not subcontract work without written consent.",
-          "Each party must keep the other party's confidential information secret, use it only to perform the Agreement, and return or destroy it when the Agreement ends.",
-          "Each party warrants it has authority to enter into the Agreement and that performing it will not breach another agreement.",
-          "Neither party is liable for indirect or consequential damages; each party's total liability is capped at the fees paid in the twelve months before the claim.",
-          "The Agreement replaces all earlier proposals and understandings on its subject."
+          "Consultant shall provide data and reporting advisory services as requested by Company and may not subcontract work without written consent.",
+          "Each party shall keep the other party's confidential information secret, use it only to perform the Agreement, and return or destroy it when the Agreement ends.",
+          "Each party warrants that it has authority to enter into the Agreement and that performing it will not breach another agreement it is bound by.",
+          "Neither party is liable for indirect or consequential damages; each party's total liability is capped at fees paid in the 12 months before the claim.",
+          "The Agreement is the parties' entire agreement on its subject and replaces all earlier proposals and understandings."
         ],
-        "payment_terms": "Company pays Consultant 110 per hour, invoiced monthly and payable within 15 days of the invoice date.",
+        "payment_terms": "Company shall pay Consultant 110 per hour. Invoices are issued monthly and payable within 15 days of the invoice date.",
         "termination_clause": "Either party may terminate for convenience on 60 days' written notice, or immediately if the other party materially breaches the Agreement and does not cure the breach within 30 days of written notice.",
         "governing_law": "State of Texas"
       },
@@ -1635,10 +1704,10 @@
         "termination_clause": "correct",
         "governing_law": "correct"
       },
-      "seconds": 5.55,
-      "input_tokens": 1912,
-      "output_tokens": 369,
-      "cost_usd": 0.0003757
+      "seconds": 4.87,
+      "input_tokens": 1928,
+      "output_tokens": 393,
+      "cost_usd": 0.00038930000000000003
     },
     {
       "id": "con-03",
@@ -1646,6 +1715,7 @@
       "format": "pdf_scan",
       "expected_route": "auto",
       "absent_field": null,
+      "split": "main",
       "error": null,
       "route": "auto",
       "classified_as": "contract",
@@ -1678,11 +1748,11 @@
           "Each party must keep the other party's confidential information secret, use it only to perform the Agreement, and return or destroy it when the Agreement ends.",
           "Each party warrants that it has authority to enter into the Agreement and that performing it will not breach another agreement to which it is bound.",
           "Neither party is liable for indirect or consequential damages; each party's total liability is capped at the fees paid in the twelve months before the claim.",
-          "The Agreement replaces all earlier proposals and understandings on its subject."
+          "The Agreement is the parties' entire agreement on its subject and replaces earlier proposals and understandings."
         ],
-        "payment_terms": "Annual license fee of 12000, due within 30 days of the Effective Date and each anniversary.",
+        "payment_terms": "Annual license fee of 12000, due within 30 days of the Effective Date and of each anniversary.",
         "termination_clause": "Either party may terminate for convenience on 90 days' written notice, or immediately if the other party materially breaches the Agreement and does not cure the breach within 15 days of written notice.",
-        "governing_law": "State of Georgia, without regard to its conflict of laws rules"
+        "governing_law": "State of Georgia"
       },
       "outcomes": {
         "contract_type": "correct",
@@ -1694,10 +1764,10 @@
         "termination_clause": "correct",
         "governing_law": "correct"
       },
-      "seconds": 8.81,
-      "input_tokens": 4346,
-      "output_tokens": 866,
-      "cost_usd": 0.0008676000000000001
+      "seconds": 9.24,
+      "input_tokens": 4344,
+      "output_tokens": 943,
+      "cost_usd": 0.0009059000000000001
     },
     {
       "id": "con-04",
@@ -1705,6 +1775,7 @@
       "format": "text",
       "expected_route": "auto",
       "absent_field": null,
+      "split": "main",
       "error": null,
       "route": "auto",
       "classified_as": "contract",
@@ -1728,13 +1799,12 @@
         "expiration_date": "2027-03-31",
         "key_terms": [
           "Landlord leases approximately 4,800 square feet of office space to Tenant for general office use, with access to shared parking.",
-          "Tenant shall pay monthly rent of 4600, due on the first day of each month, and a security deposit equal to two months' rent on signing.",
-          "Each party shall keep the other party's confidential information secret, use it only to perform the Agreement, and return or destroy it when the Agreement ends.",
-          "Each party warrants that it has authority to enter into the Agreement and that performing it will not breach another agreement it is bound by.",
-          "Neither party is liable for indirect or consequential damages; each party's total liability is capped at the fees paid in the twelve months before the claim.",
+          "Each party must keep the other party's confidential information secret, use it only to perform the Agreement, and return or destroy it when the Agreement ends.",
+          "Each party warrants that it has authority to enter into the Agreement and that performing it will not breach another agreement to which it is bound.",
+          "Neither party is liable for indirect or consequential damages, and each party's total liability is capped at the fees paid in the twelve months before the claim.",
           "The Agreement is the parties' entire agreement on its subject and replaces all earlier proposals and understandings."
         ],
-        "payment_terms": "Monthly rent of 4600, due on the first day of each month; security deposit equal to two months' rent due on signing.",
+        "payment_terms": "Monthly rent of 4600, due on the first day of each month; security deposit equal to two months' rent, due on signing.",
         "termination_clause": "Either party may terminate for convenience on 60 days' written notice, or immediately if the other party materially breaches the Agreement and does not cure the breach within 15 days of written notice.",
         "governing_law": "State of Ohio"
       },
@@ -1748,10 +1818,10 @@
         "termination_clause": "correct",
         "governing_law": "correct"
       },
-      "seconds": 6.92,
-      "input_tokens": 1993,
-      "output_tokens": 587,
-      "cost_usd": 0.0004928
+      "seconds": 5.1,
+      "input_tokens": 1962,
+      "output_tokens": 455,
+      "cost_usd": 0.00042370000000000005
     },
     {
       "id": "con-05",
@@ -1759,6 +1829,7 @@
       "format": "pdf_text",
       "expected_route": "auto",
       "absent_field": null,
+      "split": "main",
       "error": null,
       "route": "auto",
       "classified_as": "contract",
@@ -1787,14 +1858,15 @@
         "effective_date": "2025-08-14",
         "expiration_date": "2027-08-14",
         "key_terms": [
-          "Supplier must deliver the products listed in Schedule A within 10 business days of each purchase order and package them to prevent damage in transit.",
-          "Each party must keep the other party's confidential information secret, use it only to perform the Agreement, and return or destroy it when the Agreement ends.",
-          "Each party warrants that it has authority to enter into the Agreement and that performing it will not breach another agreement.",
-          "Neither party is liable for indirect or consequential damages; each party's total liability is capped at the fees paid in the 12 months before the claim.",
-          "The Agreement replaces all earlier proposals and understandings concerning its subject."
+          "Supplier shall deliver the products listed in Schedule A within ten business days of each purchase order, packaged to prevent damage in transit.",
+          "Buyer shall pay for each delivery at the unit prices in Schedule A within 45 days of the invoice date.",
+          "Each party shall keep the other party's confidential information secret, use it only to perform the Agreement, and return or destroy it when the Agreement ends.",
+          "Each party warrants that it has authority to enter into the Agreement and that performing it will not breach any other agreement it is bound by.",
+          "Neither party is liable for indirect or consequential damages. Each party's total liability is capped at the fees paid in the twelve months before the claim.",
+          "The Agreement is the parties' entire agreement on its subject and replaces all earlier proposals and understandings."
         ],
-        "payment_terms": "Buyer must pay for each delivery at the unit prices in Schedule A within 45 days of the invoice date.",
-        "termination_clause": "Either party may terminate for convenience on 90 days' written notice, or immediately if the other party materially breaches the Agreement and fails to cure within 30 days of written notice.",
+        "payment_terms": "Buyer shall pay for each delivery at the unit prices in Schedule A within 45 days of the invoice date.",
+        "termination_clause": "Either party may terminate for convenience on 90 days' written notice, or immediately if the other party materially breaches the Agreement and does not cure the breach within 30 days of written notice.",
         "governing_law": "State of Illinois"
       },
       "outcomes": {
@@ -1807,10 +1879,10 @@
         "termination_clause": "correct",
         "governing_law": "correct"
       },
-      "seconds": 5.64,
-      "input_tokens": 1936,
-      "output_tokens": 448,
-      "cost_usd": 0.0004176
+      "seconds": 5.27,
+      "input_tokens": 1971,
+      "output_tokens": 436,
+      "cost_usd": 0.0004151
     },
     {
       "id": "con-06",
@@ -1818,6 +1890,7 @@
       "format": "pdf_scan",
       "expected_route": "auto",
       "absent_field": null,
+      "split": "main",
       "error": null,
       "route": "auto",
       "classified_as": "contract",
@@ -1846,14 +1919,14 @@
         "effective_date": "2025-03-29",
         "expiration_date": "2028-03-29",
         "key_terms": [
-          "Provider will perform services described in Statements of Work signed by both parties with the skill and care of a qualified professional.",
-          "Each party must keep the other party\u2019s confidential information secret, use it only to perform the Agreement, and return or destroy it when the Agreement ends.",
-          "Each party warrants that it has authority to enter into the Agreement and that performing it will not breach another agreement to which it is bound.",
-          "Neither party is liable for indirect or consequential damages; each party\u2019s total liability is capped at the fees paid in the twelve months before the claim.",
-          "The Agreement is the parties\u2019 entire agreement on its subject and replaces all earlier proposals and understandings."
+          "Provider will perform services described in Statements of Work signed by both parties, using the skill and care of a qualified professional.",
+          "Each party must keep the other party's confidential information secret, use it only to perform the Agreement, and return or destroy it when the Agreement ends.",
+          "Each party warrants that it has authority to enter into the Agreement and that performing it will not breach another agreement binding on it.",
+          "Neither party is liable for indirect or consequential damages; each party's total liability is capped at the fees paid in the twelve months before the claim.",
+          "The Agreement is the parties' entire agreement on its subject and replaces earlier proposals and understandings."
         ],
         "payment_terms": "Client pays the fees set out in each Statement of Work. Provider invoices monthly, and Client must pay each invoice within 30 days of receipt.",
-        "termination_clause": "Either party may terminate for convenience on 90 days\u2019 written notice, or immediately if the other party materially breaches the Agreement and does not cure the breach within 30 days of written notice.",
+        "termination_clause": "Either party may terminate for convenience on 90 days' written notice, or immediately if the other party materially breaches the Agreement and does not cure the breach within 30 days of written notice.",
         "governing_law": "State of Georgia"
       },
       "outcomes": {
@@ -1866,10 +1939,10 @@
         "termination_clause": "correct",
         "governing_law": "correct"
       },
-      "seconds": 12.14,
-      "input_tokens": 4363,
-      "output_tokens": 1295,
-      "cost_usd": 0.0010838
+      "seconds": 11.53,
+      "input_tokens": 4351,
+      "output_tokens": 1394,
+      "cost_usd": 0.0011320999999999998
     },
     {
       "id": "con-07",
@@ -1877,6 +1950,7 @@
       "format": "text",
       "expected_route": "auto",
       "absent_field": null,
+      "split": "main",
       "error": null,
       "route": "auto",
       "classified_as": "contract",
@@ -1899,10 +1973,11 @@
         "effective_date": "2025-04-12",
         "expiration_date": "2026-04-12",
         "key_terms": [
-          "Consultant shall provide data and reporting advisory services as requested by Company and shall not subcontract any work without written consent.",
+          "Consultant shall provide data and reporting advisory services as requested by Company.",
+          "Consultant shall not subcontract any work without written consent.",
           "Each party shall keep the other party's confidential information secret, use it only to perform the Agreement, and return or destroy it when the Agreement ends.",
           "Each party warrants that it has authority to enter into the Agreement and that performing it will not breach any other agreement it is bound by.",
-          "Neither party is liable for indirect or consequential damages. Each party's total liability is capped at the fees paid in the twelve months before the claim.",
+          "Neither party is liable for indirect or consequential damages; each party's total liability is capped at the fees paid in the twelve months before the claim.",
           "The Agreement is the parties' entire agreement on its subject and replaces all earlier proposals and understandings."
         ],
         "payment_terms": "Company shall pay Consultant 215 per hour, invoiced monthly and payable within 15 days of the invoice date.",
@@ -1919,10 +1994,10 @@
         "termination_clause": "correct",
         "governing_law": "correct"
       },
-      "seconds": 5.92,
-      "input_tokens": 1928,
-      "output_tokens": 437,
-      "cost_usd": 0.0004113
+      "seconds": 5.26,
+      "input_tokens": 1932,
+      "output_tokens": 455,
+      "cost_usd": 0.00042070000000000003
     },
     {
       "id": "con-08",
@@ -1930,6 +2005,7 @@
       "format": "pdf_text",
       "expected_route": "review",
       "absent_field": "governing_law",
+      "split": "main",
       "error": null,
       "route": "review",
       "classified_as": "contract",
@@ -1962,12 +2038,12 @@
         "key_terms": [
           "Licensor grants Licensee a non-exclusive, non-transferable license to use the software for internal business purposes for up to 250 named users.",
           "Each party must keep the other party's confidential information secret, use it only to perform the Agreement, and return or destroy it when the Agreement ends.",
-          "Each party warrants that it has authority to enter into the Agreement and that performing it will not breach another agreement it is bound by.",
-          "Neither party is liable for indirect or consequential damages; each party's total liability is capped at the fees paid in the twelve months before the claim.",
+          "Each party warrants that it has authority to enter into the Agreement and that performing it will not breach another agreement binding on it.",
+          "Neither party is liable for indirect or consequential damages; each party's total liability is capped at the fees paid in the 12 months before the claim.",
           "The Agreement is the parties' entire agreement on its subject and replaces all earlier proposals and understandings."
         ],
-        "payment_terms": "Licensee shall pay an annual license fee of 29000, due within 30 days of the Effective Date and of each anniversary.",
-        "termination_clause": "Either party may terminate for convenience on 90 days' written notice, or immediately if the other party materially breaches the Agreement and does not cure the breach within 30 days of written notice.",
+        "payment_terms": "Annual license fee of 29000, due within 30 days of the Effective Date and each anniversary.",
+        "termination_clause": "Either party may terminate for convenience on 90 days' written notice, or immediately if the other party materially breaches the Agreement and does not cure within 30 days of written notice.",
         "governing_law": null
       },
       "outcomes": {
@@ -1980,10 +2056,10 @@
         "termination_clause": "correct",
         "governing_law": "correct"
       },
-      "seconds": 7.71,
+      "seconds": 4.24,
       "input_tokens": 1369,
-      "output_tokens": 428,
-      "cost_usd": 0.00035089999999999996
+      "output_tokens": 424,
+      "cost_usd": 0.00034889999999999997
     },
     {
       "id": "con-09",
@@ -1991,6 +2067,7 @@
       "format": "pdf_scan",
       "expected_route": "auto",
       "absent_field": null,
+      "split": "main",
       "error": null,
       "route": "auto",
       "classified_as": "contract",
@@ -2020,13 +2097,14 @@
         "expiration_date": "2026-11-04",
         "key_terms": [
           "Landlord leases approximately 4,800 square feet of office space to Tenant for general office use, with access to shared parking.",
+          "Tenant must pay monthly rent of 3300, due on the first day of each month, and a security deposit equal to two months' rent on signing.",
           "Each party must keep the other party's confidential information secret, use it only to perform the Agreement, and return or destroy it when the Agreement ends.",
-          "Each party warrants that it has authority to enter into the Agreement and that performing it will not breach another agreement to which it is bound.",
+          "Each party warrants that it has authority to enter into the Agreement and that performing it will not breach another agreement it is bound by.",
           "Neither party is liable for indirect or consequential damages; each party's total liability is capped at the fees paid in the twelve months before the claim.",
-          "The Agreement is governed by the laws of the State of Texas, without regard to its conflict of laws rules."
+          "The Agreement is the parties' entire agreement on its subject and replaces all earlier proposals and understandings."
         ],
-        "payment_terms": "Monthly rent of 3300 is due on the first day of each month. A security deposit of 6600, equal to two months' rent, is due on signing.",
-        "termination_clause": "Either party may terminate for convenience on 60 days' written notice, or immediately if the other party materially breaches the Agreement and does not cure the breach within 30 days of written notice.",
+        "payment_terms": "Monthly rent of 3300, due on the first day of each month; security deposit equal to two months' rent due on signing.",
+        "termination_clause": "Either party may terminate for convenience on 60 days' written notice, or immediately if the other party materially breaches and does not cure the breach within 30 days of written notice.",
         "governing_law": "State of Texas"
       },
       "outcomes": {
@@ -2039,10 +2117,10 @@
         "termination_clause": "correct",
         "governing_law": "correct"
       },
-      "seconds": 14.0,
-      "input_tokens": 4361,
-      "output_tokens": 1354,
-      "cost_usd": 0.0011131
+      "seconds": 11.99,
+      "input_tokens": 4382,
+      "output_tokens": 1390,
+      "cost_usd": 0.0011332
     },
     {
       "id": "unk-01",
@@ -2050,6 +2128,7 @@
       "format": "text",
       "expected_route": "review",
       "absent_field": null,
+      "split": "main",
       "error": null,
       "route": "review",
       "classified_as": "unknown",
@@ -2059,7 +2138,7 @@
       "text_read": null,
       "extracted": null,
       "outcomes": {},
-      "seconds": 1.1,
+      "seconds": 0.99,
       "input_tokens": 260,
       "output_tokens": 37,
       "cost_usd": 4.45e-05
@@ -2070,6 +2149,7 @@
       "format": "pdf_text",
       "expected_route": "review",
       "absent_field": null,
+      "split": "main",
       "error": null,
       "route": "review",
       "classified_as": "unknown",
@@ -2085,10 +2165,10 @@
       "text_read": "Q3 PLANNING OFFSITE - NOTES\nAttendees: Laura, Kevin, Fatima, Grace\nDecisions\n- Move the weekly sync to Tuesdays at 10:00.\n- Pilot the new onboarding checklist with the October hires.\nAction items\n- Kevin: draft the onboarding checklist by Friday.\n- Grace: book the room for the November review.\n- Fatima: collect feedback from the support team.",
       "extracted": null,
       "outcomes": {},
-      "seconds": 1.21,
+      "seconds": 1.13,
       "input_tokens": 217,
-      "output_tokens": 42,
-      "cost_usd": 4.27e-05
+      "output_tokens": 43,
+      "cost_usd": 4.32e-05
     },
     {
       "id": "unk-03",
@@ -2096,6 +2176,7 @@
       "format": "pdf_scan",
       "expected_route": "review",
       "absent_field": null,
+      "split": "main",
       "error": null,
       "route": "review",
       "classified_as": "unknown",
@@ -2111,10 +2192,10 @@
       "text_read": "BUILDING NOTICE\nTo all tenants of 500 Lake Shore Drive\n\nThe north elevator will be out of service for scheduled maintenance from Monday through\nWednesday next week. The south elevator and both stairwells remain open. Deliveries should\nuse the loading dock entrance on Grand Avenue. Thank you for your patience.\n\nProperty Management Office",
       "extracted": null,
       "outcomes": {},
-      "seconds": 3.3,
+      "seconds": 2.65,
       "input_tokens": 2591,
-      "output_tokens": 119,
-      "cost_usd": 0.00031860000000000005
+      "output_tokens": 120,
+      "cost_usd": 0.0003191
     },
     {
       "id": "inv-03-poor",
@@ -2122,6 +2203,7 @@
       "format": "pdf_scan_poor",
       "expected_route": "auto",
       "absent_field": null,
+      "split": "main",
       "error": null,
       "route": "auto",
       "classified_as": "invoice",
@@ -2131,10 +2213,10 @@
         {
           "page": 1,
           "source": "vision",
-          "chars": 513
+          "chars": 510
         }
       ],
-      "text_read": "Cobalt Peak Software\n2200 Ridge Road\nBoise, ID 83702\n\nINVOICE\n\nInvoice Number: 91830\nInvoice Date: 23 Apr 2025\nDue Date: June 7, 2025\nPayment Terms: Net 45\n\nBill To:\nSummit Ridge Manufacturing\n\nDescription                         Qty   Unit Price   Amount\nWarehouse storage (pallet-months)    31    $23.51       $728.81\nSoftware subscription - annual seat  17    $304.30      $5,173.10\n\nSubtotal: $5,901.91\nTax (5%): $295.10\nTotal Due: $6,197.01\n\nThank you for your business. Questions? billing@cobalt.example.com",
+      "text_read": "Cobalt Peak Software\n2200 Ridge Road\nBoise, ID 83702\n\nINVOICE\n\nInvoice Number: 91830\nInvoice Date: 23 Apr 2025\nDue Date: June 7, 2025\nPayment Terms: Net 45\n\nBill To:\nSummit Ridge Manufacturing\n\nDescription                         Qty   Unit Price   Amount\nWarehouse storage (pallet-month)      31     $23.51     $728.81\nSoftware subscription - annual seat  17    $304.30   $5,173.10\n\nSubtotal: $5,901.91\nTax (5%): $295.10\nTotal Due: $6,197.01\n\nThank you for your business. Questions? billing@cobalt.example.com",
       "extracted": {
         "vendor_name": "Cobalt Peak Software",
         "invoice_number": "91830",
@@ -2142,7 +2224,7 @@
         "due_date": "2025-06-07",
         "line_items": [
           {
-            "description": "Warehouse storage (pallet-months)",
+            "description": "Warehouse storage (pallet-month)",
             "quantity": 31.0,
             "unit_price": 23.51,
             "total": 728.81
@@ -2170,10 +2252,10 @@
         "total_amount": "correct",
         "currency": "correct"
       },
-      "seconds": 11.28,
-      "input_tokens": 3772,
-      "output_tokens": 712,
-      "cost_usd": 0.0007332
+      "seconds": 7.62,
+      "input_tokens": 3769,
+      "output_tokens": 650,
+      "cost_usd": 0.0007019000000000001
     },
     {
       "id": "inv-06-poor",
@@ -2181,6 +2263,7 @@
       "format": "pdf_scan_poor",
       "expected_route": "auto",
       "absent_field": null,
+      "split": "main",
       "error": null,
       "route": "auto",
       "classified_as": "invoice",
@@ -2190,10 +2273,10 @@
         {
           "page": 1,
           "source": "vision",
-          "chars": 330
+          "chars": 275
         }
       ],
-      "text_read": "INVOICE\n________________________________\n\nFrom: Quartzline Printing, 39 Press Avenue, Raleigh, NC 27601\nTo: Granite State Credit Union\nInvoice #: INV-2025-5398\nIssued: Sep 18, 2025\nPayment due: October 3, 2025\n\nItems:\n1. Electrical inspection - 1 x $506.18 = $506.18\n\nSubtotal ______ $506.18\nTax ______ $25.31\nTOTAL ______ $531.49",
+      "text_read": "INVOICE\nFrom: Quartzline Printing, 39 Press Avenue, Raleigh, NC 27601\nTo: Granite State Credit Union\nInvoice #: INV-2025-5398\nIssued: Sep 18, 2025\nPayment due: October 3, 2025\n\nItems:\n1. Electrical inspection - 1 x $506.18 = $506.18\n\nSubtotal $506.18\nTax $25.31\nTOTAL $531.49",
       "extracted": {
         "vendor_name": "Quartzline Printing",
         "invoice_number": "INV-2025-5398",
@@ -2223,10 +2306,10 @@
         "total_amount": "correct",
         "currency": "correct"
       },
-      "seconds": 8.95,
-      "input_tokens": 3609,
-      "output_tokens": 544,
-      "cost_usd": 0.0006329
+      "seconds": 6.14,
+      "input_tokens": 3599,
+      "output_tokens": 512,
+      "cost_usd": 0.0006159000000000001
     },
     {
       "id": "inv-09-poor",
@@ -2234,6 +2317,7 @@
       "format": "pdf_scan_poor",
       "expected_route": "review",
       "absent_field": "currency",
+      "split": "main",
       "error": null,
       "route": "review",
       "classified_as": "invoice",
@@ -2245,24 +2329,24 @@
         {
           "page": 1,
           "source": "vision",
-          "chars": 569
+          "chars": 579
         }
       ],
-      "text_read": "Tidewater Electrical Inc.\n77 Harbor Drive\nNorfolk, VA 23510\n\nINVOICE\n\nInvoice Number: TI-10187\nInvoice Date: Mar 2, 2025\nDue Date: 01 May 2025\nPayment Terms: Net 60\n\nBill To:\nAcme Corporation\n\nDescription                       Qty   Unit Price   Amount\nWarehouse storage (pallet-month)   21    14.68        308.28\nSoftware subscription - annual fee 25    389.77       9,744.25\nFreight - LTL shipment             4     404.11       1,616.44\n\nSubtotal: 11,668.97\nTax (5%): 583.45\nTotal Due: 12,252.42\n\nThank you for your business. Questions? billing@tidewater-example.com",
+      "text_read": "Tidewater Electrical Inc.\n77 Harbor Drive\nNorfolk, VA 23510\n\nINVOICE\n\nInvoice Number: 71-10187\nInvoice Date: Mar 2, 2025\nDue Date: 01 May 2025\nPayment Terms: Net 60\n\nBill To:\nAcme Corporation\n\nDescription                         Qty   Unit Price   Amount\nWarehouse storage (pallet-months)     21       14.68    308.28\nSoftware subscription - annual plan  25      389.77  9,744.25\nFreight - LTL shipment                4      404.11  1,616.44\n\nSubtotal  11,668.97\nTax (5%): 583.45\nTotal Due: 12,252.42\n\nThank you for your business. Questions? billing@tidewaterelectric.example.com",
       "extracted": {
         "vendor_name": "Tidewater Electrical Inc.",
-        "invoice_number": "TI-10187",
+        "invoice_number": "71-10187",
         "invoice_date": "2025-03-02",
         "due_date": "2025-05-01",
         "line_items": [
           {
-            "description": "Warehouse storage (pallet-month)",
+            "description": "Warehouse storage (pallet-months)",
             "quantity": 21.0,
             "unit_price": 14.68,
             "total": 308.28
           },
           {
-            "description": "Software subscription - annual fee",
+            "description": "Software subscription - annual plan",
             "quantity": 25.0,
             "unit_price": 389.77,
             "total": 9744.25
@@ -2290,10 +2374,10 @@
         "total_amount": "correct",
         "currency": "correct"
       },
-      "seconds": 9.99,
-      "input_tokens": 3433,
-      "output_tokens": 874,
-      "cost_usd": 0.0007802999999999999
+      "seconds": 7.45,
+      "input_tokens": 3443,
+      "output_tokens": 806,
+      "cost_usd": 0.0007473
     },
     {
       "id": "inv-12-poor",
@@ -2301,6 +2385,7 @@
       "format": "pdf_scan_poor",
       "expected_route": "auto",
       "absent_field": null,
+      "split": "main",
       "error": null,
       "route": "auto",
       "classified_as": "invoice",
@@ -2310,13 +2395,13 @@
         {
           "page": 1,
           "source": "vision",
-          "chars": 399
+          "chars": 410
         }
       ],
-      "text_read": "INVOICE\n____________________\nFrom: Kestrel Office Partners Ltd, 8 Bishopsgate, London EC2N 4BQ, UK\nTo: Pinecrest Hotel Group\nInvoice #: INV-2025-4409\nIssued: Oct 23, 2025\nPayment due: December 7, 2025\n\nItems:\n1. Electrical inspection - 1 x GBP 352.52 = GBP 352.52\n2. On-site support visit - 4 x GBP 278.68 = GBP 1,114.72\n\nSubtotal _____ GBP 1,467.24\nTax ________ GBP 293.45\nTOTAL ______ GBP 1,760.69",
+      "text_read": "INVOICE\n________________________________\nFrom: Kestrel Office Partners Ltd, 8 Bishopsgate, London EC2N 4BQ, UK\nTo: Pinecrest Hotel Group\nInvoice #: INV-2025-4408\nIssued: Oct 23, 2025\nPayment due: December 7, 2025\n\nItems:\n1. Electrical inspection - 1 x GBP 352.52 = GBP 352.52\n2. On-site support visit - 4 x GBP 278.68 = GBP 1,114.72\n\nSubtotal ______ GBP 1,467.24\nTax ______ GBP 293.45\nTOTAL ______ GBP 1,760.69",
       "extracted": {
         "vendor_name": "Kestrel Office Partners Ltd",
-        "invoice_number": "INV-2025-4409",
+        "invoice_number": "INV-2025-4408",
         "invoice_date": "2025-10-23",
         "due_date": "2025-12-07",
         "line_items": [
@@ -2340,7 +2425,7 @@
       },
       "outcomes": {
         "vendor_name": "correct",
-        "invoice_number": "correct",
+        "invoice_number": "wrong",
         "invoice_date": "correct",
         "due_date": "correct",
         "line_items": "correct",
@@ -2349,10 +2434,10 @@
         "total_amount": "correct",
         "currency": "correct"
       },
-      "seconds": 8.26,
-      "input_tokens": 3741,
-      "output_tokens": 595,
-      "cost_usd": 0.0006716000000000001
+      "seconds": 7.46,
+      "input_tokens": 3737,
+      "output_tokens": 661,
+      "cost_usd": 0.0007042000000000001
     },
     {
       "id": "res-03-poor",
@@ -2360,6 +2445,7 @@
       "format": "pdf_scan_poor",
       "expected_route": "auto",
       "absent_field": null,
+      "split": "main",
       "error": null,
       "route": "auto",
       "classified_as": "resume",
@@ -2372,7 +2458,7 @@
           "chars": 787
         }
       ],
-      "text_read": "PRIYA NATARAJAN\nSoftware Engineer\nSeattle, WA | priya.natarajan@example.com | (404) 555-0111\n\nSUMMARY\nSoftware Engineer with 12 years of experience turning messy operational data into reliable\nreporting and automation. Comfortable owning projects end to end.\n\nSKILLS\nPython, Spark, Airflow, Pandas, Terraform, FastAPI\n\nEXPERIENCE\nSoftware Engineer \u2022 Cardinal Insurance Co. (2023 - Present)\n- Built dashboards and pipelines used by finance and operations teams\n- Cut manual reporting time by automating weekly data pulls\n\nMachine Learning Engineer \u2022 Ironwood Retail Group (2021 - 2023)\n- Built dashboards and pipelines used by finance and operations teams\n- Cut manual reporting time by automating weekly data pulls\n\nEDUCATION\nB.S. in Information Systems \u2022 Arizona State University (2009)",
+      "text_read": "PRIYA NATARAJAN\nSoftware Engineer\nSeattle, WA | priya.natarajan@example.com | (404) 555-0111\n\nSUMMARY\nSoftware Engineer with 12 years of experience turning messy operational data into reliable\nreporting and automation. Comfortable owning projects end to end.\n\nSKILLS\nPython, Spark, Airflow, Pandas, Terraform, FastAPI\n\nEXPERIENCE\nSoftware Engineer \u2022 Cardinal Insurance Co. (2023 - Present)\n- Built dashboards and pipelines used by finance and operations teams\n- Cut manual reporting time by automating weekly data pulls\n\nMachine Learning Engineer \u2022 Ironwood Retail Group (2021 - 2023)\n- Built dashboards and pipelines used by finance and operations teams\n- Cut manual reporting time by automating weekly data pulls\n\nEDUCATION\nB.S. in Information Systems - Arizona State University (2009)",
       "extracted": {
         "full_name": "PRIYA NATARAJAN",
         "email": "priya.natarajan@example.com",
@@ -2422,10 +2508,10 @@
         "experience": "correct",
         "education": "correct"
       },
-      "seconds": 10.4,
+      "seconds": 9.25,
       "input_tokens": 4011,
-      "output_tokens": 866,
-      "cost_usd": 0.0008341
+      "output_tokens": 851,
+      "cost_usd": 0.0008266
     },
     {
       "id": "res-06-poor",
@@ -2433,6 +2519,7 @@
       "format": "pdf_scan_poor",
       "expected_route": "review",
       "absent_field": "summary",
+      "split": "main",
       "error": null,
       "route": "review",
       "classified_as": "resume",
@@ -2449,7 +2536,7 @@
       ],
       "text_read": "JORDAN KIM\nMachine Learning Engineer\nChicago, IL | jordan.kim@example.com | (312) 555-0134\n\nSKILLS\nTerraform, Docker, PostgreSQL, LangChain, PyTorch, AWS\n\nEXPERIENCE\nData Analyst - Polaris Payments (2024 - Present)\n- Built dashboards and pipelines used by finance and operations teams\n- Cut manual reporting time by automating weekly data pulls\n\nData Analyst - Bayside Mutual (2021 - 2024)\n- Built dashboards and pipelines used by finance and operations teams\n- Cut manual reporting time by automating weekly data pulls\n\nEDUCATION\nB.A. in Economics - University of Texas at Austin (2008)\nM.S. in Statistics - North Carolina State University (2010)",
       "extracted": {
-        "full_name": "Jordan Kim",
+        "full_name": "JORDAN KIM",
         "email": "jordan.kim@example.com",
         "phone": "(312) 555-0134",
         "location": "Chicago, IL",
@@ -2468,14 +2555,14 @@
             "title": "Data Analyst",
             "start_date": "2024",
             "end_date": "Present",
-            "description": "Built dashboards and pipelines used by finance and operations teams; cut manual reporting time by automating weekly data pulls."
+            "description": "Built dashboards and pipelines used by finance and operations teams. Cut manual reporting time by automating weekly data pulls."
           },
           {
             "company": "Bayside Mutual",
             "title": "Data Analyst",
             "start_date": "2021",
             "end_date": "2024",
-            "description": "Built dashboards and pipelines used by finance and operations teams; cut manual reporting time by automating weekly data pulls."
+            "description": "Built dashboards and pipelines used by finance and operations teams. Cut manual reporting time by automating weekly data pulls."
           }
         ],
         "education": [
@@ -2503,10 +2590,10 @@
         "experience": "correct",
         "education": "correct"
       },
-      "seconds": 9.0,
+      "seconds": 8.06,
       "input_tokens": 3474,
-      "output_tokens": 780,
-      "cost_usd": 0.0007374000000000001
+      "output_tokens": 844,
+      "cost_usd": 0.0007694
     },
     {
       "id": "res-09-poor",
@@ -2514,6 +2601,7 @@
       "format": "pdf_scan_poor",
       "expected_route": "auto",
       "absent_field": null,
+      "split": "main",
       "error": null,
       "route": "auto",
       "classified_as": "resume",
@@ -2526,11 +2614,11 @@
           "chars": 843
         }
       ],
-      "text_read": "HANNAH LINDQVIST\nOperations Manager\nMinneapolis, MN | hannah.lindqvist@example.com | (912) 555-0181\n\nSUMMARY\nOperations Manager with 12 years of experience turning messy operational data into\nreliable reporting and automation. Comfortable owning projects end to end.\n\nSKILLS\nPostgreSQL, Python, Kubernetes, Pandas, Airflow, Spark\n\nEXPERIENCE\nSoftware Engineer - Riverstone Bank (2024 - Present)\n- Built dashboards and pipelines used by finance and operations teams\n- Cut manual reporting time by automating weekly data pulls\n\nOperations Manager - Lumen Freight (2020 - 2024)\n- Built dashboards and pipelines used by finance and operations teams\n- Cut manual reporting time by automating weekly data pulls\n\nEDUCATION\nB.S. in Applied Mathematics - University of Colorado Boulder (2010)\nM.S. in Statistics - North Carolina State University (2008)",
+      "text_read": "HANNAH LINDQVIST\nOperations Manager\nMinneapolis, MN | hannah.lindqvist@example.com | (312) 555-0181\n\nSUMMARY\nOperations Manager with 12 years of experience turning messy operational data into\nreliable reporting and automation. Comfortable owning projects end to end.\n\nSKILLS\nPostgreSQL, Python, Kubernetes, Pandas, Airflow, Spark\n\nEXPERIENCE\nSoftware Engineer - Riverstone Bank (2024 - Present)\n- Built dashboards and pipelines used by finance and operations teams\n- Cut manual reporting time by automating weekly data pulls\n\nOperations Manager - Lumen Freight (2020 - 2024)\n- Built dashboards and pipelines used by finance and operations teams\n- Cut manual reporting time by automating weekly data pulls\n\nEDUCATION\nB.S. in Applied Mathematics - University of Colorado Boulder (2010)\nM.S. in Statistics - North Carolina State University (2008)",
       "extracted": {
         "full_name": "HANNAH LINDQVIST",
         "email": "hannah.lindqvist@example.com",
-        "phone": "(912) 555-0181",
+        "phone": "(312) 555-0181",
         "location": "Minneapolis, MN",
         "summary": "Operations Manager with 12 years of experience turning messy operational data into reliable reporting and automation. Comfortable owning projects end to end.",
         "skills": [
@@ -2575,17 +2663,17 @@
       "outcomes": {
         "full_name": "correct",
         "email": "correct",
-        "phone": "wrong",
+        "phone": "correct",
         "location": "correct",
         "summary": "correct",
         "skills": "correct",
         "experience": "correct",
         "education": "correct"
       },
-      "seconds": 10.32,
+      "seconds": 8.97,
       "input_tokens": 4088,
-      "output_tokens": 935,
-      "cost_usd": 0.0008763
+      "output_tokens": 888,
+      "cost_usd": 0.0008527999999999999
     },
     {
       "id": "con-03-poor",
@@ -2593,6 +2681,7 @@
       "format": "pdf_scan_poor",
       "expected_route": "auto",
       "absent_field": null,
+      "split": "main",
       "error": null,
       "route": "auto",
       "classified_as": "contract",
@@ -2602,10 +2691,10 @@
         {
           "page": 1,
           "source": "vision",
-          "chars": 1895
+          "chars": 1894
         }
       ],
-      "text_read": "SOFTWARE LICENSE AGREEMENT\n\nThis Software License Agreement (the \"Agreement\") is made as of December 31, 2025 (the\n\"Effective Date\") by and between Silverleaf Catering LLC, a Texas company (\"Licensor\"),\nand Meridian Facility Services, a Colorado company (\"Licensee\").\n\n1. SCOPE. Licensor grants Licensee a non-exclusive, non-transferable license to use the\nsoftware for internal business purposes on up to 250 named users.\n\n2. TERM. This Agreement begins on the Effective Date and ends on Dec 31, 2026, unless\nterminated earlier under Section 6.\n\n3. PAYMENT. Licensee shall pay an annual license fee of $12,000, due within thirty (30)\ndays of the Effective Date and of each anniversary.\n\n4. CONFIDENTIALITY. Each party shall keep the other party's confidential information\nsecret, use it only to perform this Agreement, and return or destroy it when this\nAgreement ends.\n\n5. WARRANTIES. Each party warrants that it has the authority to enter into this Agreement\nand that performing it will not breach any other agreement it is bound by.\n\n6. TERMINATION. Either party may terminate this Agreement for convenience on 90 days'\nwritten notice, or immediately if the other party materially breaches this Agreement and\ndoes not cure the breach within 15 days of written notice.\n\n7. LIMITATION OF LIABILITY. Neither party is liable for indirect or consequential damages.\nEach party's total liability is capped at the fees paid in the twelve months before the\nclaim.\n\n8. GOVERNING LAW. This Agreement is governed by the laws of the State of Georgia, without\nregard to its conflict of laws rules.\n\n9. ENTIRE AGREEMENT. This Agreement is the parties' entire agreement on its subject and\nreplaces all earlier proposals and understandings.\n\nIN WITNESS WHEREOF, the parties have signed this Agreement as of the Effective Date.\n\nSilverleaf Catering LLC\nBy: Oscar Pan\n\nMeridian Facility Services\nBy: Laura Chen",
+      "text_read": "SOFTWARE LICENSE AGREEMENT\n\nThis Software License Agreement (the \"Agreement\") is made as of December 31, 2025 (the\n\"Effective Date\") by and between Silverleaf Catering LLC, a Texas company (\"Licensor\"),\nand Meridian Facility Services, a Colorado company (\"Licensee\").\n\n1. SCOPE. Licensor grants Licensee a non-exclusive, non-transferable license to use the\nsoftware for internal business purposes on up to 250 named users.\n\n2. TERM. This Agreement begins on the Effective Date and ends on Dec 31, 2026, unless\nterminated earlier under Section 6.\n\n3. PAYMENT. Licensee shall pay an annual license fee of $12,000, due within thirty (30)\ndays of the Effective Date and of each anniversary.\n\n4. CONFIDENTIALITY. Each party shall keep the other party's confidential information\nsecret, use it only to perform this Agreement, and return or destroy it when the\nAgreement ends.\n\n5. WARRANTIES. Each party warrants that it has the authority to enter into this Agreement\nand that performing it will not breach any other agreement it is bound by.\n\n6. TERMINATION. Either party may terminate this Agreement for convenience on 90 days'\nwritten notice, or immediately if the other party materially breaches this Agreement and\ndoes not cure the breach within 15 days of written notice.\n\n7. LIMITATION OF LIABILITY. Neither party is liable for indirect or consequential damages.\nEach party's total liability is capped at the fees paid in the twelve months before the\nclaim.\n\n8. GOVERNING LAW. This Agreement is governed by the laws of the State of Georgia, without\nregard to its conflict of laws rules.\n\n9. ENTIRE AGREEMENT. This Agreement is the parties' entire agreement on its subject and\nreplaces all earlier proposals and understandings.\n\nIN WITNESS WHEREOF, the parties have signed this Agreement as of the Effective Date.\n\nSilverleaf Catering LLC\nBy: Oscar Pan\n\nMeridian Facility Services\nBy: Laura Chen",
       "extracted": {
         "contract_type": "Software License Agreement",
         "parties": [
@@ -2624,7 +2713,7 @@
           "Licensor grants Licensee a non-exclusive, non-transferable license to use the software for internal business purposes on up to 250 named users.",
           "Each party must keep the other party's confidential information secret, use it only to perform the Agreement, and return or destroy it when the Agreement ends.",
           "Each party warrants that it has authority to enter into the Agreement and that performing it will not breach another agreement to which it is bound.",
-          "Neither party is liable for indirect or consequential damages. Each party's total liability is capped at the fees paid in the twelve months before the claim.",
+          "Neither party is liable for indirect or consequential damages; each party's total liability is capped at the fees paid in the twelve months before the claim.",
           "The Agreement is the parties' entire agreement on its subject and replaces all earlier proposals and understandings."
         ],
         "payment_terms": "Annual license fee of 12000, due within 30 days of the Effective Date and of each anniversary.",
@@ -2641,10 +2730,10 @@
         "termination_clause": "correct",
         "governing_law": "correct"
       },
-      "seconds": 12.62,
+      "seconds": 11.81,
       "input_tokens": 4345,
-      "output_tokens": 1344,
-      "cost_usd": 0.0011065
+      "output_tokens": 1329,
+      "cost_usd": 0.001099
     },
     {
       "id": "con-06-poor",
@@ -2652,6 +2741,7 @@
       "format": "pdf_scan_poor",
       "expected_route": "auto",
       "absent_field": null,
+      "split": "main",
       "error": null,
       "route": "auto",
       "classified_as": "contract",
@@ -2664,7 +2754,7 @@
           "chars": 1936
         }
       ],
-      "text_read": "MASTER SERVICES AGREEMENT\n\nThis Master Services Agreement (the \"Agreement\") is made as of 29 Mar 2025 (the \"Effective\nDate\") by and between Vantage Point Consulting, a Ohio company (\"Provider\"), and Tidewater\nElectrical Inc., a Illinois company (\"Client\").\n\n1. SCOPE. Provider shall perform the services described in each Statement of Work signed\nby both parties, with the skill and care of a qualified professional.\n\n2. TERM. This Agreement begins on the Effective Date and ends on Mar 29, 2028, unless\nterminated earlier under Section 6.\n\n3. PAYMENT. Client shall pay Provider the fees set out in each Statement of Work. Provider\nwill invoice monthly, and Client shall pay each invoice within thirty (30) days of\nreceipt.\n\n4. CONFIDENTIALITY. Each party shall keep the other party's confidential information\nsecret, use it only to perform this Agreement, and return or destroy it when this\nAgreement ends.\n\n5. WARRANTIES. Each party warrants that it has the authority to enter into this Agreement\nand that performing it will not breach any other agreement it is bound by.\n\n6. TERMINATION. Either party may terminate this Agreement for convenience on 90 days'\nwritten notice, or immediately if the other party materially breaches this Agreement and\ndoes not cure the breach within 30 days of written notice.\n\n7. LIMITATION OF LIABILITY. Neither party is liable for indirect or consequential damages.\nEach party's total liability is capped at the fees paid in the twelve months before the\nclaim.\n\n8. GOVERNING LAW. This Agreement is governed by the laws of the State of Georgia, without\nregard to its conflict of laws rules.\n\n9. ENTIRE AGREEMENT. This Agreement is the parties' entire agreement on its subject and\nreplaces all earlier proposals and understandings.\n\nIN WITNESS WHEREOF, the parties have signed this Agreement as of the Effective Date.\n\nVantage Point Consulting\nBy: Kevin O'Neal\n\nTidewater Electrical Inc.\nBy: Thomas Webb",
+      "text_read": "MASTER SERVICES AGREEMENT\n\nThis Master Services Agreement (the \"Agreement\") is made as of 29 Mar 2025 (the \"Effective\nDate\") by and between Vantage Point Consulting, a Ohio company (\"Provider\"), and Tidewater\nElectrical Inc., a Illinois company (\"Client\").\n\n1. SCOPE. Provider shall perform the services described in each Statement of Work signed\nby both parties, with the skill and care of a qualified professional.\n\n2. TERM. This Agreement begins on the Effective Date and ends on Mar 29, 2028, unless\nterminated earlier under Section 6.\n\n3. PAYMENT. Client shall pay Provider the fees set out in each Statement of Work. Provider\nwill invoice monthly, and Client shall pay each invoice within thirty (30) days of\nreceipt.\n\n4. CONFIDENTIALITY. Each party shall keep the other party's confidential information\nsecret, use it only to perform this Agreement, and return or destroy it when this\nAgreement ends.\n\n5. WARRANTIES. Each party warrants that it has the authority to enter into this Agreement\nand that performing it will not breach any other agreement it is bound by.\n\n6. TERMINATION. Either party may terminate this Agreement for convenience on 90 days'\nwritten notice, or immediately if the other party materially breaches this Agreement and\ndoes not cure the breach within 30 days of written notice.\n\n7. LIMITATION OF LIABILITY. Neither party is liable for indirect or consequential damages.\nEach party's total liability is capped at the fees paid in the twelve months before the\nclaim.\n\n8. GOVERNING LAW. This Agreement is governed by the laws of the State of Georgia, without\nregard to its conflict of laws rules.\n\n9. ENTIRE AGREEMENT. This Agreement is the parties' entire agreement on its subject and\nreplaces all earlier proposals and understandings.\n\nIN WITNESS WHEREOF, the parties have signed this Agreement as of the Effective Date.\n\nVantage Point Consulting\nBy: Kevin O'Neil\n\nTidewater Electrical Inc.\nBy: Thomas Webb",
       "extracted": {
         "contract_type": "Master Services Agreement",
         "parties": [
@@ -2680,14 +2770,14 @@
         "effective_date": "2025-03-29",
         "expiration_date": "2028-03-29",
         "key_terms": [
-          "Provider will perform services described in Statements of Work signed by both parties, using the skill and care of a qualified professional.",
+          "Provider will perform services described in Statements of Work signed by both parties with the skill and care of a qualified professional.",
           "Each party must keep the other party's confidential information secret, use it only to perform the Agreement, and return or destroy it when the Agreement ends.",
-          "Each party warrants that it has authority to enter into the Agreement and that performing it will not breach another agreement binding on it.",
-          "Neither party is liable for indirect or consequential damages; each party's total liability is capped at the fees paid in the 12 months before the claim.",
-          "The Agreement is the parties' entire agreement on its subject and replaces earlier proposals and understandings."
+          "Each party warrants that it has authority to enter into the Agreement and that performing it will not breach another agreement to which it is bound.",
+          "Neither party is liable for indirect or consequential damages; each party's total liability is capped at fees paid in the 12 months before the claim.",
+          "The Agreement is the parties' entire agreement on its subject and replaces all earlier proposals and understandings."
         ],
-        "payment_terms": "Fees are set out in each Statement of Work. Provider will invoice monthly, and Client must pay each invoice within 30 days of receipt.",
-        "termination_clause": "Either party may terminate for convenience on 90 days' written notice, or immediately if the other party materially breaches the Agreement and does not cure within 30 days of written notice.",
+        "payment_terms": "Fees are set out in each Statement of Work. Provider invoices monthly, and Client must pay each invoice within 30 days of receipt.",
+        "termination_clause": "Either party may terminate for convenience on 90 days' written notice, or immediately if the other party materially breaches the Agreement and does not cure the breach within 30 days of written notice.",
         "governing_law": "State of Georgia"
       },
       "outcomes": {
@@ -2700,10 +2790,10 @@
         "termination_clause": "correct",
         "governing_law": "correct"
       },
-      "seconds": 13.55,
+      "seconds": 11.52,
       "input_tokens": 4351,
-      "output_tokens": 1445,
-      "cost_usd": 0.0011576
+      "output_tokens": 1471,
+      "cost_usd": 0.0011706
     },
     {
       "id": "con-09-poor",
@@ -2711,6 +2801,7 @@
       "format": "pdf_scan_poor",
       "expected_route": "auto",
       "absent_field": null,
+      "split": "main",
       "error": null,
       "route": "auto",
       "classified_as": "contract",
@@ -2720,10 +2811,10 @@
         {
           "page": 1,
           "source": "vision",
-          "chars": 1893
+          "chars": 1889
         }
       ],
-      "text_read": "COMMERCIAL LEASE AGREEMENT\n\nThis Commercial Lease Agreement (the \"Agreement\") is made as of 04 Nov 2025 (the\n\"Effective Date\") by and between Northwind Analytics Inc., a Delaware company\n(\"Landlord\"), and Brightline Logistics LLC, a Colorado company (\"Tenant\").\n\n1. SCOPE. Landlord leases to Tenant approximately 4,800 square feet of office space for\ngeneral office use, with access to shared parking.\n\n2. TERM. This Agreement begins on the Effective Date and ends on November 4, 2026, unless\nterminated earlier under Section 6.\n\n3. PAYMENT. Tenant shall pay monthly rent of $5,200, due on the first day of each month,\nand a security deposit equal to two months' rent on signing.\n\n4. CONFIDENTIALITY. Each party shall keep the other party's confidential information\nsecret, use it only to perform this Agreement, and return or destroy it when this\nAgreement ends.\n\n5. WARRANTIES. Each party warrants that it has the authority to enter into this Agreement\nand that performing it will not breach any other agreement it is bound by.\n\n6. TERMINATION. Either party may terminate this Agreement for convenience on 60 days'\nwritten notice, or immediately if the other party materially breaches this Agreement and\ndoes not cure the breach within 30 days of written notice.\n\n7. LIMITATION OF LIABILITY. Neither party is liable for indirect or consequential damages.\nEach party's total liability is capped at the fees paid in the twelve months before the\nclaim.\n\n8. GOVERNING LAW. This Agreement is governed by the laws of the State of Texas, without\nregard to its conflict of laws rules.\n\n9. ENTIRE AGREEMENT. This Agreement is the parties' entire agreement on its subject and\nreplaces all earlier proposals and understandings.\n\n10. IN WITNESS WHEREOF, the parties have signed this Agreement as of the Effective Date.\n\nNorthwind Analytics Inc.\nBy: Thomas Wilde\n\nBrightline Logistics LLC\nBy: Fatima Noor",
+      "text_read": "COMMERCIAL LEASE AGREEMENT\n\nThis Commercial Lease Agreement (the \"Agreement\") is made as of 04 Nov 2025 (the\n\"Effective Date\") by and between Northwind Analytics Inc., a Delaware company\n(\"Landlord\"), and Brightline Logistics LLC, a Colorado company (\"Tenant\").\n\n1. SCOPE. Landlord leases to Tenant approximately 4,800 square feet of office space for\ngeneral office use, with access to shared parking.\n\n2. TERM. This Agreement begins on the Effective Date and ends on November 4, 2026, unless\nterminated earlier under Section 6.\n\n3. PAYMENT. Tenant shall pay monthly rent of $5,200, due on the first day of each month,\nand a security deposit equal to two month's rent on signing.\n\n4. CONFIDENTIALITY. Each party shall keep the other party's confidential information\nsecret, use it only to perform this Agreement, and return or destroy it when this\nAgreement ends.\n\n5. WARRANTIES. Each party warrants that it has the authority to enter into this Agreement\nand that performing it will not breach any other agreement it is bound by.\n\n6. TERMINATION. Either party may terminate this Agreement for convenience on 60 days'\nwritten notice, or immediately if the other party materially breaches this Agreement and\ndoes not cure the breach within 30 days of written notice.\n\n7. LIMITATION OF LIABILITY. Neither party is liable for indirect or consequential damages.\nEach party's total liability is capped at the fees paid in the twelve months before the\nclaim.\n\n8. GOVERNING LAW. This Agreement is governed by the laws of the State of Texas, without\nregard to its conflict of laws rules.\n\n9. ENTIRE AGREEMENT. This Agreement is the parties' entire agreement on its subject and\nreplaces all earlier proposals and understandings.\n\nIN WITNESS WHEREOF, the parties have signed this Agreement as of the Effective Date.\n\nNorthwind Analytics Inc.\nBy: Thomas Wilde\n\nBrightline Logistics LLC\nBy: Fatima Noor",
       "extracted": {
         "contract_type": "Commercial Lease Agreement",
         "parties": [
@@ -2739,15 +2830,15 @@
         "effective_date": "2025-11-04",
         "expiration_date": "2026-11-04",
         "key_terms": [
-          "Landlord leases approximately 4800 square feet of office space to Tenant for general office use, with access to shared parking.",
+          "Landlord leases approximately 4,800 square feet of office space to Tenant for general office use, with access to shared parking.",
           "Each party must keep the other party's confidential information secret, use it only to perform the Agreement, and return or destroy it when the Agreement ends.",
-          "Each party warrants that it has authority to enter into the Agreement and that performing it will not breach another agreement to which it is bound.",
+          "Each party warrants that it has authority to enter into the Agreement and that performing it will not breach any other agreement it is bound by.",
           "Neither party is liable for indirect or consequential damages; each party's total liability is capped at the fees paid in the twelve months before the claim.",
           "The Agreement is the parties' entire agreement on its subject and replaces all earlier proposals and understandings."
         ],
-        "payment_terms": "Tenant must pay monthly rent of 5200, due on the first day of each month, and a security deposit equal to two months' rent on signing.",
+        "payment_terms": "Monthly rent of 5200, due on the first day of each month, and a security deposit equal to two months' rent on signing.",
         "termination_clause": "Either party may terminate for convenience on 60 days' written notice, or immediately if the other party materially breaches the Agreement and does not cure the breach within 30 days of written notice.",
-        "governing_law": "State of Texas, without regard to its conflict of laws rules"
+        "governing_law": "State of Texas"
       },
       "outcomes": {
         "contract_type": "correct",
@@ -2759,10 +2850,10 @@
         "termination_clause": "correct",
         "governing_law": "correct"
       },
-      "seconds": 15.16,
-      "input_tokens": 4367,
-      "output_tokens": 1255,
-      "cost_usd": 0.0010642
+      "seconds": 11.19,
+      "input_tokens": 4350,
+      "output_tokens": 1339,
+      "cost_usd": 0.0011045
     },
     {
       "id": "unk-03-poor",
@@ -2770,6 +2861,7 @@
       "format": "pdf_scan_poor",
       "expected_route": "review",
       "absent_field": null,
+      "split": "main",
       "error": null,
       "route": "review",
       "classified_as": "unknown",
@@ -2785,10 +2877,849 @@
       "text_read": "BUILDING NOTICE\nTo all tenants of 500 Lake Shore Drive\n\nThe north elevator will be out of service for scheduled maintenance from Monday through\nWednesday next week. The south elevator and both stairwells remain open. Deliveries should\nuse the loading dock entrance on Grand Avenue. Thank you for your patience.\n\nProperty Management Office",
       "extracted": null,
       "outcomes": {},
-      "seconds": 4.19,
+      "seconds": 2.7,
       "input_tokens": 2591,
-      "output_tokens": 280,
-      "cost_usd": 0.0003991
+      "output_tokens": 144,
+      "cost_usd": 0.0003311
+    },
+    {
+      "id": "inv-13",
+      "doc_type": "invoice",
+      "format": "pdf_scan_poor",
+      "expected_route": "auto",
+      "absent_field": null,
+      "split": "holdout",
+      "error": null,
+      "route": "auto",
+      "classified_as": "invoice",
+      "extraction_confidence": 1.0,
+      "missing_fields": [],
+      "document_pages": [
+        {
+          "page": 1,
+          "source": "vision",
+          "chars": 706
+        }
+      ],
+      "text_read": "Brightline Logistics LLC\n4100 Commerce Pkwy\nMemphis, TN 38118\n\nINVOICE\n\nInvoice Number: 45731\nInvoice Date: Nov 16, 2025\nDue Date: 16 Dec 2025\nPayment Terms: Net 30\n\nBill To:\nPinecrest Hotel Group\n\nDescription                         Qty   Unit Price   Amount\nPrinter toner cartridge               4      $55.44    $221.76\nErgonomic office chair                4     $294.41  $1,177.64\nFreight - LTL shipment                2     $900.50  $1,801.00\nCatering - working lunch for 20       2     $333.41    $666.82\nOn-site support visit                 1     $173.72    $173.72\n\nSubtotal: $4,040.94\nTax (8%): $323.28\nTotal Due: $4,364.22\n\nThank you for your business. Questions? billing@brightline.example.com",
+      "extracted": {
+        "vendor_name": "Brightline Logistics LLC",
+        "invoice_number": "45731",
+        "invoice_date": "2025-11-16",
+        "due_date": "2025-12-16",
+        "line_items": [
+          {
+            "description": "Printer toner cartridge",
+            "quantity": 4.0,
+            "unit_price": 55.44,
+            "total": 221.76
+          },
+          {
+            "description": "Ergonomic office chair",
+            "quantity": 4.0,
+            "unit_price": 294.41,
+            "total": 1177.64
+          },
+          {
+            "description": "Freight - LTL shipment",
+            "quantity": 2.0,
+            "unit_price": 900.5,
+            "total": 1801.0
+          },
+          {
+            "description": "Catering - working lunch for 20",
+            "quantity": 2.0,
+            "unit_price": 333.41,
+            "total": 666.82
+          },
+          {
+            "description": "On-site support visit",
+            "quantity": 1.0,
+            "unit_price": 173.72,
+            "total": 173.72
+          }
+        ],
+        "subtotal": 4040.94,
+        "tax": 323.28,
+        "total_amount": 4364.22,
+        "currency": "USD"
+      },
+      "outcomes": {
+        "vendor_name": "correct",
+        "invoice_number": "correct",
+        "invoice_date": "correct",
+        "due_date": "correct",
+        "line_items": "wrong",
+        "subtotal": "wrong",
+        "tax": "wrong",
+        "total_amount": "wrong",
+        "currency": "correct"
+      },
+      "seconds": 8.45,
+      "input_tokens": 4019,
+      "output_tokens": 826,
+      "cost_usd": 0.0008149000000000001
+    },
+    {
+      "id": "inv-14",
+      "doc_type": "invoice",
+      "format": "pdf_scan_poor",
+      "expected_route": "auto",
+      "absent_field": null,
+      "split": "holdout",
+      "error": null,
+      "route": "auto",
+      "classified_as": "invoice",
+      "extraction_confidence": 1.0,
+      "missing_fields": [],
+      "document_pages": [
+        {
+          "page": 1,
+          "source": "vision",
+          "chars": 505
+        }
+      ],
+      "text_read": "INVOICE\n________________________________\nFrom: Northwind Analytics Inc., 88 Market Street, Suite 400, Denver, CO 80202\nTo: Summit Ridge Manufacturing\nInvoice #: NO-90687\nIssued: 2025-06-06\nPayment due: Jun 21, 2025\n\nItems:\n1. On-site support visit - 1 x $379.26 = $379.26\n2. Printer toner cartridge - 12 x $98.61 = $1,183.32\n3. Warehouse storage (pallet-month) - 31 x $22.10 = $685.10\n4. Freight - LTL shipment - 2 x $688.29 = $1,376.58\n\nSubtotal ______ $3,624.26\nTax ______ $181.21\nTOTAL ______ $3,805.47",
+      "extracted": {
+        "vendor_name": "Northwind Analytics Inc.",
+        "invoice_number": "NO-90687",
+        "invoice_date": "2025-06-06",
+        "due_date": "2025-06-21",
+        "line_items": [
+          {
+            "description": "On-site support visit",
+            "quantity": 1.0,
+            "unit_price": 379.26,
+            "total": 379.26
+          },
+          {
+            "description": "Printer toner cartridge",
+            "quantity": 12.0,
+            "unit_price": 98.61,
+            "total": 1183.32
+          },
+          {
+            "description": "Warehouse storage (pallet-month)",
+            "quantity": 31.0,
+            "unit_price": 22.1,
+            "total": 685.1
+          },
+          {
+            "description": "Freight - LTL shipment",
+            "quantity": 2.0,
+            "unit_price": 688.29,
+            "total": 1376.58
+          }
+        ],
+        "subtotal": 3624.26,
+        "tax": 181.21,
+        "total_amount": 3805.47,
+        "currency": "USD"
+      },
+      "outcomes": {
+        "vendor_name": "correct",
+        "invoice_number": "wrong",
+        "invoice_date": "correct",
+        "due_date": "correct",
+        "line_items": "correct",
+        "subtotal": "correct",
+        "tax": "correct",
+        "total_amount": "correct",
+        "currency": "correct"
+      },
+      "seconds": 8.94,
+      "input_tokens": 3890,
+      "output_tokens": 857,
+      "cost_usd": 0.0008175
+    },
+    {
+      "id": "inv-15",
+      "doc_type": "invoice",
+      "format": "pdf_scan_poor",
+      "expected_route": "auto",
+      "absent_field": null,
+      "split": "holdout",
+      "error": null,
+      "route": "auto",
+      "classified_as": "invoice",
+      "extraction_confidence": 1.0,
+      "missing_fields": [],
+      "document_pages": [
+        {
+          "page": 1,
+          "source": "vision",
+          "chars": 508
+        }
+      ],
+      "text_read": "Cobalt Peak Software\n2200 Ridge Road\nBoise, ID 83702\n\nINVOICE\n\nInvoice Number: INV-2025-7958\nInvoice Date: Feb 28, 2025\nDue Date: March 15, 2025\nPayment Terms: Net 15\n\nBill To:\nGranite State Credit Union\n\nDescription                 Qty    Unit Price    Amount\nWarehouse storage (pallet-month)  29    $14.18    $411.22\nImplementation services (hours)  22    $97.74    $2,150.28\n\nSubtotal: $2,561.50\nTax (6.25%): $160.09\nTotal Due: $2,721.59\n\nThank you for your business. Questions? billing@cobalt.example.com",
+      "extracted": {
+        "vendor_name": "Cobalt Peak Software",
+        "invoice_number": "INV-2025-7958",
+        "invoice_date": "2025-02-28",
+        "due_date": "2025-03-15",
+        "line_items": [
+          {
+            "description": "Warehouse storage (pallet-month)",
+            "quantity": 29.0,
+            "unit_price": 14.18,
+            "total": 411.22
+          },
+          {
+            "description": "Implementation services (hours)",
+            "quantity": 22.0,
+            "unit_price": 97.74,
+            "total": 2150.28
+          }
+        ],
+        "subtotal": 2561.5,
+        "tax": 160.09,
+        "total_amount": 2721.59,
+        "currency": "USD"
+      },
+      "outcomes": {
+        "vendor_name": "correct",
+        "invoice_number": "wrong",
+        "invoice_date": "wrong",
+        "due_date": "wrong",
+        "line_items": "correct",
+        "subtotal": "correct",
+        "tax": "correct",
+        "total_amount": "correct",
+        "currency": "correct"
+      },
+      "seconds": 8.72,
+      "input_tokens": 3789,
+      "output_tokens": 791,
+      "cost_usd": 0.0007744000000000001
+    },
+    {
+      "id": "inv-16",
+      "doc_type": "invoice",
+      "format": "pdf_scan_poor",
+      "expected_route": "auto",
+      "absent_field": null,
+      "split": "holdout",
+      "error": null,
+      "route": "auto",
+      "classified_as": "invoice",
+      "extraction_confidence": 1.0,
+      "missing_fields": [],
+      "document_pages": [
+        {
+          "page": 1,
+          "source": "vision",
+          "chars": 371
+        }
+      ],
+      "text_read": "INVOICE\nFrom: Harbor & Finch Supply Co., 15 Wharf Lane, Portland, ME 04101\nTo: Pinecrest Hotel Group\nInvoice #: INV-2025-2040\nIssued: 2025-09-07\nPayment due: October 22, 2025\n\nItems:\n1. Ergonomic office chair - 2 x $399.91 = $799.82\n2. Catering - working lunch for 20 - 1 x $522.44 = $522.44\n\nSubtotal ________ $1,322.26\nTax ____________ $109.09\nTOTAL _________ $1,431.35",
+      "extracted": {
+        "vendor_name": "Harbor & Finch Supply Co.",
+        "invoice_number": "INV-2025-2040",
+        "invoice_date": "2025-09-07",
+        "due_date": "2025-10-22",
+        "line_items": [
+          {
+            "description": "Ergonomic office chair",
+            "quantity": 2.0,
+            "unit_price": 399.91,
+            "total": 799.82
+          },
+          {
+            "description": "Catering - working lunch for 20",
+            "quantity": 1.0,
+            "unit_price": 522.44,
+            "total": 522.44
+          }
+        ],
+        "subtotal": 1322.26,
+        "tax": 109.09,
+        "total_amount": 1431.35,
+        "currency": "USD"
+      },
+      "outcomes": {
+        "vendor_name": "correct",
+        "invoice_number": "wrong",
+        "invoice_date": "correct",
+        "due_date": "correct",
+        "line_items": "correct",
+        "subtotal": "correct",
+        "tax": "correct",
+        "total_amount": "correct",
+        "currency": "correct"
+      },
+      "seconds": 7.89,
+      "input_tokens": 3727,
+      "output_tokens": 681,
+      "cost_usd": 0.0007132000000000001
+    },
+    {
+      "id": "res-10",
+      "doc_type": "resume",
+      "format": "pdf_scan_poor",
+      "expected_route": "auto",
+      "absent_field": null,
+      "split": "holdout",
+      "error": null,
+      "route": "auto",
+      "classified_as": "resume",
+      "extraction_confidence": 1.0,
+      "missing_fields": [],
+      "document_pages": [
+        {
+          "page": 1,
+          "source": "vision",
+          "chars": 810
+        }
+      ],
+      "text_read": "MAYA CRAWFORD\nProduct Analyst\nAtlanta, GA | maya.crawford@gmail.com | (404) 555-0146\n\nSUMMARY\nProduct Analyst with 7 years of experience turning messy operational data into reliable\nreporting and automation. Comfortable owning projects end to end.\n\nSKILLS\nscikit-learn, AWS, PostgreSQL, PyTorch, Pandas, Python, Kubernetes, Tableau, LangChain\n\nEXPERIENCE\nMachine Learning Engineer - Cardinal Insurance Co. (2023 - Present)\n- Built dashboards and pipelines used by finance and operations teams\n- Cut manual reporting time by automating weekly data pulls\n\nMachine Learning Engineer - Bayside Mutual (2019 - 2023)\n- Built dashboards and pipelines used by finance and operations teams\n- Cut manual reporting time by automating weekly data pulls\n\nEDUCATION\nB.S. in Computer Science - Georgia State University (2014)",
+      "extracted": {
+        "full_name": "MAYA CRAWFORD",
+        "email": "maya.crawford@gmail.com",
+        "phone": "(404) 555-0146",
+        "location": "Atlanta, GA",
+        "summary": "Product Analyst with 7 years of experience turning messy operational data into reliable reporting and automation. Comfortable owning projects end to end.",
+        "skills": [
+          "scikit-learn",
+          "AWS",
+          "PostgreSQL",
+          "PyTorch",
+          "Pandas",
+          "Python",
+          "Kubernetes",
+          "Tableau",
+          "LangChain"
+        ],
+        "experience": [
+          {
+            "company": "Cardinal Insurance Co.",
+            "title": "Machine Learning Engineer",
+            "start_date": "2023",
+            "end_date": "Present",
+            "description": "Built dashboards and pipelines used by finance and operations teams; cut manual reporting time by automating weekly data pulls."
+          },
+          {
+            "company": "Bayside Mutual",
+            "title": "Machine Learning Engineer",
+            "start_date": "2019",
+            "end_date": "2023",
+            "description": "Built dashboards and pipelines used by finance and operations teams; cut manual reporting time by automating weekly data pulls."
+          }
+        ],
+        "education": [
+          {
+            "institution": "Georgia State University",
+            "degree": "B.S.",
+            "field": "Computer Science",
+            "graduation_date": "2014"
+          }
+        ]
+      },
+      "outcomes": {
+        "full_name": "wrong",
+        "email": "wrong",
+        "phone": "correct",
+        "location": "correct",
+        "summary": "correct",
+        "skills": "correct",
+        "experience": "correct",
+        "education": "correct"
+      },
+      "seconds": 7.95,
+      "input_tokens": 4048,
+      "output_tokens": 741,
+      "cost_usd": 0.0007752999999999999
+    },
+    {
+      "id": "res-11",
+      "doc_type": "resume",
+      "format": "pdf_scan_poor",
+      "expected_route": "auto",
+      "absent_field": null,
+      "split": "holdout",
+      "error": null,
+      "route": "auto",
+      "classified_as": "resume",
+      "extraction_confidence": 1.0,
+      "missing_fields": [],
+      "document_pages": [
+        {
+          "page": 1,
+          "source": "vision",
+          "chars": 1021
+        }
+      ],
+      "text_read": "DANIEL REYES\nSoftware Engineer\nAustin, TX | daniel.reyes@example.com | (404) 555-0123\n\nSUMMARY\nSoftware Engineer with 8 years of experience turning messy operational data into reliable\nreporting and automation. Comfortable owning projects end to end.\n\nSKILLS\nSQL, Spark, PostgreSQL, Tableau, Airflow, FastAPI\n\nEXPERIENCE\nMachine Learning Engineer - Ironwood Retail Group (2023 - Present)\n- Built dashboards and pipelines used by finance and operations teams\n- Cut manual reporting time by automating weekly data pulls\n\nOperations Manager - Bayside Mutual (2021 - 2023)\n- Built dashboards and pipelines used by finance and operations teams\n- Cut manual reporting time by automating weekly data pulls\n\nOperations Manager - Crescent Health Systems (2017 - 2021)\n- Built dashboards and pipelines used by finance and operations teams\n- Cut manual reporting time by automating weekly data pulls\n\nEDUCATION\nM.S. in Statistics - North Carolina State University (2017)\nB.S. in Information Systems - Arizona State University (2016)",
+      "extracted": {
+        "full_name": "DANIEL REYES",
+        "email": "daniel.reyes@example.com",
+        "phone": "(404) 555-0123",
+        "location": "Austin, TX",
+        "summary": "Software Engineer with 8 years of experience turning messy operational data into reliable reporting and automation. Comfortable owning projects end to end.",
+        "skills": [
+          "SQL",
+          "Spark",
+          "PostgreSQL",
+          "Tableau",
+          "Airflow",
+          "FastAPI"
+        ],
+        "experience": [
+          {
+            "company": "Ironwood Retail Group",
+            "title": "Machine Learning Engineer",
+            "start_date": "2023",
+            "end_date": "Present",
+            "description": "Built dashboards and pipelines used by finance and operations teams. Cut manual reporting time by automating weekly data pulls."
+          },
+          {
+            "company": "Bayside Mutual",
+            "title": "Operations Manager",
+            "start_date": "2021",
+            "end_date": "2023",
+            "description": "Built dashboards and pipelines used by finance and operations teams. Cut manual reporting time by automating weekly data pulls."
+          },
+          {
+            "company": "Crescent Health Systems",
+            "title": "Operations Manager",
+            "start_date": "2017",
+            "end_date": "2021",
+            "description": "Built dashboards and pipelines used by finance and operations teams. Cut manual reporting time by automating weekly data pulls."
+          }
+        ],
+        "education": [
+          {
+            "institution": "North Carolina State University",
+            "degree": "M.S.",
+            "field": "Statistics",
+            "graduation_date": "2017"
+          },
+          {
+            "institution": "Arizona State University",
+            "degree": "B.S.",
+            "field": "Information Systems",
+            "graduation_date": "2016"
+          }
+        ]
+      },
+      "outcomes": {
+        "full_name": "correct",
+        "email": "correct",
+        "phone": "correct",
+        "location": "correct",
+        "summary": "correct",
+        "skills": "correct",
+        "experience": "correct",
+        "education": "correct"
+      },
+      "seconds": 15.8,
+      "input_tokens": 4219,
+      "output_tokens": 1034,
+      "cost_usd": 0.0009389000000000001
+    },
+    {
+      "id": "res-12",
+      "doc_type": "resume",
+      "format": "pdf_scan_poor",
+      "expected_route": "auto",
+      "absent_field": null,
+      "split": "holdout",
+      "error": null,
+      "route": "auto",
+      "classified_as": "resume",
+      "extraction_confidence": 1.0,
+      "missing_fields": [],
+      "document_pages": [
+        {
+          "page": 1,
+          "source": "vision",
+          "chars": 871
+        }
+      ],
+      "text_read": "PRIYA NATARAJAN\nMachine Learning Engineer\nSeattle, WA | priya.natarajan@example.com | (404) 555-0153\n\nSUMMARY\nMachine Learning Engineer with 7 years of experience turning messy operational data into\nreliable reporting and automation. Comfortable owning projects end to end.\n\nSKILLS\nSpark, Airflow, PostgreSQL, PyTorch, Terraform, AWS, Kubernetes, scikit-learn\n\nEXPERIENCE\nMachine Learning Engineer - Polaris Payments (2024 - Present)\n- Built dashboards and pipelines used by finance and operations teams\n- Cut manual reporting time by automating weekly data pulls\n\nOperations Manager - Bayside Mutual (2020 - 2024)\n- Built dashboards and pipelines used by finance and operations teams\n- Cut manual reporting time by automating weekly data pulls\n\nEDUCATION\nB.S. in Computer Science - Georgia State University (2011)\nB.A. in Economics - University of Texas at Austin (2010)",
+      "extracted": {
+        "full_name": "Priya Natarajan",
+        "email": "priya.natarajan@example.com",
+        "phone": "(404) 555-0153",
+        "location": "Seattle, WA",
+        "summary": "Machine Learning Engineer with 7 years of experience turning messy operational data into reliable reporting and automation. Comfortable owning projects end to end.",
+        "skills": [
+          "Spark",
+          "Airflow",
+          "PostgreSQL",
+          "PyTorch",
+          "Terraform",
+          "AWS",
+          "Kubernetes",
+          "scikit-learn"
+        ],
+        "experience": [
+          {
+            "company": "Polaris Payments",
+            "title": "Machine Learning Engineer",
+            "start_date": "2024",
+            "end_date": "Present",
+            "description": "Built dashboards and pipelines used by finance and operations teams; cut manual reporting time by automating weekly data pulls."
+          },
+          {
+            "company": "Bayside Mutual",
+            "title": "Operations Manager",
+            "start_date": "2020",
+            "end_date": "2024",
+            "description": "Built dashboards and pipelines used by finance and operations teams; cut manual reporting time by automating weekly data pulls."
+          }
+        ],
+        "education": [
+          {
+            "institution": "Georgia State University",
+            "degree": "B.S.",
+            "field": "Computer Science",
+            "graduation_date": "2011"
+          },
+          {
+            "institution": "University of Texas at Austin",
+            "degree": "B.A.",
+            "field": "Economics",
+            "graduation_date": "2010"
+          }
+        ]
+      },
+      "outcomes": {
+        "full_name": "correct",
+        "email": "correct",
+        "phone": "correct",
+        "location": "correct",
+        "summary": "correct",
+        "skills": "correct",
+        "experience": "correct",
+        "education": "correct"
+      },
+      "seconds": 9.21,
+      "input_tokens": 4107,
+      "output_tokens": 885,
+      "cost_usd": 0.0008532
+    },
+    {
+      "id": "res-13",
+      "doc_type": "resume",
+      "format": "pdf_scan_poor",
+      "expected_route": "auto",
+      "absent_field": null,
+      "split": "holdout",
+      "error": null,
+      "route": "auto",
+      "classified_as": "resume",
+      "extraction_confidence": 1.0,
+      "missing_fields": [],
+      "document_pages": [
+        {
+          "page": 1,
+          "source": "vision",
+          "chars": 966
+        }
+      ],
+      "text_read": "SAMUEL BROOKS\nOperations Manager\nRaleigh, NC | samuel.brooks@example.com | (912) 555-0133\n\nSUMMARY\nOperations Manager with 12 years of experience turning messy operational data into\nreliable reporting and automation. Comfortable owning projects end to end.\n\nSKILLS\nLangChain, PyTorch, AWS, Python, FastAPI, Airflow, SQL, Docker, PostgreSQL\n\nEXPERIENCE\nData Analyst - Lumen Freight (2023 - Present)\n- Built dashboards and pipelines used by finance and operations teams\n- Cut manual reporting time by automating weekly data pulls\n\nProduct Analyst - Polaris Payments (2020 - 2023)\n- Built dashboards and pipelines used by finance and operations teams\n- Cut manual reporting time by automating weekly data pulls\n\nOperations Manager - Cardinal Insurance Co. (2016 - 2020)\n- Built dashboards and pipelines used by finance and operations teams\n- Cut manual reporting time by automating weekly data pulls\n\nEDUCATION\nB.S. in Computer Science - Georgia State University (2011)",
+      "extracted": {
+        "full_name": "SAMUEL BROOKS",
+        "email": "samuel.brooks@example.com",
+        "phone": "(912) 555-0133",
+        "location": "Raleigh, NC",
+        "summary": "Operations Manager with 12 years of experience turning messy operational data into reliable reporting and automation. Comfortable owning projects end to end.",
+        "skills": [
+          "LangChain",
+          "PyTorch",
+          "AWS",
+          "Python",
+          "FastAPI",
+          "Airflow",
+          "SQL",
+          "Docker",
+          "PostgreSQL"
+        ],
+        "experience": [
+          {
+            "company": "Lumen Freight",
+            "title": "Data Analyst",
+            "start_date": "2023",
+            "end_date": "Present",
+            "description": "Built dashboards and pipelines used by finance and operations teams; cut manual reporting time by automating weekly data pulls."
+          },
+          {
+            "company": "Polaris Payments",
+            "title": "Product Analyst",
+            "start_date": "2020",
+            "end_date": "2023",
+            "description": "Built dashboards and pipelines used by finance and operations teams; cut manual reporting time by automating weekly data pulls."
+          },
+          {
+            "company": "Cardinal Insurance Co.",
+            "title": "Operations Manager",
+            "start_date": "2016",
+            "end_date": "2020",
+            "description": "Built dashboards and pipelines used by finance and operations teams; cut manual reporting time by automating weekly data pulls."
+          }
+        ],
+        "education": [
+          {
+            "institution": "Georgia State University",
+            "degree": "B.S.",
+            "field": "Computer Science",
+            "graduation_date": "2011"
+          }
+        ]
+      },
+      "outcomes": {
+        "full_name": "correct",
+        "email": "correct",
+        "phone": "wrong",
+        "location": "correct",
+        "summary": "correct",
+        "skills": "correct",
+        "experience": "correct",
+        "education": "correct"
+      },
+      "seconds": 9.37,
+      "input_tokens": 4179,
+      "output_tokens": 960,
+      "cost_usd": 0.0008979000000000001
+    },
+    {
+      "id": "con-10",
+      "doc_type": "contract",
+      "format": "pdf_scan_poor",
+      "expected_route": "auto",
+      "absent_field": null,
+      "split": "holdout",
+      "error": null,
+      "route": "auto",
+      "classified_as": "contract",
+      "extraction_confidence": 1.0,
+      "missing_fields": [],
+      "document_pages": [
+        {
+          "page": 1,
+          "source": "vision",
+          "chars": 1861
+        }
+      ],
+      "text_read": "SUPPLY AGREEMENT\n\nThis Supply Agreement (the \"Agreement\") is made as of May 10, 2025 (the \"Effective Date\"),\nby and between Redwood Data Systems, a California company (\"Supplier\"), and Vantage Point\nConsulting, a Colorado company (\"Buyer\").\n\n1. SCOPE. Supplier shall deliver the products listed in Schedule A within ten (10)\nbusiness days of each purchase order, packaged to prevent damage in transit.\n\n2. TERM. This Agreement begins on the Effective Date and ends on May 10, 2029, unless\nterminated earlier under Section 6.\n\n3. PAYMENT. Buyer shall pay for each delivery at the unit prices in Schedule A within\nforty-five (45) days of the invoice date.\n\n4. CONFIDENTIALITY. Each party shall keep the other party's confidential information\nsecret, use it only to perform this Agreement, and return or destroy it when this\nAgreement ends.\n\n5. WARRANTIES. Each party warrants that it has the authority to enter into this Agreement\nand that performing it will not breach any other agreement it is bound by.\n\n6. TERMINATION. Either party may terminate this Agreement for convenience on 60 days'\nwritten notice, or immediately if the other party materially breaches this Agreement and\ndoes not cure the breach within 15 days of written notice.\n\n7. LIMITATION OF LIABILITY. Neither party is liable for indirect or consequential damages.\nEach party's total liability is capped at the fees paid in the twelve months before the\nclaim.\n\n8. GOVERNING LAW. This Agreement is governed by the laws of the State of Illinois, without\nregard to its conflict of laws rules.\n\n9. ENTIRE AGREEMENT. This Agreement is the parties' entire agreement on its subject and\nreplaces all earlier proposals and understandings.\n\nIN WITNESS WHEREOF, the parties have signed this Agreement as of the Effective Date.\n\nRedwood Data Systems\nBy: Thomas Webb\n\nVantage Point Consulting\nBy: Robert Diaz",
+      "extracted": {
+        "contract_type": "Supply Agreement",
+        "parties": [
+          {
+            "name": "Redwood Data Systems",
+            "role": "Supplier"
+          },
+          {
+            "name": "Vantage Point Consulting",
+            "role": "Buyer"
+          }
+        ],
+        "effective_date": "2025-05-10",
+        "expiration_date": "2029-05-10",
+        "key_terms": [
+          "Supplier must deliver the products listed in Schedule A within ten business days of each purchase order and package them to prevent damage in transit.",
+          "Each party must keep the other party's confidential information secret, use it only to perform the Agreement, and return or destroy it when the Agreement ends.",
+          "Each party warrants that it has authority to enter into the Agreement and that performing it will not breach another agreement to which it is bound.",
+          "Neither party is liable for indirect or consequential damages; each party's total liability is capped at the fees paid in the twelve months before the claim."
+        ],
+        "payment_terms": "Buyer must pay the unit prices in Schedule A for each delivery within 45 days of the invoice date.",
+        "termination_clause": "Either party may terminate for convenience on 60 days' written notice, or immediately if the other party materially breaches and does not cure the breach within 15 days of written notice.",
+        "governing_law": "State of Illinois"
+      },
+      "outcomes": {
+        "contract_type": "correct",
+        "parties": "correct",
+        "effective_date": "wrong",
+        "expiration_date": "correct",
+        "key_terms": "correct",
+        "payment_terms": "correct",
+        "termination_clause": "correct",
+        "governing_law": "correct"
+      },
+      "seconds": 13.44,
+      "input_tokens": 4298,
+      "output_tokens": 1523,
+      "cost_usd": 0.0011913
+    },
+    {
+      "id": "con-11",
+      "doc_type": "contract",
+      "format": "pdf_scan_poor",
+      "expected_route": "auto",
+      "absent_field": null,
+      "split": "holdout",
+      "error": null,
+      "route": "auto",
+      "classified_as": "contract",
+      "extraction_confidence": 1.0,
+      "missing_fields": [],
+      "document_pages": [
+        {
+          "page": 1,
+          "source": "vision",
+          "chars": 1933
+        }
+      ],
+      "text_read": "MASTER SERVICES AGREEMENT\n\nThis Master Services Agreement (the \"Agreement\") is made as of Aug 23, 2024 (the\n\"Effective Date\") by and between Vantage Point Consulting, a Texas company (\"Provider\"),\nand Tidewater Electrical Inc., a Ohio company (\"Client\").\n\n1. SCOPE. Provider shall perform the services described in each Statement of Work signed\nby both parties, with the skill and care of a qualified professional.\n\n2. TERM. This Agreement begins on the Effective Date and ends on 2025-08-23, unless\nterminated earlier under Section 6.\n\n3. PAYMENT. Client shall pay Provider the fees set out in each Statement of Work. Provider\nwill invoice monthly, and Client shall pay each invoice within thirty (30) days of\nreceipt.\n\n4. CONFIDENTIALITY. Each party shall keep the other party's confidential information\nsecret, use it only to perform this Agreement, and return or destroy it when this\nAgreement ends.\n\n5. WARRANTIES. Each party warrants that it has the authority to enter into this Agreement\nand that performing it will not breach any other agreement it is bound by.\n\n6. TERMINATION. Either party may terminate this Agreement for convenience on 60 days'\nwritten notice, or immediately if the other party materially breaches this Agreement and\ndoes not cure the breach within 15 days of written notice.\n\n7. LIMITATION OF LIABILITY. Neither party is liable for indirect or consequential damages.\nEach party's total liability is capped at the fees paid in the twelve months before the\nclaim.\n\n8. GOVERNING LAW. This Agreement is governed by the laws of the State of New York, without\nregard to its conflict of laws rules.\n\n9. ENTIRE AGREEMENT. This Agreement is the parties' entire agreement on its subject and\nreplaces all earlier proposals and understandings.\n\nIN WITNESS WHEREOF, the parties have signed this Agreement as of the Effective Date.\n\nVantage Point Consulting\nBy: Fatima Noor\n\nTidewater Electrical Inc.\nBy: Kevin O'Neal",
+      "extracted": {
+        "contract_type": "Master Services Agreement",
+        "parties": [
+          {
+            "name": "Vantage Point Consulting",
+            "role": "Provider"
+          },
+          {
+            "name": "Tidewater Electrical Inc.",
+            "role": "Client"
+          }
+        ],
+        "effective_date": "2024-08-23",
+        "expiration_date": "2025-08-23",
+        "key_terms": [
+          "Provider will perform services described in Statements of Work signed by both parties, with the skill and care of a qualified professional.",
+          "Each party must keep the other party's confidential information secret, use it only to perform the Agreement, and return or destroy it when the Agreement ends.",
+          "Each party warrants that it has authority to enter into the Agreement and that performance will not breach another agreement to which it is bound.",
+          "Neither party is liable for indirect or consequential damages; each party's total liability is capped at the fees paid in the twelve months before the claim.",
+          "The Agreement is the parties' entire agreement on its subject and replaces all earlier proposals and understandings."
+        ],
+        "payment_terms": "Fees are set out in each Statement of Work. Provider invoices monthly, and Client must pay each invoice within 30 days of receipt.",
+        "termination_clause": "Either party may terminate for convenience on 60 days' written notice, or immediately if the other party materially breaches and does not cure the breach within 15 days of written notice.",
+        "governing_law": "State of New York"
+      },
+      "outcomes": {
+        "contract_type": "correct",
+        "parties": "correct",
+        "effective_date": "wrong",
+        "expiration_date": "wrong",
+        "key_terms": "correct",
+        "payment_terms": "correct",
+        "termination_clause": "correct",
+        "governing_law": "correct"
+      },
+      "seconds": 12.25,
+      "input_tokens": 4356,
+      "output_tokens": 1527,
+      "cost_usd": 0.0011990999999999998
+    },
+    {
+      "id": "con-12",
+      "doc_type": "contract",
+      "format": "pdf_scan_poor",
+      "expected_route": "auto",
+      "absent_field": null,
+      "split": "holdout",
+      "error": null,
+      "route": "auto",
+      "classified_as": "contract",
+      "extraction_confidence": 1.0,
+      "missing_fields": [],
+      "document_pages": [
+        {
+          "page": 1,
+          "source": "vision",
+          "chars": 1880
+        }
+      ],
+      "text_read": "CONSULTING AGREEMENT\n\nThis Consulting Agreement (the \"Agreement\") is made as of 16 Sep 2025 (the \"Effective\nDate\") by and between Northwind Analytics Inc., a New York company (\"Consultant\"), and\nVantage Point Consulting, a Texas company (\"Company\").\n\n1. SCOPE. Consultant shall provide data and reporting advisory services as requested by\nCompany and shall not subcontract any work without written consent.\n\n2. TERM. This Agreement begins on the Effective Date and ends on September 16, 2027,\nunless terminated earlier under Section 6.\n\n3. PAYMENT. Company shall pay Consultant $115 per hour, invoiced monthly and payable\nwithin fifteen (15) days of the invoice date.\n\n4. CONFIDENTIALITY. Each party shall keep the other party's confidential information\nsecret, use it only to perform this Agreement, and return or destroy it when this\nAgreement ends.\n\n5. WARRANTIES. Each party warrants that it has the authority to enter into this Agreement\nand that performing it will not breach any other agreement it is bound by.\n\n6. TERMINATION. Either party may terminate this Agreement for convenience on 90 days'\nwritten notice, or immediately if the other party materially breaches this Agreement and\ndoes not cure the breach within 30 days of written notice.\n\n7. LIMITATION OF LIABILITY. Neither party is liable for indirect or consequential damages.\nEach party's total liability is capped at the fees paid in the twelve months before the\nclaim.\n\n8. GOVERNING LAW. This Agreement is governed by the laws of the State of Delaware, without\nregard to its conflict of laws rules.\n\n9. ENTIRE AGREEMENT. This Agreement is the parties' entire agreement on its subject and\nreplaces all earlier proposals and understandings.\n\nIN WITNESS WHEREOF, the parties have signed this Agreement as of the Effective Date.\n\nNorthwind Analytics Inc.\nBy: Kevin O'Neil\n\nVantage Point Consulting\nBy: Thomas Webb",
+      "extracted": {
+        "contract_type": "Consulting Agreement",
+        "parties": [
+          {
+            "name": "Northwind Analytics Inc.",
+            "role": "Consultant"
+          },
+          {
+            "name": "Vantage Point Consulting",
+            "role": "Company"
+          }
+        ],
+        "effective_date": "2025-09-16",
+        "expiration_date": "2027-09-16",
+        "key_terms": [
+          "Consultant shall provide data and reporting advisory services as requested by Company.",
+          "Consultant shall not subcontract any work without written consent.",
+          "Each party shall keep the other party's confidential information secret, use it only to perform the Agreement, and return or destroy it when the Agreement ends.",
+          "Each party warrants that it has authority to enter into the Agreement and that performing it will not breach any other agreement it is bound by.",
+          "Neither party is liable for indirect or consequential damages; each party's total liability is capped at the fees paid in the twelve months before the claim."
+        ],
+        "payment_terms": "Company shall pay Consultant 115 per hour, invoiced monthly and payable within 15 days of the invoice date.",
+        "termination_clause": "Either party may terminate for convenience on 90 days' written notice, or immediately if the other party materially breaches the Agreement and does not cure the breach within 30 days of written notice.",
+        "governing_law": "State of Delaware"
+      },
+      "outcomes": {
+        "contract_type": "correct",
+        "parties": "correct",
+        "effective_date": "correct",
+        "expiration_date": "correct",
+        "key_terms": "correct",
+        "payment_terms": "correct",
+        "termination_clause": "correct",
+        "governing_law": "correct"
+      },
+      "seconds": 11.09,
+      "input_tokens": 4301,
+      "output_tokens": 1300,
+      "cost_usd": 0.0010800999999999999
+    },
+    {
+      "id": "con-13",
+      "doc_type": "contract",
+      "format": "pdf_scan_poor",
+      "expected_route": "auto",
+      "absent_field": null,
+      "split": "holdout",
+      "error": null,
+      "route": "auto",
+      "classified_as": "contract",
+      "extraction_confidence": 1.0,
+      "missing_fields": [],
+      "document_pages": [
+        {
+          "page": 1,
+          "source": "vision",
+          "chars": 1893
+        }
+      ],
+      "text_read": "SOFTWARE LICENSE AGREEMENT\n\nThis Software License Agreement (the \"Agreement\") is made as of 2026-03-21 (the \"Effective\nDate\") by and between Silverleaf Catering LLC, an Illinois company (\"Licensee\"), and\nVantage Point Consulting, a Georgia company (\"Licensor\").\n\n1. SCOPE. Licensor grants Licensee a non-exclusive, non-transferable license to use the\nsoftware for internal business purposes on up to 250 named users.\n\n2. TERM. This Agreement begins on the Effective Date and ends on 21 Mar 2028, unless\nterminated earlier under Section 6.\n\n3. PAYMENT. Licensee shall pay an annual license fee of $71,000, due within thirty (30)\ndays of the Effective Date and of each anniversary.\n\n4. CONFIDENTIALITY. Each party shall keep the other party's confidential information\nsecret, use it only to perform this Agreement, and return or destroy it when this\nAgreement ends.\n\n5. WARRANTIES. Each party warrants that it has the authority to enter into this Agreement\nand that performing it will not breach any other agreement it is bound by.\n\n6. TERMINATION. Either party may terminate this Agreement for convenience on 30 days'\nwritten notice, or immediately if the other party materially breaches this Agreement and\ndoes not cure the breach within 30 days of written notice.\n\n7. LIMITATION OF LIABILITY. Neither party is liable for indirect or consequential damages.\nEach party's total liability is capped at the fees paid in the twelve months before the\nclaim.\n\n8. GOVERNING LAW. This Agreement is governed by the laws of the State of California,\nwithout regard to its conflict of laws rules.\n\n9. ENTIRE AGREEMENT. This Agreement is the parties' entire agreement on its subject and\nreplaces all earlier proposals and understandings.\n\nIN WITNESS WHEREOF, the parties have signed this Agreement as of the Effective Date.\n\nSilverleaf Catering LLC\nBy: Kevin O'Neil\n\nVantage Point Consulting\nBy: Thomas Webb",
+      "extracted": {
+        "contract_type": "Software License Agreement",
+        "parties": [
+          {
+            "name": "Silverleaf Catering LLC",
+            "role": "Licensee"
+          },
+          {
+            "name": "Vantage Point Consulting",
+            "role": "Licensor"
+          }
+        ],
+        "effective_date": "2026-03-21",
+        "expiration_date": "2028-03-21",
+        "key_terms": [
+          "Licensor grants Licensee a non-exclusive, non-transferable license to use the software for internal business purposes for up to 250 named users.",
+          "Each party must keep the other party's confidential information secret, use it only to perform the Agreement, and return or destroy it when the Agreement ends.",
+          "Each party warrants that it has authority to enter into the Agreement and that performing it will not breach another agreement it is bound by.",
+          "Neither party is liable for indirect or consequential damages; each party's total liability is capped at the fees paid in the twelve months before the claim.",
+          "The Agreement is the parties' entire agreement on its subject and replaces all earlier proposals and understandings."
+        ],
+        "payment_terms": "Annual license fee of 71000, due within 30 days of the Effective Date and of each anniversary.",
+        "termination_clause": "Either party may terminate for convenience on 30 days' written notice, or immediately if the other party materially breaches the Agreement and does not cure the breach within 30 days of written notice.",
+        "governing_law": "State of California"
+      },
+      "outcomes": {
+        "contract_type": "correct",
+        "parties": "correct",
+        "effective_date": "correct",
+        "expiration_date": "wrong",
+        "key_terms": "correct",
+        "payment_terms": "correct",
+        "termination_clause": "correct",
+        "governing_law": "correct"
+      },
+      "seconds": 11.44,
+      "input_tokens": 4346,
+      "output_tokens": 1299,
+      "cost_usd": 0.0010841
     }
   ]
 }

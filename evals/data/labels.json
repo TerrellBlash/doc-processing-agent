@@ -6,6 +6,7 @@
     "doc_type": "invoice",
     "absent_field": "due_date",
     "expected_route": "review",
+    "split": "main",
     "fields": {
       "vendor_name": "Brightline Logistics LLC",
       "invoice_number": "BR-71159",
@@ -50,6 +51,7 @@
     "doc_type": "invoice",
     "absent_field": null,
     "expected_route": "auto",
+    "split": "main",
     "fields": {
       "vendor_name": "Northwind Analytics Inc.",
       "invoice_number": "NO-83430",
@@ -100,6 +102,7 @@
     "doc_type": "invoice",
     "absent_field": null,
     "expected_route": "auto",
+    "split": "main",
     "fields": {
       "vendor_name": "Cobalt Peak Software",
       "invoice_number": "91630",
@@ -132,6 +135,7 @@
     "doc_type": "invoice",
     "absent_field": null,
     "expected_route": "auto",
+    "split": "main",
     "fields": {
       "vendor_name": "Harbor & Finch Supply Co.",
       "invoice_number": "INV-2025-8434",
@@ -182,6 +186,7 @@
     "doc_type": "invoice",
     "absent_field": "invoice_number",
     "expected_route": "review",
+    "split": "main",
     "fields": {
       "vendor_name": "Meridian Facility Services",
       "invoice_number": null,
@@ -214,6 +219,7 @@
     "doc_type": "invoice",
     "absent_field": null,
     "expected_route": "auto",
+    "split": "main",
     "fields": {
       "vendor_name": "Quartzline Printing",
       "invoice_number": "INV-2025-5398",
@@ -240,6 +246,7 @@
     "doc_type": "invoice",
     "absent_field": null,
     "expected_route": "auto",
+    "split": "main",
     "fields": {
       "vendor_name": "Redwood Data Systems",
       "invoice_number": "RE-80809",
@@ -284,6 +291,7 @@
     "doc_type": "invoice",
     "absent_field": null,
     "expected_route": "auto",
+    "split": "main",
     "fields": {
       "vendor_name": "Silverleaf Catering LLC",
       "invoice_number": "INV-2026-9392",
@@ -328,6 +336,7 @@
     "doc_type": "invoice",
     "absent_field": "currency",
     "expected_route": "review",
+    "split": "main",
     "fields": {
       "vendor_name": "Tidewater Electrical Inc.",
       "invoice_number": "TI-10167",
@@ -366,6 +375,7 @@
     "doc_type": "invoice",
     "absent_field": null,
     "expected_route": "auto",
+    "split": "main",
     "fields": {
       "vendor_name": "Vantage Point Consulting",
       "invoice_number": "INV-2025-1864",
@@ -392,6 +402,7 @@
     "doc_type": "invoice",
     "absent_field": null,
     "expected_route": "auto",
+    "split": "main",
     "fields": {
       "vendor_name": "Juniper Labs GmbH",
       "invoice_number": "JU-51999",
@@ -442,6 +453,7 @@
     "doc_type": "invoice",
     "absent_field": null,
     "expected_route": "auto",
+    "split": "main",
     "fields": {
       "vendor_name": "Kestrel Office Partners Ltd",
       "invoice_number": "INV-2025-4409",
@@ -474,6 +486,7 @@
     "doc_type": "resume",
     "absent_field": null,
     "expected_route": "auto",
+    "split": "main",
     "fields": {
       "full_name": "Maya Okafor",
       "email": "maya.okafor@example.com",
@@ -506,6 +519,7 @@
     "doc_type": "resume",
     "absent_field": "phone",
     "expected_route": "review",
+    "split": "main",
     "fields": {
       "full_name": "Daniel Reyes",
       "email": "daniel.reyes@example.com",
@@ -538,6 +552,7 @@
     "doc_type": "resume",
     "absent_field": null,
     "expected_route": "auto",
+    "split": "main",
     "fields": {
       "full_name": "Priya Natarajan",
       "email": "priya.natarajan@example.com",
@@ -568,6 +583,7 @@
     "doc_type": "resume",
     "absent_field": null,
     "expected_route": "auto",
+    "split": "main",
     "fields": {
       "full_name": "Samuel Brooks",
       "email": "samuel.brooks@example.com",
@@ -602,6 +618,7 @@
     "doc_type": "resume",
     "absent_field": null,
     "expected_route": "auto",
+    "split": "main",
     "fields": {
       "full_name": "Elena Petrova",
       "email": "elena.petrova@example.com",
@@ -635,6 +652,7 @@
     "doc_type": "resume",
     "absent_field": "summary",
     "expected_route": "review",
+    "split": "main",
     "fields": {
       "full_name": "Jordan Kim",
       "email": "jordan.kim@example.com",
@@ -666,6 +684,7 @@
     "doc_type": "resume",
     "absent_field": null,
     "expected_route": "auto",
+    "split": "main",
     "fields": {
       "full_name": "Aisha Rahman",
       "email": "aisha.rahman@example.com",
@@ -699,6 +718,7 @@
     "doc_type": "resume",
     "absent_field": null,
     "expected_route": "auto",
+    "split": "main",
     "fields": {
       "full_name": "Marcus Bell",
       "email": "marcus.bell@example.com",
@@ -733,6 +753,7 @@
     "doc_type": "resume",
     "absent_field": null,
     "expected_route": "auto",
+    "split": "main",
     "fields": {
       "full_name": "Hannah Lindqvist",
       "email": "hannah.lindqvist@example.com",
@@ -764,6 +785,7 @@
     "doc_type": "contract",
     "absent_field": "expiration_date",
     "expected_route": "review",
+    "split": "main",
     "fields": {
       "contract_type": "Master Services Agreement",
       "parties": [
@@ -785,6 +807,7 @@
     "doc_type": "contract",
     "absent_field": null,
     "expected_route": "auto",
+    "split": "main",
     "fields": {
       "contract_type": "Consulting Agreement",
       "parties": [
@@ -806,6 +829,7 @@
     "doc_type": "contract",
     "absent_field": null,
     "expected_route": "auto",
+    "split": "main",
     "fields": {
       "contract_type": "Software License Agreement",
       "parties": [
@@ -827,6 +851,7 @@
     "doc_type": "contract",
     "absent_field": null,
     "expected_route": "auto",
+    "split": "main",
     "fields": {
       "contract_type": "Commercial Lease Agreement",
       "parties": [
@@ -848,6 +873,7 @@
     "doc_type": "contract",
     "absent_field": null,
     "expected_route": "auto",
+    "split": "main",
     "fields": {
       "contract_type": "Supply Agreement",
       "parties": [
@@ -869,6 +895,7 @@
     "doc_type": "contract",
     "absent_field": null,
     "expected_route": "auto",
+    "split": "main",
     "fields": {
       "contract_type": "Master Services Agreement",
       "parties": [
@@ -890,6 +917,7 @@
     "doc_type": "contract",
     "absent_field": null,
     "expected_route": "auto",
+    "split": "main",
     "fields": {
       "contract_type": "Consulting Agreement",
       "parties": [
@@ -911,6 +939,7 @@
     "doc_type": "contract",
     "absent_field": "governing_law",
     "expected_route": "review",
+    "split": "main",
     "fields": {
       "contract_type": "Software License Agreement",
       "parties": [
@@ -932,6 +961,7 @@
     "doc_type": "contract",
     "absent_field": null,
     "expected_route": "auto",
+    "split": "main",
     "fields": {
       "contract_type": "Commercial Lease Agreement",
       "parties": [
@@ -953,6 +983,7 @@
     "doc_type": "unknown",
     "absent_field": null,
     "expected_route": "review",
+    "split": "main",
     "fields": {}
   },
   {
@@ -962,6 +993,7 @@
     "doc_type": "unknown",
     "absent_field": null,
     "expected_route": "review",
+    "split": "main",
     "fields": {}
   },
   {
@@ -971,6 +1003,7 @@
     "doc_type": "unknown",
     "absent_field": null,
     "expected_route": "review",
+    "split": "main",
     "fields": {}
   },
   {
@@ -980,6 +1013,7 @@
     "doc_type": "invoice",
     "absent_field": null,
     "expected_route": "auto",
+    "split": "main",
     "fields": {
       "vendor_name": "Cobalt Peak Software",
       "invoice_number": "91630",
@@ -1012,6 +1046,7 @@
     "doc_type": "invoice",
     "absent_field": null,
     "expected_route": "auto",
+    "split": "main",
     "fields": {
       "vendor_name": "Quartzline Printing",
       "invoice_number": "INV-2025-5398",
@@ -1038,6 +1073,7 @@
     "doc_type": "invoice",
     "absent_field": "currency",
     "expected_route": "review",
+    "split": "main",
     "fields": {
       "vendor_name": "Tidewater Electrical Inc.",
       "invoice_number": "TI-10167",
@@ -1076,6 +1112,7 @@
     "doc_type": "invoice",
     "absent_field": null,
     "expected_route": "auto",
+    "split": "main",
     "fields": {
       "vendor_name": "Kestrel Office Partners Ltd",
       "invoice_number": "INV-2025-4409",
@@ -1108,6 +1145,7 @@
     "doc_type": "resume",
     "absent_field": null,
     "expected_route": "auto",
+    "split": "main",
     "fields": {
       "full_name": "Priya Natarajan",
       "email": "priya.natarajan@example.com",
@@ -1138,6 +1176,7 @@
     "doc_type": "resume",
     "absent_field": "summary",
     "expected_route": "review",
+    "split": "main",
     "fields": {
       "full_name": "Jordan Kim",
       "email": "jordan.kim@example.com",
@@ -1169,6 +1208,7 @@
     "doc_type": "resume",
     "absent_field": null,
     "expected_route": "auto",
+    "split": "main",
     "fields": {
       "full_name": "Hannah Lindqvist",
       "email": "hannah.lindqvist@example.com",
@@ -1200,6 +1240,7 @@
     "doc_type": "contract",
     "absent_field": null,
     "expected_route": "auto",
+    "split": "main",
     "fields": {
       "contract_type": "Software License Agreement",
       "parties": [
@@ -1221,6 +1262,7 @@
     "doc_type": "contract",
     "absent_field": null,
     "expected_route": "auto",
+    "split": "main",
     "fields": {
       "contract_type": "Master Services Agreement",
       "parties": [
@@ -1242,6 +1284,7 @@
     "doc_type": "contract",
     "absent_field": null,
     "expected_route": "auto",
+    "split": "main",
     "fields": {
       "contract_type": "Commercial Lease Agreement",
       "parties": [
@@ -1263,6 +1306,393 @@
     "doc_type": "unknown",
     "absent_field": null,
     "expected_route": "review",
+    "split": "main",
     "fields": {}
+  },
+  {
+    "id": "inv-13",
+    "file": "inv-13.pdf",
+    "format": "pdf_scan_poor",
+    "doc_type": "invoice",
+    "absent_field": null,
+    "expected_route": "auto",
+    "split": "holdout",
+    "fields": {
+      "vendor_name": "Brightline Logistics LLC",
+      "invoice_number": "45731",
+      "invoice_date": "2025-11-16",
+      "due_date": "2025-12-16",
+      "line_items": [
+        {
+          "description": "Printer toner cartridge",
+          "quantity": 4,
+          "unit_price": 55.44,
+          "total": 221.76
+        },
+        {
+          "description": "Ergonomic office chair",
+          "quantity": 4,
+          "unit_price": 294.41,
+          "total": 1177.64
+        },
+        {
+          "description": "Freight - LTL shipment",
+          "quantity": 2,
+          "unit_price": 909.53,
+          "total": 1819.06
+        },
+        {
+          "description": "Catering - working lunch for 20",
+          "quantity": 2,
+          "unit_price": 333.41,
+          "total": 666.82
+        },
+        {
+          "description": "On-site support visit",
+          "quantity": 1,
+          "unit_price": 173.72,
+          "total": 173.72
+        }
+      ],
+      "subtotal": 4059.0,
+      "tax": 202.95,
+      "total_amount": 4261.95,
+      "currency": "USD"
+    }
+  },
+  {
+    "id": "inv-14",
+    "file": "inv-14.pdf",
+    "format": "pdf_scan_poor",
+    "doc_type": "invoice",
+    "absent_field": null,
+    "expected_route": "auto",
+    "split": "holdout",
+    "fields": {
+      "vendor_name": "Northwind Analytics Inc.",
+      "invoice_number": "NO-99887",
+      "invoice_date": "2025-06-06",
+      "due_date": "2025-06-21",
+      "line_items": [
+        {
+          "description": "On-site support visit",
+          "quantity": 1,
+          "unit_price": 379.26,
+          "total": 379.26
+        },
+        {
+          "description": "Printer toner cartridge",
+          "quantity": 12,
+          "unit_price": 98.61,
+          "total": 1183.32
+        },
+        {
+          "description": "Warehouse storage (pallet-month)",
+          "quantity": 31,
+          "unit_price": 22.1,
+          "total": 685.1
+        },
+        {
+          "description": "Freight - LTL shipment",
+          "quantity": 2,
+          "unit_price": 688.29,
+          "total": 1376.58
+        }
+      ],
+      "subtotal": 3624.26,
+      "tax": 181.21,
+      "total_amount": 3805.47,
+      "currency": "USD"
+    }
+  },
+  {
+    "id": "inv-15",
+    "file": "inv-15.pdf",
+    "format": "pdf_scan_poor",
+    "doc_type": "invoice",
+    "absent_field": null,
+    "expected_route": "auto",
+    "split": "holdout",
+    "fields": {
+      "vendor_name": "Cobalt Peak Software",
+      "invoice_number": "INV-2026-7958",
+      "invoice_date": "2026-02-28",
+      "due_date": "2026-03-15",
+      "line_items": [
+        {
+          "description": "Warehouse storage (pallet-month)",
+          "quantity": 29,
+          "unit_price": 14.18,
+          "total": 411.22
+        },
+        {
+          "description": "Implementation services (hours)",
+          "quantity": 22,
+          "unit_price": 97.74,
+          "total": 2150.28
+        }
+      ],
+      "subtotal": 2561.5,
+      "tax": 160.09,
+      "total_amount": 2721.59,
+      "currency": "USD"
+    }
+  },
+  {
+    "id": "inv-16",
+    "file": "inv-16.pdf",
+    "format": "pdf_scan_poor",
+    "doc_type": "invoice",
+    "absent_field": null,
+    "expected_route": "auto",
+    "split": "holdout",
+    "fields": {
+      "vendor_name": "Harbor & Finch Supply Co.",
+      "invoice_number": "INV-2025-2690",
+      "invoice_date": "2025-09-07",
+      "due_date": "2025-10-22",
+      "line_items": [
+        {
+          "description": "Ergonomic office chair",
+          "quantity": 2,
+          "unit_price": 399.91,
+          "total": 799.82
+        },
+        {
+          "description": "Catering - working lunch for 20",
+          "quantity": 1,
+          "unit_price": 522.44,
+          "total": 522.44
+        }
+      ],
+      "subtotal": 1322.26,
+      "tax": 109.09,
+      "total_amount": 1431.35,
+      "currency": "USD"
+    }
+  },
+  {
+    "id": "res-10",
+    "file": "res-10.pdf",
+    "format": "pdf_scan_poor",
+    "doc_type": "resume",
+    "absent_field": null,
+    "expected_route": "auto",
+    "split": "holdout",
+    "fields": {
+      "full_name": "Maya Okafor",
+      "email": "maya.okafor@example.com",
+      "phone": "(404) 555-0146",
+      "location": "Atlanta",
+      "summary": "Product Analyst with 7 years of experience turning messy operational data into reliable reporting and automation. Comfortable owning projects end to end.",
+      "skills": [
+        "scikit-learn",
+        "AWS",
+        "PostgreSQL",
+        "PyTorch",
+        "Pandas",
+        "Python",
+        "Kubernetes",
+        "Tableau",
+        "LangChain"
+      ],
+      "experience": [
+        "Cardinal Insurance Co.",
+        "Bayside Mutual"
+      ],
+      "education": [
+        "Georgia State University"
+      ]
+    }
+  },
+  {
+    "id": "res-11",
+    "file": "res-11.pdf",
+    "format": "pdf_scan_poor",
+    "doc_type": "resume",
+    "absent_field": null,
+    "expected_route": "auto",
+    "split": "holdout",
+    "fields": {
+      "full_name": "Daniel Reyes",
+      "email": "daniel.reyes@example.com",
+      "phone": "(404) 555-0123",
+      "location": "Austin",
+      "summary": "Software Engineer with 8 years of experience turning messy operational data into reliable reporting and automation. Comfortable owning projects end to end.",
+      "skills": [
+        "SQL",
+        "Spark",
+        "PostgreSQL",
+        "Tableau",
+        "Airflow",
+        "FastAPI"
+      ],
+      "experience": [
+        "Ironwood Retail Group",
+        "Bayside Mutual",
+        "Crescent Health Systems"
+      ],
+      "education": [
+        "North Carolina State University",
+        "Arizona State University"
+      ]
+    }
+  },
+  {
+    "id": "res-12",
+    "file": "res-12.pdf",
+    "format": "pdf_scan_poor",
+    "doc_type": "resume",
+    "absent_field": null,
+    "expected_route": "auto",
+    "split": "holdout",
+    "fields": {
+      "full_name": "Priya Natarajan",
+      "email": "priya.natarajan@example.com",
+      "phone": "(404) 555-0153",
+      "location": "Seattle",
+      "summary": "Machine Learning Engineer with 7 years of experience turning messy operational data into reliable reporting and automation. Comfortable owning projects end to end.",
+      "skills": [
+        "Spark",
+        "Airflow",
+        "PostgreSQL",
+        "PyTorch",
+        "Terraform",
+        "AWS",
+        "Kubernetes",
+        "scikit-learn"
+      ],
+      "experience": [
+        "Polaris Payments",
+        "Bayside Mutual"
+      ],
+      "education": [
+        "Georgia State University",
+        "University of Texas at Austin"
+      ]
+    }
+  },
+  {
+    "id": "res-13",
+    "file": "res-13.pdf",
+    "format": "pdf_scan_poor",
+    "doc_type": "resume",
+    "absent_field": null,
+    "expected_route": "auto",
+    "split": "holdout",
+    "fields": {
+      "full_name": "Samuel Brooks",
+      "email": "samuel.brooks@example.com",
+      "phone": "(512) 555-0133",
+      "location": "Raleigh",
+      "summary": "Operations Manager with 12 years of experience turning messy operational data into reliable reporting and automation. Comfortable owning projects end to end.",
+      "skills": [
+        "LangChain",
+        "PyTorch",
+        "AWS",
+        "Python",
+        "FastAPI",
+        "Airflow",
+        "SQL",
+        "Docker",
+        "PostgreSQL"
+      ],
+      "experience": [
+        "Lumen Freight",
+        "Polaris Payments",
+        "Cardinal Insurance Co."
+      ],
+      "education": [
+        "Georgia State University"
+      ]
+    }
+  },
+  {
+    "id": "con-10",
+    "file": "con-10.pdf",
+    "format": "pdf_scan_poor",
+    "doc_type": "contract",
+    "absent_field": null,
+    "expected_route": "auto",
+    "split": "holdout",
+    "fields": {
+      "contract_type": "Supply Agreement",
+      "parties": [
+        "Redwood Data Systems",
+        "Vantage Point Consulting"
+      ],
+      "effective_date": "2026-05-10",
+      "expiration_date": "2029-05-10",
+      "key_terms": "Supplier shall deliver the products listed in Schedule A within ten (10) business days of each purchase order, packaged to prevent damage in transit.",
+      "payment_terms": "Buyer shall pay for each delivery at the unit prices in Schedule A within forty-five (45) days of the invoice date.",
+      "termination_clause": "Either party may terminate this Agreement for convenience on 60 days' written notice, or immediately if the other party materially breaches this Agreement and does not cure the breach within 15 days of written notice.",
+      "governing_law": "Illinois"
+    }
+  },
+  {
+    "id": "con-11",
+    "file": "con-11.pdf",
+    "format": "pdf_scan_poor",
+    "doc_type": "contract",
+    "absent_field": null,
+    "expected_route": "auto",
+    "split": "holdout",
+    "fields": {
+      "contract_type": "Master Services Agreement",
+      "parties": [
+        "Vantage Point Consulting",
+        "Tidewater Electrical Inc."
+      ],
+      "effective_date": "2026-08-23",
+      "expiration_date": "2028-08-23",
+      "key_terms": "Provider shall perform the services described in each Statement of Work signed by both parties, with the skill and care of a qualified professional.",
+      "payment_terms": "Client shall pay Provider the fees set out in each Statement of Work. Provider will invoice monthly, and Client shall pay each invoice within thirty (30) days of receipt.",
+      "termination_clause": "Either party may terminate this Agreement for convenience on 60 days' written notice, or immediately if the other party materially breaches this Agreement and does not cure the breach within 15 days of written notice.",
+      "governing_law": "New York"
+    }
+  },
+  {
+    "id": "con-12",
+    "file": "con-12.pdf",
+    "format": "pdf_scan_poor",
+    "doc_type": "contract",
+    "absent_field": null,
+    "expected_route": "auto",
+    "split": "holdout",
+    "fields": {
+      "contract_type": "Consulting Agreement",
+      "parties": [
+        "Northwind Analytics Inc.",
+        "Vantage Point Consulting"
+      ],
+      "effective_date": "2025-09-16",
+      "expiration_date": "2027-09-16",
+      "key_terms": "Consultant shall provide data and reporting advisory services as requested by Company and shall not subcontract any work without written consent.",
+      "payment_terms": "Company shall pay Consultant $116 per hour, invoiced monthly and payable within fifteen (15) days of the invoice date.",
+      "termination_clause": "Either party may terminate this Agreement for convenience on 90 days' written notice, or immediately if the other party materially breaches this Agreement and does not cure the breach within 30 days of written notice.",
+      "governing_law": "Delaware"
+    }
+  },
+  {
+    "id": "con-13",
+    "file": "con-13.pdf",
+    "format": "pdf_scan_poor",
+    "doc_type": "contract",
+    "absent_field": null,
+    "expected_route": "auto",
+    "split": "holdout",
+    "fields": {
+      "contract_type": "Software License Agreement",
+      "parties": [
+        "Silverleaf Catering LLC",
+        "Vantage Point Consulting"
+      ],
+      "effective_date": "2026-03-21",
+      "expiration_date": "2029-03-21",
+      "key_terms": "Licensor grants Licensee a non-exclusive, non-transferable license to use the software for internal business purposes on up to 250 named users.",
+      "payment_terms": "Licensee shall pay an annual license fee of $71,000, due within thirty (30) days of the Effective Date and of each anniversary.",
+      "termination_clause": "Either party may terminate this Agreement for convenience on 30 days' written notice, or immediately if the other party materially breaches this Agreement and does not cure the breach within 30 days of written notice.",
+      "governing_law": "California"
+    }
   }
 ]

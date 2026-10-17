@@ -6,13 +6,18 @@ is synthetic and seeded, so the same command always writes the same files:
 fictional companies and people, example.com addresses and 555 phone
 numbers.
 
-Composition, 44 documents:
+Main set, 44 documents:
 - 12 invoices, 9 resumes, 9 contracts, and 3 documents of no supported
   type (a recipe, meeting notes, a building notice)
 - each type split evenly across plain text, text-layer PDF and scanned PDF
 - the 11 scanned documents a second time as poor scans (low resolution,
   heavy blur), with the same labels, so any drop in accuracy between the
   two is down to scan quality alone
+
+Plus a held-out set of 12 new documents (4 of each type), poor scans only,
+labeled split "holdout". They were added after the second-read check was
+chosen on the poor scans above, so they measure that check on documents
+it was never tuned on. Everything else is split "main".
 - 3 invoices, 2 resumes and 2 contracts leave out one required field, so
   the pipeline should send them to human review instead of storing them
 - contracts are the types that carry payment terms; NDAs are left out
@@ -319,6 +324,9 @@ PLAN = [
     ("resume", 9, {1: "phone", 5: "summary"}),
     ("contract", 9, {0: "expiration_date", 7: "governing_law"}),
 ]
+# (document type, first index, how many): continues each type's numbering,
+# so every held-out document has its own id and its own random draws.
+HOLDOUT_PLAN = [("invoice", 12, 4), ("resume", 9, 4), ("contract", 9, 4)]
 MAKERS = {"invoice": make_invoice, "resume": make_resume, "contract": make_contract}
 PREFIX = {"invoice": "inv", "resume": "res", "contract": "con", "unknown": "unk"}
 
@@ -349,11 +357,12 @@ def build() -> list[dict]:
     labels: list[dict] = []
     scans: list[tuple[dict, str]] = []
 
-    def add(doc_id: str, text: str, fmt: str, doc_type: str, absent: str | None, fields: dict) -> None:
+    def add(doc_id: str, text: str, fmt: str, doc_type: str, absent: str | None, fields: dict,
+            split: str = "main") -> None:
         label = {
             "id": doc_id, "file": _write(doc_id, text, fmt), "format": fmt, "doc_type": doc_type,
             "absent_field": absent, "expected_route": "review" if absent or doc_type == "unknown" else "auto",
-            "fields": fields,
+            "split": split, "fields": fields,
         }
         labels.append(label)
         if fmt == "pdf_scan":
@@ -372,6 +381,12 @@ def build() -> list[dict]:
         poor_id = f"{label['id']}-poor"
         labels.append({**label, "id": poor_id, "file": _write(poor_id, text, POOR_SCAN_FORMAT),
                        "format": POOR_SCAN_FORMAT})
+    for doc_type, first, count in HOLDOUT_PLAN:
+        for index in range(first, first + count):
+            doc_id = f"{PREFIX[doc_type]}-{index + 1:02d}"
+            rng = random.Random(f"{SEED}-{doc_id}")
+            text, fields = MAKERS[doc_type](rng, index, None)
+            add(doc_id, text, POOR_SCAN_FORMAT, doc_type, None, fields, split="holdout")
     (DATA_DIR / "labels.json").write_text(json.dumps(labels, indent=2) + "\n")
     return labels
 
