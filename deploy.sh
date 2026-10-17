@@ -10,7 +10,7 @@
 #
 # Within Azure's monthly free allowance this costs nothing: no registry
 # (GitHub hosts the image) and no database (yours). The first request
-# after a quiet spell takes about 15 seconds while the app starts.
+# after a quiet spell takes about 25 seconds while the app starts.
 #
 # The API requires an X-API-Key header. The key is generated on the first
 # run and kept in $SECRETS_FILE (mode 600). Nothing secret is printed.
@@ -142,7 +142,7 @@ echo ""
 echo "Deployed ${BUILT_SHA:0:7} to https://$APP_URL"
 echo "API key: DOC_AGENT_API_KEY in $SECRETS_FILE"
 echo ""
-echo "Try it (the first request may take ~15 s while the app starts):"
+echo "Try it (the first request may take ~25 s while the app starts):"
 echo "  curl https://$APP_URL/health"
 echo "  source $SECRETS_FILE"
 echo "  curl -X POST https://$APP_URL/process -H \"X-API-Key: \$DOC_AGENT_API_KEY\" \\"

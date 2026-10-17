@@ -1,6 +1,6 @@
 # Intelligent Document Processing Agent
 
-> LangGraph-powered pipeline that classifies, extracts, validates, and routes documents with human-in-the-loop review. Paused reviews persist in Postgres, and a deploy script targets Azure Container Apps.
+> LangGraph pipeline that reads invoices, resumes and contracts from text, PDFs and scans, sends low-confidence extractions to a human reviewer, and is measured by a published eval. Live on Azure Container Apps.
 
 
 
@@ -146,7 +146,7 @@ export OPENAI_API_KEY="sk-..."
 ```
 
 - The app scales to zero when idle, so it costs nothing between
-  requests. The first request after a quiet spell takes about 15 seconds
+  requests. The first request after a quiet spell takes about 25 seconds
   while it starts.
 - Paused reviews live in the Postgres database you point it at. A free
   [Neon](https://neon.com) project works. It suspends when idle too; the
