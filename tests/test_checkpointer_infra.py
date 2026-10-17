@@ -146,3 +146,50 @@ def test_paused_review_survives_the_database_dropping_idle_connections():
         assert result["value"] == "resumed-with-yes"
     finally:
         close_checkpointer(checkpointer)
+
+
+@requires_postgres
+def test_concurrent_first_start_on_an_empty_database_does_not_deadlock(monkeypatch):
+    """The first deploy against a brand-new database is the case that
+    matters: setup() then builds indexes with CREATE INDEX CONCURRENTLY,
+    which waits for every other running statement to finish. Workers that
+    block inside SELECT pg_advisory_lock() are running statements, so the
+    index build and the waiting workers wait on each other forever. This
+    hung the first Azure deploy; every worker must start within seconds."""
+    import concurrent.futures
+    import uuid
+
+    import psycopg
+    from psycopg.conninfo import make_conninfo
+
+    base = os.environ["DATABASE_URL"]
+    fresh_name = f"docagent_fresh_{uuid.uuid4().hex[:8]}"
+    with psycopg.connect(base, autocommit=True) as admin:
+        admin.execute(f'CREATE DATABASE "{fresh_name}"')
+    monkeypatch.setenv("DATABASE_URL", make_conninfo(base, dbname=fresh_name))
+
+    def _build_and_close(_):
+        close_checkpointer(build_checkpointer())
+        return True
+
+    pool = concurrent.futures.ThreadPoolExecutor(max_workers=4)
+    try:
+        futures = [pool.submit(_build_and_close, i) for i in range(4)]
+        done, not_done = concurrent.futures.wait(futures, timeout=30)
+        assert not not_done, "workers deadlocked on first start"
+        assert all(f.result() for f in done)
+    finally:
+        # Ending the sessions unblocks any deadlocked threads so the
+        # executor can shut down and the database can be dropped.
+        with psycopg.connect(base, autocommit=True) as admin:
+            admin.execute(
+                "SELECT pg_terminate_backend(pid) FROM pg_stat_activity WHERE datname = %s",
+                (fresh_name,),
+            )
+        pool.shutdown(wait=True, cancel_futures=True)
+        with psycopg.connect(base, autocommit=True) as admin:
+            admin.execute(
+                "SELECT pg_terminate_backend(pid) FROM pg_stat_activity WHERE datname = %s",
+                (fresh_name,),
+            )
+            admin.execute(f'DROP DATABASE IF EXISTS "{fresh_name}"')

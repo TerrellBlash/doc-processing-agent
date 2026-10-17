@@ -15,6 +15,7 @@ The nodes themselves handle all the branching decisions.
 
 import logging
 import os
+import time
 
 from langgraph.checkpoint.memory import MemorySaver
 from langgraph.graph import StateGraph, START, END
@@ -97,11 +98,22 @@ def build_checkpointer():
     # 4 uvicorn workers, each calling build_checkpointer() independently on
     # startup, so this race is real on first deploy against an empty
     # database. A Postgres advisory lock serializes it: whichever worker
-    # gets here first runs the migration, the rest block until it's done,
-    # then find there's nothing left to do.
+    # gets here first runs the migration, the rest wait their turn, then
+    # find there's nothing left to do.
+    #
+    # The waiting workers poll with pg_try_advisory_lock instead of blocking
+    # in pg_advisory_lock. On an empty database, setup() builds indexes with
+    # CREATE INDEX CONCURRENTLY, which waits for every running statement to
+    # finish, and a blocked pg_advisory_lock call is a running statement.
+    # The index build and the waiting workers would then wait on each other
+    # forever, which is what hung the first deploy against a new database.
     _SETUP_LOCK_KEY = 0x646F6361  # arbitrary fixed key, spells "doca"
     with pool.connection() as conn:
-        conn.execute("SELECT pg_advisory_lock(%s)", (_SETUP_LOCK_KEY,))
+        while True:
+            row = conn.execute("SELECT pg_try_advisory_lock(%s) AS got", (_SETUP_LOCK_KEY,)).fetchone()
+            if row and row["got"]:
+                break
+            time.sleep(0.5)
         try:
             checkpointer.setup()
         finally:
